@@ -1,0 +1,4 @@
+Basis revisi: /mnt/data/modul.pdf (upload terbaru pengguna)
+Judul basis: Modul Praktikum Pemodelan Komputasi dan Analisis Numerik MA25-31017
+Jumlah halaman basis: 49
+Prinsip revisi: mempertahankan struktur modul A4, bukan slide; menambahkan ketercakupan seluruh latihan Lembar Kerja MA25-31017 sebagai contoh/latihan terintegrasi.

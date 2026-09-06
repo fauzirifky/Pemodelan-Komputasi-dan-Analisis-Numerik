@@ -94,7 +94,7 @@ Format pembelajaran & Praktikum, bedah jurnal, reproduksi komputasi, dan pembela
 \end{tabularx}
 
 \section*{Tentang modul}
-Modul ini mengonsolidasikan bahan praktikum sebelumnya, materi metode numerik praktis, serta kebutuhan pelaksanaan praktikum Pemodelan Komputasi dan Analisis Numerik. Struktur praktikum diperbarui menjadi sepuluh praktikum terhitung. Elaborasi teori, contoh tambahan, pola verifikasi, dan kode MATLAB pada naskah ini disusun khusus untuk kebutuhan praktikum.
+Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Komputasi dan Analisis Numerik. Struktur penyajian mengikuti pola modul praktikum: capaian, target luaran, materi singkat, algoritma, contoh, program MATLAB, verifikasi, dan latihan. Struktur praktikum terdiri atas sepuluh pertemuan terhitung. Seluruh butir pada Lembar Kerja/Bank Soal Praktikum B0.1--B7.5, Mock-Up UTS, dan Mock-Up UAS diintegrasikan kembali ke dalam contoh atau latihan modul dengan ID yang dipertahankan agar sinkron. Landasan teori utama modul menggunakan Chapra dan Canale, Numerical Methods for Engineers, edisi ke-7.
 
 \section*{Capaian Pembelajaran Mata Kuliah (CPMK) utama}
 \textbf{CPMK 6.1.} Mahasiswa mampu memecahkan (C4) masalah optimasi termasuk (dan tidak terbatas pada) masalah program linier, masalah pengujian hipotesis dan masalah pada proses stokastik dengan memilih (C3) model matematika yang sesuai, menerapkan (C3) langkah-langkah metode numerik yang terukur dan valid secara analitik untuk mendapatkan solusi, serta menginterpretasikan solusi yang diperoleh sesuai konteks masalah.
@@ -118,10 +118,32 @@ Modul ini mengonsolidasikan bahan praktikum sebelumnya, materi metode numerik pr
 10 & M12 & 6.1/7.1 & Praktikum terpadu: pemilihan metode, verifikasi dan validasi\\\hline
 \end{tabularx}
 
+\section*{Peta ketercakupan Lembar Kerja}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}p{0.22\textwidth}X}
+\hline
+\textbf{Bagian Lembar Kerja} & \textbf{Lokasi dalam modul} & \textbf{Cakupan}\\\hline
+B0.1--B0.5 & Bab 1 & Dasar metode numerik, galat, toleransi\\
+B1.1--B1.5, B2.1--B2.5 & Praktikum 1 & Akar: grafik, Biseksi, Regula Falsi, Newton, Titik Tetap, Secant\\
+B3.1--B3.5 & Praktikum 2 & SPL, solusi eksak, Jacobi, Gauss-Seidel, reaktor\\
+B4.1--B4.5 & Praktikum 3 & SPNL, Jacobian, Newton sistem, least squares, curve fitting\\
+B5.1--B5.4 & Praktikum 4 & Turunan analitik dan beda hingga\\
+B5.5 & Praktikum 5 & Ukuran langkah dan sumber galat\\
+B6.1--B6.3 & Praktikum 6 & Integral eksak, Trapezoid, Simpson\\
+B6.4--B6.5 & Praktikum 7 & Integral komposit, refinement, evaluasi galat\\
+B7.1--B7.2 & Praktikum 8 & Euler dan Heun\\
+B7.3--B7.5 & Praktikum 9 & RK4, solusi eksak, perbandingan metode\\
+UTS.1--UTS.4 & Lampiran Mock-Up UTS & Akar dan SPL\\
+UAS.1--UAS.4 & Lampiran Mock-Up UAS & Turunan, integral, dan PDB\\\hline
+\end{tabularx}
+
 \chapter*{Petunjuk Umum Praktikum}
 \addcontentsline{toc}{chapter}{Petunjuk Umum Praktikum}
 \section*{Struktur setiap bab}
 Setiap bab memuat enam komponen wajib: (1) capaian pembelajaran, (2) materi/teori, (3) algoritma, (4) contoh, (5) program MATLAB, dan (6) latihan. Naskah ini menambahkan tiga komponen yang disarankan untuk pembelajaran komputasi: \textit{target luaran}, \textit{checklist analisis}, dan \textit{verifikasi dan validasi}.
+
+\section*{Sinkronisasi dengan Lembar Kerja}
+Setiap soal pada Lembar Kerja Praktikum memiliki ID tetap (B0.1--B7.5, UTS.1--UTS.4, dan UAS.1--UAS.4). ID yang sama dipertahankan di modul. Dengan demikian, asisten dapat mengambil soal pre-test dari Lembar Kerja sementara mahasiswa dapat menemukan konsep, contoh, atau latihan yang relevan pada bab modul yang sesuai.
 
 \section*{Prinsip pemrograman numerik}
 \begin{enumerate}
@@ -244,6 +266,16 @@ xlabel('h'); ylabel('Galat')
 \end{enumerate}
 
 % ================================================================
+\section{Latihan fondasi dari Lembar Kerja}
+Butir berikut memastikan konsep galat dan toleransi siap dipakai pada seluruh praktikum numerik.
+\begin{enumerate}
+\item[\textbf{B0.1 (L1)}] Jelaskan apa yang dimaksud dengan \textit{metode numerik}. Apa perbedaan utama antara solusi eksak/analitik dan solusi numerik?
+\item[\textbf{B0.2 (L2)}] Nilai sebenarnya adalah \(x^\ast=\sqrt{3}\) dan hampiran yang diperoleh \(x_a=1.73\). Hitung galat absolut \(E_t=\left|x^\ast-x_a\right|\) dan galat relatif sebenarnya \(\varepsilon_t=\left|\frac{x^\ast-x_a}{x^\ast}\right|100\%\).
+\item[\textbf{B0.3 (L3)}] Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung \(\varepsilon_a=\left|\frac{x_i-x_{i-1}}{x_i}\right|100\%\) untuk setiap dua iterasi berurutan.
+\item[\textbf{B0.4 (L4)}] Jelaskan mengapa dua hampiran dapat mempunyai galat absolut yang sama tetapi kualitasnya berbeda. Gunakan contoh numerik sederhana dan kaitkan dengan galat relatif.
+\item[\textbf{B0.5 (L5)}] Jelaskan peran \textit{round-off error}, \textit{truncation error}, toleransi, dan jumlah iterasi maksimum dalam sebuah algoritma numerik.
+\end{enumerate}
+
 \chapter{Praktikum 1: Akar Persamaan Nonlinear}
 \CP{Mahasiswa mampu menjelaskan sumber galat, akurasi, kriteria berhenti, dan konvergensi; menerapkan Biseksi, Regula Falsi, Titik Tetap, Newton-Raphson, dan Sekan; serta membandingkan karakteristik konvergensinya (indikator 6.1.1--6.1.3 dan 7.1.1).}
 \Target{Satu skrip utama MATLAB yang membandingkan sedikitnya empat metode pencarian akar, tabel iterasi, residual, grafik konvergensi, dan interpretasi mengapa metode tertentu lebih cepat atau lebih tahan gangguan.}
@@ -312,11 +344,11 @@ Biseksi menggunakan interval $[-1,0]$, Newton dapat dimulai dari $x_0=0$, sedang
 
 \section{Program MATLAB}
 \MatlabFile{root\_compare.m}
-\lstinputlisting[language=Matlab]{../matlab/root_compare.m}
+\lstinputlisting[language=Matlab]{matlab/root_compare.m}
 \MatlabFile{bisection\_fun.m}
-\lstinputlisting[language=Matlab]{../matlab/bisection_fun.m}
+\lstinputlisting[language=Matlab]{matlab/bisection_fun.m}
 \MatlabFile{newton\_fun.m}
-\lstinputlisting[language=Matlab]{../matlab/newton_fun.m}
+\lstinputlisting[language=Matlab]{matlab/newton_fun.m}
 Fungsi \texttt{regula\_falsi\_fun.m}, \texttt{secant\_fun.m}, dan \texttt{fixedpoint\_fun.m} tersedia pada paket kode.
 
 \AnalysisCheck{(i) Apakah residual dan galat iterasi keduanya turun? (ii) Metode mana yang paling cepat? (iii) Apakah perubahan tebakan awal mengubah keberhasilan Newton/Sekan/Titik Tetap? (iv) Apakah interval Biseksi benar-benar mengurung akar?}
@@ -336,6 +368,21 @@ Fungsi \texttt{regula\_falsi\_fun.m}, \texttt{secant\_fun.m}, dan \texttt{fixedp
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+Seluruh metode akar pada Lembar Kerja dicakup di sini. Gunakan MATLAB untuk memverifikasi tabel iterasi setelah perhitungan manual.
+\begin{enumerate}
+\item[\textbf{B1.1 (L1)}] Untuk \(f(x)=x^3-x-1\), buat tabel nilai \(f(x)\) untuk \(x=0.5,1,1.25,1.5,2\). Berdasarkan tabel itu, tentukan interval yang masuk akal sebagai \textit{bracket} akar.
+\item[\textbf{B1.2 (L2)}] Gunakan Metode Biseksi untuk \(f(x)=x^3-x-1\) dengan interval awal \([1,1.5]\). Lakukan 4 iterasi. Untuk setiap iterasi tuliskan \(a,b,x_r,f(a),f(x_r)\), interval baru, dan \(\varepsilon_a\).
+\item[\textbf{B1.3 (L3)}] Gunakan Metode Regula Falsi untuk \(f(x)=x^3-x-1\) dengan \(a=1\) dan \(b=1.5\). Lakukan 5 iterasi menggunakan \(x_r=b-\frac{f(b)(b-a)}{f(b)-f(a)}\).
+\item[\textbf{B1.4 (L4)}] Gunakan Metode Newton-Raphson untuk \(f(x)=x^3-x-1\). (a) Tentukan turunannya \(f'(x)\). (b) Mulai dari \(x_0=1.5\), lakukan 4 iterasi Newton. (c) Hitung \(\varepsilon_a\) pada setiap iterasi.
+\item[\textbf{B1.5 (L5)}] Gunakan Metode Newton-Raphson untuk fungsi kedua \(f(x)=e^{-x}-x\). (a) Tentukan turunannya \(f'(x)\). (b) Gunakan \(x_0=0\) dan lakukan 5 iterasi. (c) Bandingkan karakter konvergensinya secara singkat dengan soal B1.4.
+\item[\textbf{B2.1 (L1)}] Untuk persamaan \(e^{-x}-x=0\), ubah ke bentuk titik tetap \(x=g(x)\) dengan memilih \(g(x)=e^{-x}\). Mulai dari \(x_0=0\), hitung 5 iterasi pertama.
+\item[\textbf{B2.2 (L2)}] Untuk soal B2.1, hitung \(g'(x)=-e^{-x}\). Jika akar berada di sekitar \(x^\ast\approx0.567\), hitung \(|g'(x^\ast)|\). Apakah syarat lokal \(|g'(x^\ast)|<1\) terpenuhi?
+\item[\textbf{B2.3 (L3)}] Gunakan Metode Secant untuk \(f(x)=e^{-x}-x\) dengan \(x_0=0\) dan \(x_1=1\). Lakukan 5 pembaruan akar dan hitung \(\varepsilon_a\).
+\item[\textbf{B2.4 (L4)}] Persamaan \(\cos x-x=0\) sering dipakai sebagai contoh titik tetap. Tuliskan dua kemungkinan bentuk \(x=g(x)\), lalu diskusikan mana yang lebih berpotensi konvergen di sekitar akar berdasarkan nilai \(|g'(x)|\).
+\item[\textbf{B2.5 (L5)}] Bandingkan Biseksi, Regula Falsi, Newton-Raphson, Titik Tetap, dan Secant dari segi: kebutuhan tebakan awal, kebutuhan turunan, kecepatan konvergensi, dan risiko divergensi.
+\end{enumerate}
+
 \chapter{Praktikum 2: Sistem Persamaan Linear Iteratif}
 \CP{Mahasiswa mampu menyelesaikan sistem persamaan linear secara iteratif dengan Jacobi dan Gauss-Seidel serta mengevaluasi residual dan konvergensi (indikator 6.1.4).}
 \Target{Implementasi Jacobi dan Gauss-Seidel untuk SPL berdimensi umum, kurva residual, serta analisis kondisi yang membuat iterasi konvergen atau lambat.}
@@ -383,9 +430,9 @@ A=\begin{bmatrix}3&-0.1&-0.2\\0.1&7&-0.3\\0.3&-0.2&10\end{bmatrix},\qquad
 Solusi referensi adalah $\mathbf{x}=[3,-2.5,7]^T$. Karena matriks dominan diagonal, kedua metode diharapkan konvergen dari tebakan nol. Pada contoh ini Gauss-Seidel biasanya membutuhkan lebih sedikit iterasi karena memakai informasi yang baru diperbarui.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/spl_iterative.m}
-\lstinputlisting[language=Matlab]{../matlab/jacobi_iter.m}
-\lstinputlisting[language=Matlab]{../matlab/gauss_seidel_iter.m}
+\lstinputlisting[language=Matlab]{matlab/spl_iterative.m}
+\lstinputlisting[language=Matlab]{matlab/jacobi_iter.m}
+\lstinputlisting[language=Matlab]{matlab/gauss_seidel_iter.m}
 
 \Note{Jangan menilai konvergensi hanya dari $\|x^{(k+1)}-x^{(k)}\|$. Iterasi dapat berubah sangat kecil tetapi masih memiliki residual besar pada masalah yang terskala buruk.}
 \AnalysisCheck{Periksa diagonal dominan, plot residual, bandingkan jumlah iterasi, dan uji perubahan skala baris. Laporkan norma yang digunakan.}
@@ -404,6 +451,16 @@ Solusi referensi adalah $\mathbf{x}=[3,-2.5,7]^T$. Karena matriks dominan diagon
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+Bandingkan solusi iteratif dengan solusi eksak atau residual ketika pembanding eksak tersedia.
+\begin{enumerate}
+\item[\textbf{B3.1 (L1)}] Tuliskan sistem berikut ke bentuk \(A\mathbf{x}=\mathbf{b}\): \(\ 10x_1-x_2+2x_3=6,\ -x_1+11x_2-x_3=25,\ 2x_1-x_2+10x_3=-11.\)
+\item[\textbf{B3.2 (L2)}] Tentukan solusi eksak/analitik dari SPL pada B3.1 dengan salah satu cara: eliminasi Gauss, invers matriks, atau aturan Cramer. Tuliskan hasilnya dalam bentuk \((x_1,x_2,x_3)\).
+\item[\textbf{B3.3 (L3)}] Gunakan metode Jacobi untuk SPL pada B3.1 dengan tebakan awal \((0,0,0)^T\). Lakukan 3 iterasi dan hitung \(\varepsilon_a\) setiap komponen pada iterasi terakhir.
+\item[\textbf{B3.4 (L4)}] Gunakan metode Gauss-Seidel untuk SPL pada B3.1 dengan tebakan awal yang sama. Lakukan 3 iterasi. Bandingkan hampiran iteratif Anda dengan solusi eksak pada B3.2 dan hitung galat absolut tiap komponen.
+\item[\textbf{B3.5 (L5)}] Tiga reaktor tercampur sempurna mempunyai konsentrasi tak diketahui \(c_1,c_2,c_3\). Dari neraca massa tunak diperoleh: \(100c_1-20c_3=160\), \(-40c_1+60c_2=20\), dan \(-60c_1-60c_2+120c_3=0\). (a) Jelaskan mengapa model ini membentuk SPL. (b) Susun bentuk \(A\mathbf{c}=\mathbf{b}\). (c) Tentukan solusi eksaknya.
+\end{enumerate}
+
 \chapter{Praktikum 3: Sistem Nonlinear dan Pencocokan Kurva}
 \CP{Mahasiswa mampu menerapkan penyelesaian sistem nonlinear dan kuadrat terkecil/pencocokan kurva sebagai jembatan menuju pemodelan komputasi (indikator 6.1.5 dan 7.1.1).}
 \Target{Penyelesai numerik Newton untuk sistem nonlinear dan penyelesai numerik Gauss-Newton teredam untuk kuadrat terkecil nonlinear, dilengkapi residual, grafik data-model, dan interpretasi parameter.}
@@ -458,9 +515,9 @@ y=\frac{a x}{b+x}
 terhadap data $x=[0.25,0.75,1.25,1.75,2.25]^T$ dan $y=[0.28,0.57,0.68,0.74,0.79]^T$. Gauss-Newton teredam memberikan parameter sekitar $a=1.0057$ dan $b=0.6077$ dengan residual kuadrat kecil.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/spnl_curvefit.m}
-\lstinputlisting[language=Matlab]{../matlab/newton_system.m}
-\lstinputlisting[language=Matlab]{../matlab/gauss_newton_damped.m}
+\lstinputlisting[language=Matlab]{matlab/spnl_curvefit.m}
+\lstinputlisting[language=Matlab]{matlab/newton_system.m}
+\lstinputlisting[language=Matlab]{matlab/gauss_newton_damped.m}
 
 \AnalysisCheck{Untuk SPNL: cek norma residual dan sensitivitas terhadap tebakan awal. Untuk pencocokan kurva: cek jumlah kuadrat galat (SSE), pola residual versus $x$, kewajaran parameter, dan apakah parameter dapat diidentifikasi dari data.}
 
@@ -478,6 +535,15 @@ terhadap data $x=[0.25,0.75,1.25,1.75,2.25]^T$ dan $y=[0.28,0.57,0.68,0.74,0.79]
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+\begin{enumerate}
+\item[\textbf{B4.1 (L1)}] Tuliskan sistem \(x^2+y^2-5=0,\ x-y-1=0\) dalam bentuk vektor \(F(x,y)=\mathbf{0}\).
+\item[\textbf{B4.2 (L2)}] Untuk sistem pada B4.1, tentukan matriks Jacobian \(J(x,y)\).
+\item[\textbf{B4.3 (L3)}] Dengan tebakan awal \((x_0,y_0)=(1.5,0.5)\), lakukan satu langkah Newton untuk SPNL: \(J(\mathbf{x}_k)\Delta \mathbf{x}=-F(\mathbf{x}_k)\), \(\mathbf{x}_{k+1}=\mathbf{x}_k+\Delta \mathbf{x}\).
+\item[\textbf{B4.4 (L4)}] Diberikan data \((1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)\). Carilah model regresi linear \(y=a+bx\) dengan metode \textit{least squares}.
+\item[\textbf{B4.5 (L5)}] Untuk model nonlinear \(y\approx ae^{bx}\), jelaskan mengapa pencarian parameter terbaik dapat dipandang sebagai masalah numerik dengan meminimalkan jumlah kuadrat residual. Tuliskan fungsi objektifnya dan kondisi optimalitasnya.
+\end{enumerate}
+
 \chapter{Praktikum 4: Turunan Numerik dengan Beda Hingga}
 \CP{Mahasiswa mampu menerapkan beda maju, beda mundur, dan beda pusat serta menjelaskan orde akurasi turunan numerik (indikator 6.1.6).}
 \Target{Fungsi MATLAB generik untuk tiga skema beda hingga, tabel galat terhadap ukuran langkah, dan grafik log-log yang menunjukkan perbedaan orde akurasi.}
@@ -517,8 +583,8 @@ f(x)=\frac{e^x}{\sin(\sqrt{x})},\qquad x_0=1.2.
 Turunan analitik pada $x_0$ sekitar $2.85683778241$. Dengan $h=0.1$, beda pusat memberikan sekitar $2.86120081209$, jauh lebih akurat daripada beda maju/mundur pada step yang sama. Ketika $h$ dibagi dua berulang kali, galat beda pusat menunjukkan orde mendekati dua sebelum efek pembulatan muncul.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/finite_difference.m}
-\lstinputlisting[language=Matlab]{../matlab/numdiff.m}
+\lstinputlisting[language=Matlab]{matlab/finite_difference.m}
+\lstinputlisting[language=Matlab]{matlab/numdiff.m}
 
 \AnalysisCheck{Jangan hanya melaporkan nilai turunan. Tunjukkan hubungan $h$-galat dan jawab: skema mana paling akurat pada biaya evaluasi fungsi yang sebanding?}
 
@@ -536,6 +602,15 @@ Turunan analitik pada $x_0$ sekitar $2.85683778241$. Dengan $h=0.1$, beda pusat 
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+Untuk setiap fungsi, tentukan turunan analitik terlebih dahulu agar galat sebenarnya dapat dievaluasi.
+\begin{enumerate}
+\item[\textbf{B5.1 (L1)}] Untuk \(f(x)=x\sqrt{x}-7x\), tentukan turunan analitik \(f'(x)\).
+\item[\textbf{B5.2 (L2)}] Gunakan beda maju, beda mundur, dan beda pusat dengan \(h=0.5\) untuk menghampiri \(f'(1.5)\) pada fungsi B5.1.
+\item[\textbf{B5.3 (L3)}] Hitung nilai eksak \(f'(1.5)\) dari hasil soal B5.1, kemudian tentukan galat absolut dan galat relatif sebenarnya untuk ketiga hampiran pada B5.2.
+\item[\textbf{B5.4 (L4)}] Untuk fungsi \(f(x)=\ln x\), tentukan turunan analitik \(f'(x)\), lalu hampiri \(f'(2)\) dengan beda pusat menggunakan \(h=0.25\). Evaluasi galat relatif sebenarnya.
+\end{enumerate}
+
 \chapter{Praktikum 5: Ukuran Langkah, Galat Pemotongan, dan Richardson}
 \CP{Mahasiswa mampu menganalisis pengaruh ukuran langkah dan galat pemotongan pada turunan numerik serta mereproduksi hasil komputasi dari sumber ilmiah (indikator 6.1.7 dan 7.1.1).}
 \Target{Eksperimen konvergensi yang menunjukkan orde metode, ekstrapolasi Richardson, dan pembahasan wilayah optimum ukuran langkah.}
@@ -570,7 +645,7 @@ Nilai $p_{obs}$ mendekati orde teori hanya pada rentang asimtotik. Jika terlalu 
 Untuk fungsi pada Praktikum 4 dan $x_0=1.2$, beda pusat dengan $h=0.2$ memberi sekitar $2.87423645$ dan dengan $h=0.1$ sekitar $2.86120081$. Richardson menghasilkan sekitar $2.85685560$, sangat dekat dengan nilai analitik $2.85683778$.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/richardson_diff.m}
+\lstinputlisting[language=Matlab]{matlab/richardson_diff.m}
 
 \section{Latihan}
 \begin{enumerate}
@@ -586,6 +661,11 @@ Untuk fungsi pada Praktikum 4 dan $x_0=1.2$, beda pusat dengan $h=0.2$ memberi s
 \end{enumerate}
 
 % ================================================================
+\section{Latihan lanjutan dari Lembar Kerja}
+\begin{enumerate}
+\item[\textbf{B5.5 (L5)}] Jelaskan mengapa pemilihan \(h\) yang terlalu besar maupun terlalu kecil dapat menghasilkan kesalahan besar pada turunan numerik. Kaitkan dengan \textit{truncation error} dan \textit{round-off error}.
+\end{enumerate}
+
 \chapter{Praktikum 6: Integral Numerik Dasar}
 \CP{Mahasiswa mampu menerapkan aturan Trapezoid dan Simpson serta mengevaluasi galat integrasi numerik (indikator 6.1.8).}
 \Target{Implementasi Trapezoid, Titik Tengah, dan Simpson komposit, studi jejaring perhalusan, serta perbandingan orde galat.}
@@ -620,10 +700,10 @@ dengan galat global $O(h^4)$.
 Untuk $\int_0^\pi\sin x\,dx=2$, gunakan $n=4,8,16,\ldots$. Trapezoid dan Titik Tengah menunjukkan galat berorde dua, sedangkan Simpson turun jauh lebih cepat karena berorde empat pada fungsi mulus.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/integration_basic.m}
-\lstinputlisting[language=Matlab]{../matlab/trap_comp.m}
-\lstinputlisting[language=Matlab]{../matlab/midpoint_comp.m}
-\lstinputlisting[language=Matlab]{../matlab/simpson_comp.m}
+\lstinputlisting[language=Matlab]{matlab/integration_basic.m}
+\lstinputlisting[language=Matlab]{matlab/trap_comp.m}
+\lstinputlisting[language=Matlab]{matlab/midpoint_comp.m}
+\lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
 
 \Note{Aturan dengan orde tinggi tidak selalu unggul pada data tidak mulus atau noisy. Asumsi regularitas fungsi harus dipertimbangkan sebelum menyimpulkan metode terbaik.}
 
@@ -641,6 +721,14 @@ Untuk $\int_0^\pi\sin x\,dx=2$, gunakan $n=4,8,16,\ldots$. Trapezoid dan Titik T
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+Jika integral analitik tersedia, hitung nilai eksaknya terlebih dahulu dan gunakan sebagai pembanding.
+\begin{enumerate}
+\item[\textbf{B6.1 (L1)}] Hitung nilai eksak \(I=\int_0^2 (x^2+1)\,dx\).
+\item[\textbf{B6.2 (L2)}] Gunakan aturan Trapezoid satu panel untuk menghampiri integral pada B6.1. Hitung galat absolut dan galat relatif sebenarnya.
+\item[\textbf{B6.3 (L3)}] Gunakan Simpson \(1/3\) satu segmen untuk menghampiri integral pada B6.1. Bandingkan hasilnya dengan Trapezoid.
+\end{enumerate}
+
 \chapter{Praktikum 7: Titik Tengah dan Romberg}
 \CP{Mahasiswa mampu menerapkan Titik Tengah dan Romberg serta membandingkan akurasinya dengan metode integrasi lain; mampu mereproduksi hasil integrasi numerik dari artikel (indikator 6.1.9 dan 7.1.1).}
 \Target{Tabel Romberg, pembandingan Trapezoid/Titik Tengah/Simpson/Romberg, dan analisis biaya terhadap akurasi.}
@@ -680,8 +768,8 @@ I=\int_0^2\frac{e^x\sin x}{1+x^2}\,dx.
 Nilai referensi numerik presisi tinggi sekitar $1.94013002203$. Tabel Romberg memperlihatkan bagaimana perhalusan berturut-turut dan ekstrapolasi menghasilkan konvergensi cepat tanpa langsung memanggil penyelesai numerik bawaan sebagai solusi utama.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/romberg_demo.m}
-\lstinputlisting[language=Matlab]{../matlab/romberg_fun.m}
+\lstinputlisting[language=Matlab]{matlab/romberg_demo.m}
+\lstinputlisting[language=Matlab]{matlab/romberg_fun.m}
 
 \AnalysisCheck{Bandingkan bukan hanya galat akhir, tetapi juga jumlah evaluasi $f$. Penyelesai numerik dengan galat kecil tetapi evaluasi sangat banyak belum tentu efisien.}
 
@@ -699,6 +787,12 @@ Nilai referensi numerik presisi tinggi sekitar $1.94013002203$. Tabel Romberg me
 \end{enumerate}
 
 % ================================================================
+\section{Latihan lanjutan dari Lembar Kerja}
+\begin{enumerate}
+\item[\textbf{B6.4 (L4)}] Diberikan tabel \(x: 0,0.5,1,1.5,2\) dan \(f(x): 101,-2,54,147,-10\). Hitung hampiran integral \(\int_0^2 f(x)\,dx\) dengan Composite Trapezoid dan Composite Simpson \(1/3\).
+\item[\textbf{B6.5 (L5)}] Jelaskan kapan hasil integral numerik dapat dievaluasi dengan galat sebenarnya, dan kapan hanya galat hampiran atau perbandingan antarmetode yang dapat dipakai. Berikan masing-masing satu contoh singkat.
+\end{enumerate}
+
 \chapter{Praktikum 8: Masalah Nilai Awal - Euler dan Runge-Kutta}
 \CP{Mahasiswa mampu menerapkan metode Euler untuk masalah nilai awal dan mengevaluasi galat lokal/global (indikator 6.1.10), serta memperoleh pengantar implementasi Runge-Kutta untuk pembandingan.}
 \Target{Penyelesai numerik Euler dan RK4 modular, kurva solusi, galat terhadap solusi referensi, dan studi ukuran langkah.}
@@ -748,9 +842,9 @@ Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solu
 \end{enumerate}
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/ode_euler_rk4.m}
-\lstinputlisting[language=Matlab]{../matlab/euler_ivp.m}
-\lstinputlisting[language=Matlab]{../matlab/rk4_ivp.m}
+\lstinputlisting[language=Matlab]{matlab/ode_euler_rk4.m}
+\lstinputlisting[language=Matlab]{matlab/euler_ivp.m}
+\lstinputlisting[language=Matlab]{matlab/rk4_ivp.m}
 
 \section{Latihan}
 \begin{enumerate}
@@ -766,6 +860,13 @@ Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solu
 \end{enumerate}
 
 % ================================================================
+\section{Latihan terintegrasi dari Lembar Kerja}
+Gunakan solusi eksak ketika tersedia untuk mengevaluasi galat metode.
+\begin{enumerate}
+\item[\textbf{B7.1 (L1)}] Diberikan masalah nilai awal \(\frac{dy}{dt}=2y^2(t-1)\), \(y(0)=1\). Gunakan metode Euler dengan \(h=0.2\) untuk menghitung \(y_1\).
+\item[\textbf{B7.2 (L2)}] Untuk masalah pada B7.1, gunakan metode Heun dengan \(h=0.2\) untuk menghitung \(y_1\).
+\end{enumerate}
+
 \chapter{Praktikum 9: Stabilitas, Ukuran Langkah, dan Reproduksi Model PDB}
 \CP{Mahasiswa mampu menerapkan Runge-Kutta dan menganalisis akurasi, stabilitas, serta pengaruh ukuran langkah; mampu mereproduksi kurva/model sederhana dari artikel (indikator 6.1.11 dan 7.1.1).}
 \Target{Studi stabilitas ukuran langkah pada persamaan uji, perbandingan Euler-RK4, serta satu reproduksi kurva model dari literatur.}
@@ -797,7 +898,7 @@ Reproduksi artikel harus membedakan data/model parameter dari parameter numerik.
 Ambil $y'=-15y$, $y(0)=1$. Euler dengan $h=0.2$ memiliki faktor amplifikasi $1-3=-2$, sehingga tidak stabil. Dengan $h=0.1$, faktor $-0.5$ dan iterasi stabil tetapi berosilasi tanda. Ini merupakan contoh sederhana bahwa ukuran langkah adalah bagian dari kualitas solusi.
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/ode_stability.m}
+\lstinputlisting[language=Matlab]{matlab/ode_stability.m}
 
 \AnalysisCheck{Pada reproduksi artikel, catat: model, parameter, kondisi awal, interval waktu, penyelesai numerik, ukuran langkah/tolerance, dan pengolahan akhir. Jika salah satu tidak tersedia, nyatakan asumsi secara eksplisit.}
 
@@ -815,6 +916,13 @@ Ambil $y'=-15y$, $y(0)=1$. Euler dengan $h=0.2$ memiliki faktor amplifikasi $1-3
 \end{enumerate}
 
 % ================================================================
+\section{Latihan lanjutan dari Lembar Kerja}
+\begin{enumerate}
+\item[\textbf{B7.3 (L3)}] Gunakan RK4 klasik dengan \(h=0.2\) untuk menghitung \(y_1\) pada masalah yang sama. Tuliskan \(k_1,k_2,k_3,k_4\).
+\item[\textbf{B7.4 (L4)}] Diketahui solusi eksak masalah pada B7.1 adalah \(y(t)=\frac{1}{1+2t-t^2}\). Hitung nilai eksak \(y(0.2)\), lalu evaluasi galat absolut ketiga metode pada B7.1--B7.3.
+\item[\textbf{B7.5 (L5)}] Bandingkan Euler, Heun, dan RK4 dari aspek biaya komputasi per langkah, akurasi, dan kecocokan untuk masalah dengan dinamika halus.
+\end{enumerate}
+
 \chapter{Praktikum 10: Praktikum Terpadu, Verifikasi, dan Validasi}
 \CP{Mahasiswa mampu memilih metode numerik yang sesuai, mengintegrasikan beberapa metode dalam satu alur kerja, memeriksa keakuratan dan keterbatasan hasil, serta mendokumentasikan proses komputasi secara ilmiah (penguatan CPMK 6.1 dan 7.1).}
 \Target{Satu mini-pipeline komputasi yang menghubungkan formulasi masalah, penyelesai numerik, verifikasi, analisis sensitivitas numerik, dan interpretasi luaran sebagai persiapan UAS dan proyek.}
@@ -859,7 +967,7 @@ Gunakan model logistik pada Praktikum 8. Pertanyaan komputasi dapat dirangkai se
 \end{algorithm}
 
 \section{Program MATLAB}
-\lstinputlisting[language=Matlab]{../matlab/integrated_review.m}
+\lstinputlisting[language=Matlab]{matlab/integrated_review.m}
 
 \section{Latihan terpadu}
 \begin{enumerate}
@@ -867,6 +975,33 @@ Gunakan model logistik pada Praktikum 8. Pertanyaan komputasi dapat dirangkai se
 \item Pilih satu model sederhana (peluruhan, logistik, pendinginan Newton, RC circuit, atau model lain). Bangun alur kerja yang memuat minimal tiga metode numerik berbeda.
 \item Lakukan verifikasi dengan solusi analitik atau manufactured solution. Jika tidak ada, gunakan jejaring/tolerance perhalusan dan jelaskan keterbatasannya.
 \item Buat satu halaman \textit{catatan keterulangan}: versi MATLAB, nama file, parameter, seed (jika ada bilangan acak), dan langkah menjalankan program.
+\end{enumerate}
+
+\chapter*{Mock-Up UTS dari Lembar Kerja}
+\addcontentsline{toc}{chapter}{Mock-Up UTS dari Lembar Kerja}
+\noindent\textbf{Cakupan:} pencarian akar dan Sistem Persamaan Linear. Butir berikut dipertahankan sama dengan Lembar Kerja agar dapat dipakai untuk simulasi ujian.
+
+\section*{Soal Mock-Up UTS}
+\addcontentsline{toc}{section}{Soal Mock-Up UTS}
+\begin{enumerate}
+\item[\textbf{UTS.1 (L3)}] Untuk \(f(x)=x^3-x-1\), gunakan Metode Biseksi pada \([1,1.5]\) sampai \(\varepsilon_a<2\%\) atau maksimal 6 iterasi. Sajikan hasilnya dalam tabel iterasi.
+\item[\textbf{UTS.2 (L4)}] Untuk \(f(x)=e^{-x}-x\), gunakan Newton-Raphson dari \(x_0=0\). Tentukan turunannya terlebih dahulu, lakukan 5 iterasi, dan hitung \(\varepsilon_a\).
+\item[\textbf{UTS.3 (L4)}] Susun model tiga reaktor \(100c_1-20c_3=160\), \(-40c_1+60c_2=20\), \(-60c_1-60c_2+120c_3=0\) ke bentuk \(A\mathbf{c}=\mathbf{b}\), lalu tentukan solusi eksaknya.
+\item[\textbf{UTS.4 (L5)}] Gunakan Gauss-Seidel untuk model reaktor pada UTS.3 dengan tebakan awal \((0,0,0)^T\). Lakukan 3 iterasi dan hitung galat absolut terhadap solusi eksak.
+\end{enumerate}
+
+
+\chapter*{Mock-Up UAS dari Lembar Kerja}
+\addcontentsline{toc}{chapter}{Mock-Up UAS dari Lembar Kerja}
+\noindent\textbf{Cakupan:} turunan numerik, integral numerik, dan Persamaan Diferensial Biasa. Gunakan solusi analitik/eksak sebagai pembanding bila tersedia.
+
+\section*{Soal Mock-Up UAS}
+\addcontentsline{toc}{section}{Soal Mock-Up UAS}
+\begin{enumerate}
+\item[\textbf{UAS.1 (L3)}] Untuk \(f(x)=x\sqrt{x}-7x\): (a) tentukan turunan analitik \(f'(x)\); (b) hampiri \(f'(1.5)\) dengan beda pusat \(h=0.5\); (c) hitung galat relatif sebenarnya.
+\item[\textbf{UAS.2 (L4)}] Hitung \(I=\int_0^2 (x^2+1)\,dx\) dengan (a) nilai eksak, (b) Trapezoid satu panel, dan (c) Simpson \(1/3\). Bandingkan galat kedua hampiran numerik.
+\item[\textbf{UAS.3 (L4)}] Gunakan Heun untuk masalah \(\frac{dy}{dt}=2y^2(t-1)\), \(y(0)=1\) dengan \(h=0.2\) untuk memperoleh \(y_1\). Tuliskan langkah prediktor dan korektornya.
+\item[\textbf{UAS.4 (L5)}] Untuk masalah pada UAS.3, bandingkan hasil Euler, Heun, dan RK4 pada \(t=0.2\) dengan solusi eksak \(y(t)=\frac{1}{1+2t-t^2}\). Berikan simpulan mengenai hubungan biaya komputasi dan akurasi.
 \end{enumerate}
 
 \chapter*{Rubrik Analisis Umum}
@@ -922,11 +1057,7 @@ Paket kode menyertakan skrip utama dan fungsi berikut.
 \chapter*{Referensi Utama}
 \addcontentsline{toc}{chapter}{Referensi Utama}
 \begin{enumerate}
-\item Chapra, S. C. dan Canale, R. P. (2011). \textit{Numerical Methods for Engineers}. McGraw-Hill.
-\item Press, W. H., Vetterling, W. T., Teukolsky, S. A., dan Flannery, B. P. (1986). \textit{Numerical Recipes}. Cambridge University Press.
-\item Moore, H. dan Sanadhya, S. (2007). \textit{MATLAB for Engineers}. Prentice Hall.
-\item Anton, H. dan Rorres, C. (2013). \textit{Elementary Linear Algebra: Applications Version}. John Wiley \& Sons.
-\item Wiryanto, L. H. (2011). \textit{Matematika Numerik}.
+\item Chapra, S. C. dan Canale, R. P. (2015). \textit{Numerical Methods for Engineers}, 7th ed. McGraw-Hill Education.
 \end{enumerate}
 
 \end{document}
