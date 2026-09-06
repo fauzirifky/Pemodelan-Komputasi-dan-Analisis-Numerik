@@ -1,0 +1,99 @@
+name: Build LaTeX PDFs
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.pdf'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: latex-build-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compile all LaTeX roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            ghcr.io/xu-cheng/texlive-full:latest \
+            sh tools/build.sh
+
+      - name: Commit and push PDFs safely
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          stage_pdfs() {
+            while IFS= read -r -d '' pdf; do
+              git add -- "$pdf"
+            done < <(
+              find Slide Lembar_Kerja Modul_Praktikum \
+                -type f -name '*.pdf' -print0 2>/dev/null
+            )
+          }
+
+          rebuild() {
+            docker run --rm \
+              -v "$PWD:/workspace" \
+              -w /workspace \
+              ghcr.io/xu-cheng/texlive-full:latest \
+              sh tools/build.sh
+          }
+
+          stage_pdfs
+
+          if git diff --cached --quiet; then
+            echo "PDF tidak berubah. Selesai."
+            exit 0
+          fi
+
+          git commit -m "Build PDFs [skip ci]"
+          git reset --hard HEAD
+          git clean -fdX
+
+          for attempt in 1 2 3; do
+            echo "==> Push attempt $attempt/3"
+
+            git fetch origin main
+            git rebase origin/main
+
+            rebuild
+            stage_pdfs
+
+            if ! git diff --cached --quiet; then
+              git commit --amend --no-edit
+            fi
+
+            git reset --hard HEAD
+            git clean -fdX
+
+            if git push origin HEAD:main; then
+              echo "PDF berhasil dipush ke main."
+              exit 0
+            fi
+
+            sleep 3
+          done
+
+          echo "Gagal push setelah 3 percobaan." >&2
+          exit 1
