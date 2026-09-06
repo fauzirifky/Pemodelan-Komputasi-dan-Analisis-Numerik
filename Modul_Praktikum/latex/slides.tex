@@ -1,0 +1,906 @@
+\documentclass[slides,english,noindex,lean,nobackpage,nocopyright,noupdate,nosummary]{enacom}
+
+\type{Slide Praktikum}
+\title{Praktikum Pemodelan Komputasi dan Analisis Numerik}
+\subtitle{MA25-31017\\Program Studi Matematika\\Fakultas Sains}
+\author{Rifky}{Fauzi}
+\author{Dear Michiko Mutiara}{Noor}
+\support{Program Studi Matematika - Fakultas Sains - Institut Teknologi Sumatera}{itera}
+\local{Lampung Selatan}
+\date{2026}
+
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{block title}{size=\normalsize}
+\setbeamertemplate{itemize item}[circle]
+\lstset{basicstyle=\ttfamily\scriptsize,showstringspaces=false,columns=fullflexible,breaklines=true}
+
+\newcommand{\CPBox}[1]{\begin{block}{Capaian pembelajaran praktikum}#1\end{block}}
+\newcommand{\OutBox}[1]{\begin{exampleblock}{Luaran minimum}#1\end{exampleblock}}
+\newcommand{\AnalysisBox}[1]{\begin{alertblock}{Yang harus dianalisis}#1\end{alertblock}}
+\newcommand{\meth}[1]{\textbf{#1}}
+
+\makeatletter
+\renewcommand{\contentsname}{Daftar Isi}
+\renewcommand{\tocname}{Daftar Isi}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.67\paperwidth,ht=2.7ex,dp=1.1ex,leftskip=2mm]{author in head/foot}%
+    \scriptsize MA25-31017 Pemodelan Komputasi dan Analisis Numerik
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.23\paperwidth,ht=2.7ex,dp=1.1ex,center]{title in head/foot}%
+    \scriptsize Prodi Matematika
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.10\paperwidth,ht=2.7ex,dp=1.1ex,center]{date in head/foot}%
+    \scriptsize \insertframenumber/\inserttotalframenumber
+  \end{beamercolorbox}}}
+\renewcommand{\maketitle}{%
+\begingroup
+\setbeamertemplate{footline}{}
+\begin{frame}
+\vspace{4mm}
+\begin{columns}[T]
+\column{0.18\textwidth}\includegraphics[width=2.0cm]{itera}
+\column{0.78\textwidth}{\large\bfseries Program Studi Matematika}\\[-1mm]{\normalsize Fakultas Sains}\\{\normalsize Institut Teknologi Sumatera}
+\end{columns}
+\vspace{2mm}
+{\color{enacom@color@gray}\rule{\textwidth}{1.2pt}}\\[-1mm]
+{\color{enacom@color@blue}\rule{0.68\textwidth}{0.8pt}}
+\vfill
+{\LARGE\bfseries Praktikum Pemodelan Komputasi dan Analisis Numerik}\par
+\vspace{3mm}
+{\Large MA25-31017}\par
+\vspace{7mm}
+{\normalsize Rifky Fauzi \\ Dear Michiko Mutiara Noor}\par
+\vfill
+{\color{enacom@color@blue}\rule{0.68\textwidth}{0.8pt}}\\[-1mm]
+{\color{enacom@color@gray}\rule{\textwidth}{1.2pt}}
+\end{frame}
+\endgroup}
+\makeatother
+
+
+\begin{document}
+
+\begin{frame}{MATLAB Online dan Struktur Kode}
+\begin{block}{Akses MATLAB}
+Gunakan MATLAB desktop atau MATLAB Online: \url{https://matlab.mathworks.com}. Unggah folder kode, buka skrip utama, lalu tekan \texttt{Run}.
+\end{block}
+\begin{block}{Keterulangan komputasi}
+Pisahkan skrip utama dan fungsi. Skrip utama memuat data, parameter, tabel, dan plot. Fungsi memuat algoritma numerik yang dapat dipakai ulang.
+\end{block}
+\begin{exampleblock}{Struktur folder}
+\texttt{main\_praktikum.m}, \texttt{nama\_fungsi.m}, folder \texttt{hasil/}, dan catatan cara menjalankan ulang.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Perintah MATLAB Dasar}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{lstlisting}[language=Matlab]
+clear; clc; close all
+format long
+whos
+x = linspace(0,1,11);
+A = zeros(3,3);
+B = eye(3);
+f = @(x) exp(x) + x;
+y = f(x);
+save('hasil.mat','x','y')
+load('hasil.mat')
+\end{lstlisting}
+\column{0.48\textwidth}
+\begin{itemize}
+\item \texttt{clear}: hapus variabel.
+\item \texttt{clc}: bersihkan layar.
+\item \texttt{close all}: tutup gambar.
+\item \texttt{linspace}: buat grid.
+\item \texttt{zeros}, \texttt{ones}, \texttt{eye}: matriks dasar.
+\item \texttt{save}, \texttt{load}: simpan dan panggil data.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Plotting Dasar}
+\begin{lstlisting}[language=Matlab]
+x = linspace(0, 2*pi, 200);
+y1 = sin(x); y2 = cos(x);
+plot(x, y1, 'LineWidth', 1.5); hold on
+plot(x, y2, '--', 'LineWidth', 1.5); grid on
+xlabel('x'); ylabel('nilai fungsi')
+title('Contoh plot sin dan cos')
+legend('sin(x)', 'cos(x)', 'Location', 'best')
+
+semilogy(iter, err, 'o-'); grid on
+xlabel('Iterasi'); ylabel('Galat')
+
+loglog(hs, errs, 's-'); grid on
+xlabel('h'); ylabel('Galat')
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}{Arah Praktikum}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\begin{block}{Fondasi analisis numerik}
+\begin{itemize}
+\item Galat, residual, kriteria berhenti
+\item Konvergensi dan kegagalan metode
+\item Ukuran langkah, orde akurasi, stabilitas
+\end{itemize}
+\end{block}
+\begin{block}{Implementasi}
+\begin{itemize}
+\item MATLAB modular: skrip utama + fungsi
+\item Riwayat iterasi dan visualisasi
+\item Hindari invers eksplisit bila penyelesai numerik linear tersedia
+\end{itemize}
+\end{block}
+\column{0.49\textwidth}
+\begin{block}{Pemodelan komputasi}
+\begin{itemize}
+\item Hubungkan bentuk masalah dengan penyelesai numerik
+\item Interpretasi parameter dan hasil
+\item Verifikasi, validasi, dan sensitivitas numerik
+\end{itemize}
+\end{block}
+\begin{block}{Bedah jurnal}
+\begin{itemize}
+\item Temukan metode yang dipakai artikel
+\item Reproduksi satu hasil komputasi
+\item Jelaskan perbedaan hasil dan sumber galat
+\end{itemize}
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Peta 10 Praktikum}
+\scriptsize
+\begin{tabularx}{\textwidth}{c c p{0.18\textwidth} X}
+\hline
+\textbf{Praktik} & \textbf{Minggu} & \textbf{Indikator} & \textbf{Fokus}\\\hline
+1&M2&6.1.1--6.1.3&Akar nonlinear: Biseksi, Regula Falsi, Titik Tetap, Newton, Sekan\\
+2&M3&6.1.4&SPL: Jacobi, Gauss-Seidel, residual, konvergensi\\
+3&M4&6.1.5&SPNL dan kuadrat terkecil nonlinear / pencocokan kurva\\
+4&M5&6.1.6&Beda maju, mundur, pusat dan orde akurasi\\
+5&M6&6.1.7&Ukuran langkah, galat pemotongan, Richardson, reproduksi\\
+6&M7&6.1.8&Trapezoid, Simpson, pembanding Titik Tengah\\
+7&M9&6.1.9&Titik Tengah, Romberg dan studi akurasi\\
+8&M10&6.1.10&Euler untuk masalah nilai awal\\
+9&M11&6.1.11&RK4, stabilitas dan ukuran langkah\\
+10&M12&6.1/7.1&Praktikum terpadu dan verifikasi \& validasi\\\hline
+\end{tabularx}
+\end{frame}
+
+\begin{frame}{Standar Luaran Setiap Praktikum}
+\begin{enumerate}
+\item \meth{Formulasi}: tulis persamaan, data, parameter, domain, dan target komputasi.
+\item \meth{Algoritma}: tulis langkah metode sebelum menulis kode.
+\item \meth{Implementasi}: skrip utama skrip dan fungsi penyelesai numerik dipisahkan.
+\item \meth{Evidence}: tabel iterasi, residual/galat, grafik, waktu/iterasi bila relevan.
+\item \meth{Verifikasi}: bandingkan dengan solusi analitik, residual, penyelesai numerik pembanding, atau perhalusan.
+\item \meth{Interpretasi}: jangan berhenti pada ``MATLAB menghasilkan angka''. Jelaskan arti hasil dan keterbatasan.
+\end{enumerate}
+\vfill
+\AnalysisBox{Setiap laporan minimal menjawab: apakah hasil benar secara numerik, seberapa akurat, kapan metode dapat gagal, dan apakah kesimpulan berubah ketika parameter numerik diubah?}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 1: Akar Persamaan Nonlinear}
+
+\begin{frame}{Praktikum 1: CP dan Alur Kerja}
+\CPBox{Menerapkan dan membandingkan Biseksi, Regula Falsi, Titik Tetap, Newton-Raphson, dan Sekan serta menjelaskan kriteria berhenti dan karakteristik konvergensinya.}
+\OutBox{Satu program pembanding lima metode, tabel history iterasi, plot galat/residual, dan penjelasan kondisi sukses/gagal.}
+\begin{center}
+\fbox{Kurva / interval} $\rightarrow$ \fbox{pilih metode} $\rightarrow$ \fbox{iterasi} $\rightarrow$ \fbox{cek galat + residual} $\rightarrow$ \fbox{interpretasi}
+\end{center}
+\end{frame}
+
+\begin{frame}{Teori: Pengurungan vs Metode Terbuka}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Pengurungan}
+Jika $f$ kontinu dan $f(a)f(b)<0$, terdapat setidaknya satu akar pada $[a,b]$.
+\begin{itemize}
+\item Biseksi: tahan gangguan, lambat tetapi terjamin.
+\item Regula Falsi: memakai interpolasi garis secant pada ujung interval.
+\end{itemize}
+\[
+x_r=\frac{a+b}{2}.
+\]
+Regula Falsi:
+\[
+x_r=b-f(b)\frac{a-b}{f(a)-f(b)}.
+\]
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Metode terbuka}
+Tidak mempertahankan interval pengurung.
+\[
+x_{k+1}=x_k-\frac{f(x_k)}{f'(x_k)}\quad\text{(Newton)}
+\]
+Sekan, dengan $f_k=f(x_k)$:
+\[
+x_{k+1}=x_k-\frac{f_k(x_k-x_{k-1})}{f_k-f_{k-1}}.
+\]
+Titik Tetap-point: $x_{k+1}=g(x_k)$, lokal konvergen bila $|g'(x^*)|<1$.
+\end{block}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Algoritma dan Kriteria Berhenti}
+\begin{block}{Pola iterasi umum}
+\begin{enumerate}
+\item Tetapkan input awal, toleransi $\tau$, dan $N_{\max}$.
+\item Hitung aproksimasi baru $x_{k+1}$ sesuai metode.
+\item Hitung galat perubahan dan residual:
+\[
+e_k=\frac{|x_{k+1}-x_k|}{\max(1,|x_{k+1}|)},\qquad r_k=|f(x_{k+1})|.
+\]
+\item Hentikan jika $r_k\le\tau$ atau $e_k\le\tau$; tetap gunakan $N_{\max}$ sebagai pengaman.
+\end{enumerate}
+\end{block}
+\AnalysisBox{Galat aproksimasi kecil belum selalu berarti $f(x)$ dekat nol. Karena itu simpan \emph{galat} dan \emph{residual}.}
+\end{frame}
+
+\begin{frame}{MATLAB: Pembanding Metode Akar}
+\begin{lstlisting}[language=Matlab]
+f  = @(x) exp(x) + x;
+df = @(x) exp(x) + 1;
+g  = @(x) -exp(x);
+tol = 1e-8; maxit = 100;
+
+[xb,hb] = bisection_fun(f,-1,0,tol,maxit);
+[xf,hf] = regula_falsi_fun(f,-1,0,tol,maxit);
+[xn,hn] = newton_fun(f,df,0,tol,maxit);
+[xs,hs] = secant_fun(f,-1,0,tol,maxit);
+[xg,hg] = titik tetappoint_fun(g,-0.5,tol,maxit);
+
+semilogy(hb.iter,hb.err,'o-'); hold on
+semilogy(hf.iter,hf.err,'s-');
+semilogy(hn.iter,hn.err,'^-');
+semilogy(hs.iter,hs.err,'d-');
+grid on
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 1}
+Untuk $f(x)=e^x+x$, akar referensi adalah $x^*\approx-0.5671432904$.
+\begin{block}{Observasi yang dicari}
+\begin{itemize}
+\item Metode mana paling sedikit iterasi untuk toleransi yang sama?
+\item Apakah hasil berubah jika titik awal Newton dipindahkan?
+\item Apakah semua bentuk $x=g(x)$ untuk Titik Tetap konvergen?
+\end{itemize}
+\end{block}
+\begin{exampleblock}{Latihan}
+Uji $f(x)=x^3-2x-5$ dan $f(x)=\cos x-x$. Buat tabel metode, tebakan/interval awal, akar, iterasi, residual akhir, dan status konvergensi.
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 2: Sistem Persamaan Linear Iteratif}
+
+\begin{frame}{Praktikum 2: CP dan Luaran}
+\CPBox{Menyelesaikan $A\mathbf{x}=\mathbf{b}$ dengan Jacobi dan Gauss-Seidel serta mengevaluasi residual dan konvergensi.}
+\OutBox{Fungsi untuk matriks berukuran umum, history residual, perbandingan iterasi, dan pemeriksaan syarat konvergensi.}
+\begin{block}{Pertanyaan kunci}
+Mengapa dua program dapat menghasilkan vektor yang hampir tidak berubah, tetapi salah satunya belum memenuhi SPL dengan baik?
+\end{block}
+\end{frame}
+
+\begin{frame}{Teori: Jacobi, Gauss-Seidel, dan Residual}
+Pisahkan $A=D+L+U$.
+\begin{block}{Jacobi}
+\[
+\mathbf{x}^{(k+1)}=D^{-1}\bigl(\mathbf{b}-(L+U)\mathbf{x}^{(k)}\bigr).
+\]
+Semua komponen baru memakai nilai iterasi lama.
+\end{block}
+\begin{block}{Gauss-Seidel}
+\[
+(D+L)\mathbf{x}^{(k+1)}=\mathbf{b}-U\mathbf{x}^{(k)}.
+\]
+Komponen baru langsung dipakai untuk baris berikutnya.
+\end{block}
+Residual: $\mathbf{r}^{(k)}=A\mathbf{x}^{(k)}-\mathbf{b}$. Konvergensi iterasi linear dijamin jika radius spektral matriks iterasi memenuhi $\rho(B)<1$.
+\end{frame}
+
+\begin{frame}{Algoritma dan Diagnosis Konvergensi}
+\begin{columns}[T]
+\column{0.55\textwidth}
+\begin{enumerate}
+\item Pilih $\mathbf{x}^{(0)}$, $\tau$, $N_{\max}$.
+\item Update $x_i$ per baris.
+\item Hitung
+\[
+e_k=\frac{\|x^{(k+1)}-x^{(k)}\|_\infty}{\max(1,\|x^{(k+1)}\|_\infty)}.
+\]
+\item Hitung $\|A x-b\|_\infty$.
+\item Hentikan jika keduanya kecil.
+\end{enumerate}
+\column{0.41\textwidth}
+\begin{block}{Syarat praktis}
+Diagonal dominan ketat sering cukup untuk menjamin konvergensi.
+\end{block}
+\begin{alertblock}{Waspada}
+Urutan persamaan, scaling, dan kondisi matriks dapat mengubah perilaku iterasi.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+\begin{frame}{MATLAB: Jacobi dan Gauss-Seidel}
+\begin{lstlisting}[language=Matlab]
+A=[3 -0.1 -0.2; 0.1 7 -0.3; 0.3 -0.2 10];
+b=[7.85; -19.3; 71.4];
+x0=zeros(size(b)); tol=1e-10;
+
+[xj,hj]=jacobi_iter(A,b,x0,tol,200);
+[xg,hg]=gauss_seidel_iter(A,b,x0,tol,200);
+
+fprintf('Residual J  = %.3e\n',norm(A*xj-b,inf));
+fprintf('Residual GS = %.3e\n',norm(A*xg-b,inf));
+semilogy(hj.iter,hj.residual,'o-'); hold on
+semilogy(hg.iter,hg.residual,'s-'); grid on
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 2}
+Untuk contoh pada slide sebelumnya, solusi referensi adalah
+\[
+\mathbf{x}=[3,-2.5,7]^T.
+\]
+\begin{exampleblock}{Latihan}
+Selesaikan
+\[
+\begin{aligned}
+10x_1+2x_2-x_3&=27,\\
+-3x_1-6x_2+2x_3&=-61.5,\\
+x_1+x_2+5x_3&=-21.5.
+\end{aligned}
+\]
+Kemudian tukar urutan dua persamaan dan bandingkan kurva residual.
+\end{exampleblock}
+\AnalysisBox{Laporkan jumlah iterasi, residual akhir, dan hubungan perilaku iterasi dengan diagonal dominance atau $\rho(B)$.}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 3: Sistem Nonlinear dan Pencocokan Kurva}
+
+\begin{frame}{Praktikum 3: CP dan Luaran}
+\CPBox{Menerapkan penyelesai numerik sistem nonlinear dan kuadrat terkecil nonlinear/pencocokan kurva sebagai jembatan menuju pemodelan komputasi.}
+\OutBox{Newton multivariabel, Gauss-Newton teredam, grafik data-model, history residual/SSE, dan interpretasi parameter.}
+\end{frame}
+
+\begin{frame}{Teori: Newton Multivariabel dan Kuadrat Terkecil}
+Untuk $\mathbf{F}(\mathbf{x})=\mathbf{0}$:
+\[
+J_F(\mathbf{x}^{(k)})\Delta\mathbf{x}^{(k)}=-\mathbf{F}(\mathbf{x}^{(k)}),\qquad
+\mathbf{x}^{(k+1)}=\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}.
+\]
+\begin{block}{Pencocokan Kurva fitting}
+Dengan $r_i=y_i-f(x_i;\mathbf{p})$, minimalkan
+\[
+S(\mathbf{p})=\frac12\|\mathbf{r}(\mathbf{p})\|_2^2.
+\]
+Gauss-Newton memakai linearisasi residual dan menyelesaikan normal equation / kuadrat terkecil untuk update parameter.
+\end{block}
+\begin{alertblock}{Prinsip implementasi}
+Gunakan \texttt{delta = -J\textbackslash F}; jangan membentuk \texttt{inv(J)} tanpa alasan numerik yang kuat.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Algoritma Gauss-Newton Teredam}
+\begin{enumerate}
+\item Hitung residual $r=y-f(p)$ dan Jacobian $J$.
+\item Bentuk $A=J^T J$, $g=J^T r$.
+\item Hitung langkah teredam
+\[
+(A+\lambda I)\Delta p=g.
+\]
+\item Uji kandidat $p+\alpha\Delta p$; kecilkan $\alpha$ jika SSE tidak turun.
+\item Update parameter dan cek $\|\Delta p\|$ serta SSE.
+\end{enumerate}
+\AnalysisBox{Nilai parameter tidak cukup. Tunjukkan bahwa residual/SSE turun dan grafik model konsisten dengan data.}
+\end{frame}
+
+\begin{frame}{MATLAB: SPNL dan Pencocokan Kurva}
+\begin{lstlisting}[language=Matlab]
+F=@(z)[z(1)^2+z(2)^2-4; exp(z(1))+z(2)-1];
+J=@(z)[2*z(1),2*z(2); exp(z(1)),1];
+[z,h]=newton_system(F,J,[1;-1],1e-10,50);
+
+x=[.25;.75;1.25;1.75;2.25];
+y=[.28;.57;.68;.74;.79];
+model=@(p,x) p(1).*x./(p(2)+x);
+Jm=@(p,x)[x./(p(2)+x), ...
+ -p(1).*x./(p(2)+x).^2];
+[p,hp]=gauss_newton_damped(model,Jm,x,y,[1;.5],1e-10,100);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 3}
+Contoh menghasilkan salah satu solusi SPNL sekitar $(1.00417,-1.72964)$ dan model saturasi
+\[
+y=\frac{a x}{b+x},\qquad a\approx1.00573,\quad b\approx0.60766.
+\]
+\begin{exampleblock}{Latihan}
+\begin{itemize}
+\item Ubah tebakan awal SPNL dan petakan basin konvergensi secara sederhana.
+\item Bandingkan hasil fit nonlinear langsung dengan model hasil linearisasi/transformasi.
+\item Gunakan satu dataset terapan kecil dan jelaskan arti parameter model.
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 4: Turunan Numerik dengan Beda Hingga}
+
+\begin{frame}{Praktikum 4: CP dan Luaran}
+\CPBox{Menerapkan beda maju, beda mundur, dan beda pusat serta menjelaskan orde akurasi turunan numerik.}
+\OutBox{Fungsi \texttt{numdiff}, tabel galat terhadap $h$, dan plot log-log untuk mengamati orde konvergensi.}
+\end{frame}
+
+\begin{frame}{Teori: Dari Taylor ke Beda Hingga}
+Ekspansi Taylor menghasilkan:
+\[
+f'(x)\approx\frac{f(x+h)-f(x)}{h}\quad O(h),
+\]
+\[
+f'(x)\approx\frac{f(x)-f(x-h)}{h}\quad O(h),
+\]
+\[
+f'(x)\approx\frac{f(x+h)-f(x-h)}{2h}\quad O(h^2).
+\]
+\begin{block}{Makna orde}
+Jika galat pemotongan dominan dan $h$ dibagi dua, metode orde $p$ idealnya menurunkan galat kira-kira $2^p$ kali.
+\end{block}
+\end{frame}
+
+\begin{frame}{Ukuran Langkah: Tidak Selalu Semakin Kecil Semakin Baik}
+Total galat merupakan kompromi:
+\[
+E_{total}(h)\approx E_{trunc}(h)+E_{round}(h).
+\]
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Jika $h$ terlalu besar}
+Ekspansi Taylor dipotong terlalu kasar: galat pemotongan besar.
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Jika $h$ terlalu kecil}
+Pengurangan dua bilangan hampir sama memicu cancellation dan round-off.
+\end{block}
+\end{columns}
+\vfill
+\AnalysisBox{Cari daerah asymptotic convergence pada plot log-log, bukan sekadar memilih $h$ terkecil.}
+\end{frame}
+
+\begin{frame}{MATLAB: Fungsi Beda Hingga}
+\begin{lstlisting}[language=Matlab]
+function d=numdiff(f,x0,method,h)
+if nargin<4 || isempty(h)
+    h=eps^(1/3)*max(1,abs(x0));
+end
+switch lower(method)
+    case 'beda maju'
+        d=(f(x0+h)-f(x0))/h;
+    case 'beda mundur'
+        d=(f(x0)-f(x0-h))/h;
+    case 'beda pusat'
+        d=(f(x0+h)-f(x0-h))/(2*h);
+end
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 4}
+Untuk
+\[
+f(x)=\frac{e^x}{\sin(\sqrt{x})},\qquad x_0=1.2,
+\]
+turunan eksak sekitar $2.8568377824$.
+\begin{exampleblock}{Latihan}
+Gunakan $h=0.2/2^k$, $k=0,\ldots,7$. Hitung galat ketiga formula dan estimasi slope grafik $\log E$ terhadap $\log h$. Apakah slope mendekati 1, 1, dan 2?
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 5: Ukuran Langkah, Galat Pemotongan, dan Richardson}
+
+\begin{frame}{Praktikum 5: CP dan Luaran}
+\CPBox{Menganalisis pengaruh ukuran langkah dan galat pemotongan pada turunan numerik serta menggunakan ekstrapolasi Richardson.}
+\OutBox{Tabel perhalusan, estimasi orde, Richardson extrapolation, dan satu reproduksi hasil turunan numerik dari artikel/model terapan.}
+\end{frame}
+
+\begin{frame}{Teori: Ekstrapolasi Richardson}
+Jika sebuah aproksimasi memenuhi
+\[
+D(h)=D^*+C h^p+O(h^{p+1}),
+\]
+maka dua grid dapat dikombinasikan:
+\[
+D_R= D(h/2)+\frac{D(h/2)-D(h)}{2^p-1}.
+\]
+Untuk beda pusat, $p=2$ sehingga
+\[
+D_R=D(h/2)+\frac{D(h/2)-D(h)}{3}.
+\]
+\begin{block}{Ide penting}
+Kita tidak ``menambah formula baru''; kita mengeliminasi suku galat dominan menggunakan informasi dari dua resolusi.
+\end{block}
+\end{frame}
+
+\begin{frame}{Algoritma Refinement Study}
+\begin{enumerate}
+\item Pilih $h_0$ dan bangun $h_k=h_0/2^k$.
+\item Hitung $D(h_k)$ dan, jika solusi eksak tersedia, $E_k$.
+\item Estimasi observed order:
+\[
+p_{obs}\approx\frac{\log(E_k/E_{k+1})}{\log 2}.
+\]
+\item Terapkan Richardson pada pasangan $h$ dan $h/2$.
+\item Identifikasi region galat pemotongan-dominated dan round-off-dominated.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{MATLAB: Richardson untuk Beda Pusat}
+\begin{lstlisting}[language=Matlab]
+hs=0.4./2.^(0:8);
+for k=1:numel(hs)
+    h=hs(k);
+    D1=numdiff(f,x0,'beda pusat',h);
+    D2=numdiff(f,x0,'beda pusat',h/2);
+    DR=D2+(D2-D1)/(2^2-1);
+    T(k,:)=[h,D1,D2,DR,abs(DR-dexact)];
+end
+loglog(hs,T(:,5),'o-'); grid on
+xlabel('h'); ylabel('galat Richardson');
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Bedah Jurnal: Apa yang Harus Direproduksi?}
+\begin{block}{Minimal dari satu artikel/model}
+\begin{itemize}
+\item Persamaan/fungsi yang diturunkan secara numerik.
+\item Jenis formula beda hingga dan ukuran langkah yang dipakai.
+\item Satu tabel/kurva hasil yang dapat direproduksi.
+\item Perbandingan hasil Anda dengan artikel.
+\item Penjelasan penyebab selisih: grid, boundary treatment, parameter, pembulatan, atau implementasi.
+\end{itemize}
+\end{block}
+\AnalysisBox{Reproduksi bukan copy kode. Tujuannya menguji apakah metode dan hasil artikel dapat dipahami serta dijalankan kembali.}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 6: Integral Numerik Dasar}
+
+\begin{frame}{Praktikum 6: CP dan Luaran}
+\CPBox{Menerapkan aturan Trapezoid dan Simpson serta mengevaluasi galat integrasi numerik.}
+\OutBox{Implementasi komposit, studi perhalusan, dan perbandingan Trapezoid, Simpson, serta Titik Tengah sebagai pembanding.}
+\end{frame}
+
+\begin{frame}{Teori: Newton-Cotes dan Orde Galat}
+Untuk $h=(b-a)/n$:
+\[
+I_T=h\left[\frac12f_0+\sum_{i=1}^{n-1}f_i+\frac12f_n\right],\qquad O(h^2).
+\]
+Titik Tengah:
+\[
+I_M=h\sum_{i=1}^{n}f\left(a+\left(i-\tfrac12\right)h\right),\qquad O(h^2).
+\]
+Simpson 1/3, $n$ genap:
+\[
+I_S=\frac h3\left[f_0+f_n+4\sum_{i\;ganjil}f_i+2\sum_{i\;genap}f_i\right],\qquad O(h^4).
+\]
+\end{frame}
+
+\begin{frame}{Algoritma Komposit dan Refinement}
+\begin{enumerate}
+\item Bagi $[a,b]$ menjadi $n$ subinterval dengan ukuran $h$.
+\item Evaluasi fungsi pada titik yang diperlukan.
+\item Terapkan bobot quadrature.
+\item Ulangi untuk $n,2n,4n,\ldots$.
+\item Bandingkan galat atau perubahan aproksimasi.
+\end{enumerate}
+\begin{alertblock}{Aturan implementasi}
+Simpson 1/3 memerlukan $n$ genap. Jangan membiarkan program menerima input yang melanggar asumsi metode tanpa pesan kesalahan.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{MATLAB: Perbandingan Tiga Aturan}
+\begin{lstlisting}[language=Matlab]
+f=@(x) sin(x); a=0; b=pi; Iexact=2;
+ns=[4 8 16 32 64];
+for k=1:numel(ns)
+    n=ns(k);
+    It=trap_comp(f,a,b,n);
+    Im=midpoint_comp(f,a,b,n);
+    Is=simpson_comp(f,a,b,n);
+    T(k,:)=[n,It,abs(It-Iexact), ...
+              Im,abs(Im-Iexact), ...
+              Is,abs(Is-Iexact)];
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 6}
+\begin{exampleblock}{Kasus utama}
+Hitung $\int_0^\pi\sin x\,dx=2$ untuk $n=4,8,16,32,64$. Buat grafik galat terhadap $h$ dalam skala log-log.
+\end{exampleblock}
+\begin{exampleblock}{Latihan data tabular}
+Untuk data $(x,f(x))$: $(0,1),(0.1,8),(0.2,4),(0.3,3.5),(0.4,5),(0.5,1)$, evaluasi integral dengan aturan yang sesuai. Jelaskan keterbatasan ketika titik tidak tersedia sesuai kebutuhan metode.
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 7: Titik Tengah dan Romberg}
+
+\begin{frame}{Praktikum 7: CP dan Luaran}
+\CPBox{Menerapkan Titik Tengah dan Romberg serta membandingkan akurasinya dengan metode integrasi lain.}
+\OutBox{Tabel Romberg, studi akurasi, dan reproduksi satu hasil integral numerik dari artikel/model.}
+\end{frame}
+
+\begin{frame}{Teori: Romberg sebagai Ekstrapolasi}
+Romberg memulai dari deret trapezoid yang diperhalus:
+\[
+R_{j,1}=T_{2^{j-1}}.
+\]
+Kemudian
+\[
+R_{j,k}=R_{j,k-1}+\frac{R_{j,k-1}-R_{j-1,k-1}}{4^{k-1}-1}.
+\]
+\begin{block}{Interpretasi}
+Kolom berikutnya menghilangkan suku galat dominan secara bertahap. Struktur ini serupa dengan Richardson extrapolation pada turunan numerik.
+\end{block}
+\end{frame}
+
+\begin{frame}{Algoritma Tabel Romberg}
+\begin{enumerate}
+\item Untuk $j=1,\ldots,m$, hitung trapezoid dengan $n=2^{j-1}$.
+\item Simpan pada kolom pertama $R(j,1)$.
+\item Untuk $k=2,\ldots,j$, gunakan rekursi Romberg.
+\item Aproksimasi terbaik pada level $m$ adalah $R(m,m)$.
+\item Periksa perubahan diagonal $|R(j,j)-R(j-1,j-1)|$ sebagai indikator konvergensi.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{MATLAB: Romberg}
+\begin{lstlisting}[language=Matlab]
+function [R,I]=romberg_fun(f,a,b,m)
+R=nan(m,m);
+for j=1:m
+    n=2^(j-1);
+    R(j,1)=trap_comp(f,a,b,n);
+    for k=2:j
+        R(j,k)=R(j,k-1)+ ...
+          (R(j,k-1)-R(j-1,k-1))/(4^(k-1)-1);
+    end
+end
+I=R(m,m);
+end
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh, Akurasi, dan Bedah Jurnal}
+Gunakan
+\[
+I=\int_0^2 \frac{e^x\sin x}{1+x^2}\,dx\approx1.9401300220.
+\]
+\begin{exampleblock}{Analisis}
+Bandingkan Trapezoid, Titik Tengah, Simpson, dan Romberg berdasarkan jumlah evaluasi fungsi serta galat.
+\end{exampleblock}
+\begin{exampleblock}{Bedah jurnal}
+Ambil satu artikel yang memakai quadrature. Reproduksi satu integral/kuantitas hasil integrasi dan jelaskan aturan integrasi serta resolusi yang digunakan.
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 8: Masalah Nilai Awal - Euler dan Runge-Kutta}
+
+\begin{frame}{Praktikum 8: CP dan Luaran}
+\CPBox{Menerapkan metode Euler untuk masalah nilai awal dan mengevaluasi galat lokal/global; mengenalkan RK4 sebagai pembanding berorde lebih tinggi.}
+\OutBox{Penyelesai numerik Euler dan RK4, kurva solusi, tabel galat terhadap $h$, serta interpretasi galat lokal/global.}
+\end{frame}
+
+\begin{frame}{Teori: Dari ODE ke Langkah Diskrit}
+Masalah nilai awal:
+\[
+y'=f(t,y),\qquad y(t_0)=y_0.
+\]
+Euler menggunakan kemiringan di awal langkah:
+\[
+y_{n+1}=y_n+h f(t_n,y_n).
+\]
+\begin{block}{Galat}
+Galat pemotongan lokal Euler berorde $O(h^2)$ per langkah, sedangkan galat global pada interval tetap berorde $O(h)$.
+\end{block}
+RK4 menggabungkan empat estimasi slope dan menghasilkan galat global $O(h^4)$ untuk masalah cukup smooth.
+\end{frame}
+
+\begin{frame}{RK4: Empat Slope dalam Satu Langkah}
+\[
+\begin{aligned}
+k_1&=f(t_n,y_n),\\
+k_2&=f(t_n+h/2,y_n+hk_1/2),\\
+k_3&=f(t_n+h/2,y_n+hk_2/2),\\
+k_4&=f(t_n+h,y_n+hk_3),\\
+y_{n+1}&=y_n+\frac h6(k_1+2k_2+2k_3+k_4).
+\end{aligned}
+\]
+\AnalysisBox{Orde tinggi bukan izin memakai $h$ sembarangan. Lakukan ukuran langkah perhalusan untuk penyelesai numerik mana pun.}
+\end{frame}
+
+\begin{frame}{MATLAB: Model Logistik}
+\begin{lstlisting}[language=Matlab]
+K=100; r=0.4; y0=10;
+f=@(t,y) r*y*(1-y/K);
+[tE,yE]=euler_ivp(f,[0 10],y0,0.5);
+[tR,yR]=rk4_ivp(f,[0 10],y0,0.5);
+
+yexact=@(t) K./(1+(K/y0-1).*exp(-r*t));
+errE=max(abs(yE-yexact(tE)));
+errR=max(abs(yR-yexact(tR)));
+plot(tE,yexact(tE),'-',tE,yE,'o--',tR,yR,'s--');
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Contoh dan Latihan Praktikum 8}
+Model logistik:
+\[
+y'=0.4y\left(1-\frac{y}{100}\right),\qquad y(0)=10.
+\]
+Pada $t=10$, solusi analitik sekitar $85.8486$.
+\begin{exampleblock}{Latihan}
+Gunakan $h=1,0.5,0.25,0.125$. Untuk Euler dan RK4, hitung max galat, estimasi observed order, dan jumlah evaluasi ruas kanan ODE. Bandingkan efisiensi akurasi.
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 9: Stabilitas, Ukuran Langkah, dan Reproduksi Model ODE}
+
+\begin{frame}{Praktikum 9: CP dan Luaran}
+\CPBox{Menerapkan Runge-Kutta serta menganalisis akurasi, stabilitas, dan pengaruh ukuran langkah pada solusi ODE.}
+\OutBox{Stabilitas experiment, perhalusan Euler/RK4, dan reproduksi satu kurva ODE dari artikel/model terapan.}
+\end{frame}
+
+\begin{frame}{Teori Stabilitas: Persamaan Uji}
+Gunakan masalah uji
+\[
+y'=\lambda y,\qquad \Re(\lambda)<0.
+\]
+Euler memberi
+\[
+y_{n+1}=(1+h\lambda)y_n.
+\]
+Agar mode diskrit tidak tumbuh:
+\[
+|1+h\lambda|<1.
+\]
+Untuk $\lambda<0$ real, syaratnya $0<h<2/|\lambda|$.
+\begin{alertblock}{Makna}
+Metode dapat konsisten dan program bebas bug, tetapi tetap memberi solusi numerik yang salah karena ukuran langkah berada di luar daerah stabilitas.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Akurasi vs Stabilitas}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Akurasi}
+Menjawab: seberapa dekat solusi numerik dengan solusi kontinu?
+\begin{itemize}
+\item orde metode
+\item perhalusan
+\item galat lokal/global
+\end{itemize}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Stabilitas}
+Menjawab: apakah galat/perturbasi numerik diredam atau justru tumbuh?
+\begin{itemize}
+\item stabilitas function
+\item eigenvalue / stiffness
+\item batas ukuran langkah
+\end{itemize}
+\end{block}
+\end{columns}
+\vfill
+\AnalysisBox{Solusi yang ``halus'' secara visual belum otomatis akurat atau stabil. Gunakan metrik dan perhalusan.}
+\end{frame}
+
+\begin{frame}{MATLAB: Eksperimen Stabilitas}
+\begin{lstlisting}[language=Matlab]
+lambda=-15; f=@(t,y) lambda*y; y0=1;
+hs=[0.2 0.1 0.05 0.025];
+for k=1:numel(hs)
+    h=hs(k);
+    [tE,yE]=euler_ivp(f,[0 1],y0,h);
+    [tR,yR]=rk4_ivp(f,[0 1],y0,h);
+    exact=exp(lambda*tE);
+    T(k,:)=[h, max(abs(yE-exact)), ...
+                 max(abs(yR-exact))];
+end
+% Euler stabil jika |1+h*lambda| < 1
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Bedah Jurnal ODE}
+\begin{block}{Reproduksi satu kurva model}
+\begin{enumerate}
+\item Identifikasi ODE, parameter, kondisi awal, dan interval simulasi.
+\item Identifikasi penyelesai numerik, ukuran langkah/toleransi, dan luaran pada artikel.
+\item Jalankan model dengan konfigurasi yang sama/sepadan.
+\item Lakukan satu perhalusan.
+\item Bandingkan bentuk kurva, nilai penting, dan perbedaan.
+\end{enumerate}
+\end{block}
+\begin{exampleblock}{Tambahan}
+Bandingkan RK4 manual dengan \texttt{ode45} sebagai pembanding. Jangan mengganti analisis numerik hanya dengan memanggil penyelesai numerik bawaan.
+\end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Praktikum 10: Praktikum Terpadu dan Verifikasi \& Validasi}
+
+\begin{frame}{Praktikum 10: CP dan Luaran}
+\CPBox{Memilih metode numerik yang sesuai, mengintegrasikan beberapa metode dalam satu alur kerja, mengevaluasi keakuratan/keterbatasan, dan mendokumentasikan komputasi secara ilmiah.}
+\OutBox{Mini-pipeline yang memuat formulasi, penyelesai numerik, verifikasi, sensitivitas numerik, interpretasi, dan keterulangan note.}
+\end{frame}
+
+\begin{frame}{Alur kerja Komputasi yang Dapat Dipertanggungjawabkan}
+\begin{enumerate}
+\item \meth{Formulasi}: variabel, parameter, persamaan, kondisi awal/batas.
+\item \meth{Pemilihan metode}: cocokkan struktur masalah dengan algoritma.
+\item \meth{Implementasi}: fungsi modular + history + parameter numerik eksplisit.
+\item \meth{Verifikasi}: analitik, residual, manufactured/test problem, atau perhalusan.
+\item \meth{Validasi}: bila data tersedia, bandingkan model dengan data/fenomena.
+\item \meth{Sensitivitas numerik}: ubah $h$, toleransi, tebakan awal, penyelesai numerik.
+\item \meth{Pelaporan}: tabel, grafik, kode, konfigurasi, interpretasi, keterbatasan.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Contoh Terpadu: Satu Model, Banyak Pertanyaan}
+Untuk model logistik $y'=ry(1-y/K)$:
+\begin{itemize}
+\item \meth{Akar}: kapan $y(t)=80$? Gunakan Biseksi pada $q(t)=y(t)-80$; referensi $t\approx8.9588$.
+\item \meth{ODE}: bangun kurva dengan RK4 dan bandingkan dengan solusi analitik.
+\item \meth{Turunan}: hitung laju perubahan pada $t=5$ dengan beda pusat sebagai pemeriksaan silang.
+\item \meth{Integral}: hitung $\int_0^{10}y(t)\,dt$ dengan Simpson; referensi sekitar $462.50$.
+\item \meth{Sensitivitas}: bagi dua $h$ dan perketat toleransi akar.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{MATLAB: Pipeline Terintegrasi}
+\begin{lstlisting}[language=Matlab]
+K=100; r=0.4; y0=10;
+yexact=@(t) K./(1+(K/y0-1).*exp(-r*t));
+
+[t80,hroot]=bisection_fun(@(t)yexact(t)-80,0,20,1e-10,100);
+[t,y]=rk4_ivp(@(t,y)r*y*(1-y/K),[0 10],y0,0.25);
+dy5=numdiff(yexact,5,'beda pusat',1e-3);
+I=simpson_comp(yexact,0,10,100);
+err=max(abs(y-yexact(t)));
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Rubrik Analisis Akhir}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{0.19\textwidth} X}
+\hline
+\textbf{Aspek} & \textbf{Pertanyaan}\\\hline
+Formulasi & Apa persamaan, data, asumsi, dan target komputasi?\\
+Metode & Mengapa metode sesuai? Apa syarat dan risiko kegagalan?\\
+Konvergensi & Apa kriteria berhenti? Bagaimana residual/galat berubah?\\
+Akurasi & Apa pembanding? Apa observed order / dampak ukuran langkah?\\
+Ketahanan & Apa yang terjadi jika tebakan, toleransi, atau ukuran langkah diubah?\\
+Interpretasi & Apa arti angka/kurva dalam konteks masalah?\\
+Keterulangan & Dapatkah orang lain menjalankan kode dan memperoleh hasil serupa?\\\hline
+\end{tabularx}
+\vfill
+\begin{center}\Large Dari \textbf{menghitung} menuju \textbf{menganalisis hasil komputasi}.\end{center}
+\end{frame}
+
+\end{document}

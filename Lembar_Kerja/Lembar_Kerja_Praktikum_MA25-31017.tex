@@ -1,0 +1,202 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[a4paper,margin=1.2cm,top=1.25cm,bottom=1.35cm]{geometry}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,array}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{needspace}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setlength{\columnsep}{0.70cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+
+\definecolor{iteraBlue}{HTML}{0B4F6C}
+\definecolor{iteraCyan}{HTML}{2A9D8F}
+\definecolor{iteraOrange}{HTML}{F26B21}
+\definecolor{softBlue}{HTML}{EDF6FA}
+\definecolor{softOrange}{HTML}{FFF3EA}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\scriptsize MA25-31017 Pemodelan Komputasi dan Analisis Numerik}
+\fancyhead[R]{\scriptsize Program Studi Matematika ITERA}
+\fancyfoot[C]{\scriptsize \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{infobox}[1][]{colback=softBlue,colframe=iteraCyan,boxrule=.55pt,arc=1.4mm,left=1.5mm,right=1.5mm,top=1mm,bottom=1mm,#1}
+\newtcolorbox{chapterbox}[1][]{colback=iteraBlue,colframe=iteraBlue,boxrule=0pt,arc=1.3mm,left=1.8mm,right=1.8mm,top=1mm,bottom=1mm,#1}
+
+\newcommand{\leveltag}[1]{%
+\ifcase#1\or
+\colorbox{softBlue}{\textcolor{iteraBlue}{\scriptsize L1}}\or
+\colorbox{softBlue}{\textcolor{iteraBlue}{\scriptsize L2}}\or
+\colorbox{softOrange}{\textcolor{iteraOrange}{\scriptsize L3}}\or
+\colorbox{softOrange}{\textcolor{iteraOrange}{\scriptsize L4}}\or
+\colorbox{iteraOrange!14}{\textcolor{iteraOrange}{\scriptsize L5}}\fi}
+
+\newcommand{\question}[3]{%
+\Needspace{8\baselineskip}
+\begin{tcolorbox}[colback=white,colframe=iteraBlue!55,boxrule=.45pt,arc=1.1mm,left=1.4mm,right=1.4mm,top=1mm,bottom=1mm,before skip=4pt,after skip=4pt]
+\textbf{#1}\hfill\leveltag{#2}\par
+#3
+\end{tcolorbox}}
+
+\begin{document}
+
+\noindent
+\begin{minipage}[t]{0.14\textwidth}
+\vspace{0pt}
+\includegraphics[width=2.1cm]{itera_logo.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.83\textwidth}
+\vspace{0pt}
+{\LARGE\bfseries\color{iteraBlue} LEMBAR KERJA DAN BANK SOAL PRAKTIKUM}\par
+\vspace{1mm}
+{\large\bfseries MA25-31017 Pemodelan Komputasi dan Analisis Numerik}\par
+Program Studi Matematika, Fakultas Sains, Institut Teknologi Sumatera\par
+Semester Ganjil 2026/2027\par
+Dosen Pengampu: Rifky Fauzi; Dear Michiko Mutiara Noor
+\end{minipage}
+
+\vspace{2mm}
+\begin{infobox}
+\textbf{Tujuan.} Dokumen ini menjadi bank soal utama untuk pre-test praktikum, latihan praktikum, dan bahan mock-up UTS serta UAS.
+Setiap bab berisi 5 soal berjenjang dari sederhana sampai menantang.
+\end{infobox}
+
+\begin{tabularx}{\textwidth}{X X}
+\textbf{Nama:} \hrulefill & \textbf{NIM:} \hrulefill\\[1mm]
+\textbf{Kelas:} RA / RB & \textbf{Tanggal:} \hrulefill
+\end{tabularx}
+
+\vspace{1mm}
+{\scriptsize
+\textbf{Kode level:} L1 = pengenalan dasar; L2 = prosedural singkat; L3 = standar praktikum; L4 = analisis multi-langkah; L5 = integratif / setara latihan ujian.
+Untuk pre-test singkat, asisten disarankan memilih soal L1--L3.
+}
+
+\vspace{2mm}
+\begin{multicols}{2}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 0. Dasar Metode Numerik, Galat, dan Toleransi}\\
+{\color{white!88}\scriptsize Solusi numerik adalah hampiran; karena itu galat, toleransi, dan kriteria berhenti adalah bagian dari metode.}
+\end{chapterbox}
+
+\question{B0.1}{1}{Jelaskan apa yang dimaksud dengan \textit{metode numerik}. Apa perbedaan utama antara solusi eksak/analitik dan solusi numerik?}
+\question{B0.2}{2}{Nilai sebenarnya adalah \(x^\ast=\sqrt{3}\) dan hampiran yang diperoleh \(x_a=1.73\). Hitung galat absolut \(E_t=\left|x^\ast-x_a\right|\) dan galat relatif sebenarnya \(\varepsilon_t=\left|\frac{x^\ast-x_a}{x^\ast}\right|100\%\).}
+\question{B0.3}{3}{Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung \(\varepsilon_a=\left|\frac{x_i-x_{i-1}}{x_i}\right|100\%\) untuk setiap dua iterasi berurutan.}
+\question{B0.4}{4}{Jelaskan mengapa dua hampiran dapat mempunyai galat absolut yang sama tetapi kualitasnya berbeda. Gunakan contoh numerik sederhana dan kaitkan dengan galat relatif.}
+\question{B0.5}{5}{Jelaskan peran \textit{round-off error}, \textit{truncation error}, toleransi, dan jumlah iterasi maksimum dalam sebuah algoritma numerik.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 1. Pencarian Akar Persamaan}\\
+{\color{white!88}\scriptsize Grafik, Biseksi, Regula Falsi, dan Newton-Raphson. Pada Newton, mahasiswa wajib menentukan turunan fungsi.}
+\end{chapterbox}
+
+\question{B1.1}{1}{Untuk \(f(x)=x^3-x-1\), buat tabel nilai \(f(x)\) untuk \(x=0.5,1,1.25,1.5,2\). Berdasarkan tabel itu, tentukan interval yang masuk akal sebagai \textit{bracket} akar.}
+\question{B1.2}{2}{Gunakan Metode Biseksi untuk \(f(x)=x^3-x-1\) dengan interval awal \([1,1.5]\). Lakukan 4 iterasi. Untuk setiap iterasi tuliskan \(a,b,x_r,f(a),f(x_r)\), interval baru, dan \(\varepsilon_a\).}
+\question{B1.3}{3}{Gunakan Metode Regula Falsi untuk \(f(x)=x^3-x-1\) dengan \(a=1\) dan \(b=1.5\). Lakukan 5 iterasi menggunakan \(x_r=b-\frac{f(b)(b-a)}{f(b)-f(a)}\).}
+\question{B1.4}{4}{Gunakan Metode Newton-Raphson untuk \(f(x)=x^3-x-1\). (a) Tentukan turunannya \(f'(x)\). (b) Mulai dari \(x_0=1.5\), lakukan 4 iterasi Newton. (c) Hitung \(\varepsilon_a\) pada setiap iterasi.}
+\question{B1.5}{5}{Gunakan Metode Newton-Raphson untuk fungsi kedua \(f(x)=e^{-x}-x\). (a) Tentukan turunannya \(f'(x)\). (b) Gunakan \(x_0=0\) dan lakukan 5 iterasi. (c) Bandingkan karakter konvergensinya secara singkat dengan soal B1.4.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 2. Metode Terbuka Lain untuk Pencarian Akar}\\
+{\color{white!88}\scriptsize Titik tetap dan Secant; evaluasi syarat konvergensi lokal.}
+\end{chapterbox}
+
+\question{B2.1}{1}{Untuk persamaan \(e^{-x}-x=0\), ubah ke bentuk titik tetap \(x=g(x)\) dengan memilih \(g(x)=e^{-x}\). Mulai dari \(x_0=0\), hitung 5 iterasi pertama.}
+\question{B2.2}{2}{Untuk soal B2.1, hitung \(g'(x)=-e^{-x}\). Jika akar berada di sekitar \(x^\ast\approx0.567\), hitung \(|g'(x^\ast)|\). Apakah syarat lokal \(|g'(x^\ast)|<1\) terpenuhi?}
+\question{B2.3}{3}{Gunakan Metode Secant untuk \(f(x)=e^{-x}-x\) dengan \(x_0=0\) dan \(x_1=1\). Lakukan 5 pembaruan akar dan hitung \(\varepsilon_a\).}
+\question{B2.4}{4}{Persamaan \(\cos x-x=0\) sering dipakai sebagai contoh titik tetap. Tuliskan dua kemungkinan bentuk \(x=g(x)\), lalu diskusikan mana yang lebih berpotensi konvergen di sekitar akar berdasarkan nilai \(|g'(x)|\).}
+\question{B2.5}{5}{Bandingkan Biseksi, Regula Falsi, Newton-Raphson, Titik Tetap, dan Secant dari segi: kebutuhan tebakan awal, kebutuhan turunan, kecepatan konvergensi, dan risiko divergensi.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 3. Sistem Persamaan Linear (SPL)}\\
+{\color{white!88}\scriptsize Formulasi \(A\mathbf{x}=\mathbf{b}\), solusi eksak/analitik, solusi iteratif, dan evaluasi galat.}
+\end{chapterbox}
+
+\question{B3.1}{1}{Tuliskan sistem berikut ke bentuk \(A\mathbf{x}=\mathbf{b}\): \(\ 10x_1-x_2+2x_3=6,\ -x_1+11x_2-x_3=25,\ 2x_1-x_2+10x_3=-11.\)}
+\question{B3.2}{2}{Tentukan solusi eksak/analitik dari SPL pada B3.1 dengan salah satu cara: eliminasi Gauss, invers matriks, atau aturan Cramer. Tuliskan hasilnya dalam bentuk \((x_1,x_2,x_3)\).}
+\question{B3.3}{3}{Gunakan metode Jacobi untuk SPL pada B3.1 dengan tebakan awal \((0,0,0)^T\). Lakukan 3 iterasi dan hitung \(\varepsilon_a\) setiap komponen pada iterasi terakhir.}
+\question{B3.4}{4}{Gunakan metode Gauss-Seidel untuk SPL pada B3.1 dengan tebakan awal yang sama. Lakukan 3 iterasi. Bandingkan hampiran iteratif Anda dengan solusi eksak pada B3.2 dan hitung galat absolut tiap komponen.}
+\question{B3.5}{5}{Tiga reaktor tercampur sempurna mempunyai konsentrasi tak diketahui \(c_1,c_2,c_3\). Dari neraca massa tunak diperoleh: \(100c_1-20c_3=160\), \(-40c_1+60c_2=20\), dan \(-60c_1-60c_2+120c_3=0\). (a) Jelaskan mengapa model ini membentuk SPL. (b) Susun bentuk \(A\mathbf{c}=\mathbf{b}\). (c) Tentukan solusi eksaknya.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 4. Sistem Persamaan Nonlinear dan Pencocokan Kurva}\\
+{\color{white!88}\scriptsize SPNL sebagai \(F(\mathbf{x})=\mathbf{0}\); pencocokan kurva sebagai estimasi parameter dengan residual.}
+\end{chapterbox}
+
+\question{B4.1}{1}{Tuliskan sistem \(x^2+y^2-5=0,\ x-y-1=0\) dalam bentuk vektor \(F(x,y)=\mathbf{0}\).}
+\question{B4.2}{2}{Untuk sistem pada B4.1, tentukan matriks Jacobian \(J(x,y)\).}
+\question{B4.3}{3}{Dengan tebakan awal \((x_0,y_0)=(1.5,0.5)\), lakukan satu langkah Newton untuk SPNL: \(J(\mathbf{x}_k)\Delta \mathbf{x}=-F(\mathbf{x}_k)\), \(\mathbf{x}_{k+1}=\mathbf{x}_k+\Delta \mathbf{x}\).}
+\question{B4.4}{4}{Diberikan data \((1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)\). Carilah model regresi linear \(y=a+bx\) dengan metode \textit{least squares}.}
+\question{B4.5}{5}{Untuk model nonlinear \(y\approx ae^{bx}\), jelaskan mengapa pencarian parameter terbaik dapat dipandang sebagai masalah numerik dengan meminimalkan jumlah kuadrat residual. Tuliskan fungsi objektifnya dan kondisi optimalitasnya.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 5. Turunan Numerik}\\
+{\color{white!88}\scriptsize Mahasiswa menentukan turunan analitik, menghitung hampiran turunan numerik, lalu mengevaluasi galatnya.}
+\end{chapterbox}
+
+\question{B5.1}{1}{Untuk \(f(x)=x\sqrt{x}-7x\), tentukan turunan analitik \(f'(x)\).}
+\question{B5.2}{2}{Gunakan beda maju, beda mundur, dan beda pusat dengan \(h=0.5\) untuk menghampiri \(f'(1.5)\) pada fungsi B5.1.}
+\question{B5.3}{3}{Hitung nilai eksak \(f'(1.5)\) dari hasil soal B5.1, kemudian tentukan galat absolut dan galat relatif sebenarnya untuk ketiga hampiran pada B5.2.}
+\question{B5.4}{4}{Untuk fungsi \(f(x)=\ln x\), tentukan turunan analitik \(f'(x)\), lalu hampiri \(f'(2)\) dengan beda pusat menggunakan \(h=0.25\). Evaluasi galat relatif sebenarnya.}
+\question{B5.5}{5}{Jelaskan mengapa pemilihan \(h\) yang terlalu besar maupun terlalu kecil dapat menghasilkan kesalahan besar pada turunan numerik. Kaitkan dengan \textit{truncation error} dan \textit{round-off error}.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 6. Integral Numerik}\\
+{\color{white!88}\scriptsize Mahasiswa membandingkan hasil integral numerik dengan integral eksak jika memungkinkan.}
+\end{chapterbox}
+
+\question{B6.1}{1}{Hitung nilai eksak \(I=\int_0^2 (x^2+1)\,dx\).}
+\question{B6.2}{2}{Gunakan aturan Trapezoid satu panel untuk menghampiri integral pada B6.1. Hitung galat absolut dan galat relatif sebenarnya.}
+\question{B6.3}{3}{Gunakan Simpson \(1/3\) satu segmen untuk menghampiri integral pada B6.1. Bandingkan hasilnya dengan Trapezoid.}
+\question{B6.4}{4}{Diberikan tabel \(x: 0,0.5,1,1.5,2\) dan \(f(x): 101,-2,54,147,-10\). Hitung hampiran integral \(\int_0^2 f(x)\,dx\) dengan Composite Trapezoid dan Composite Simpson \(1/3\).}
+\question{B6.5}{5}{Jelaskan kapan hasil integral numerik dapat dievaluasi dengan galat sebenarnya, dan kapan hanya galat hampiran atau perbandingan antarmetode yang dapat dipakai. Berikan masing-masing satu contoh singkat.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Bab 7. Persamaan Diferensial Biasa}\\
+{\color{white!88}\scriptsize Mahasiswa menentukan solusi eksak bila memungkinkan, menghitung solusi numerik, lalu mengevaluasi galat.}
+\end{chapterbox}
+
+\question{B7.1}{1}{Diberikan masalah nilai awal \(\frac{dy}{dt}=2y^2(t-1)\), \(y(0)=1\). Gunakan metode Euler dengan \(h=0.2\) untuk menghitung \(y_1\).}
+\question{B7.2}{2}{Untuk masalah pada B7.1, gunakan metode Heun dengan \(h=0.2\) untuk menghitung \(y_1\).}
+\question{B7.3}{3}{Gunakan RK4 klasik dengan \(h=0.2\) untuk menghitung \(y_1\) pada masalah yang sama. Tuliskan \(k_1,k_2,k_3,k_4\).}
+\question{B7.4}{4}{Diketahui solusi eksak masalah pada B7.1 adalah \(y(t)=\frac{1}{1+2t-t^2}\). Hitung nilai eksak \(y(0.2)\), lalu evaluasi galat absolut ketiga metode pada B7.1--B7.3.}
+\question{B7.5}{5}{Bandingkan Euler, Heun, dan RK4 dari aspek biaya komputasi per langkah, akurasi, dan kecocokan untuk masalah dengan dinamika halus.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Mock-Up UTS}\\
+{\color{white!88}\scriptsize Fokus: pencarian akar dan SPL, sesuai peta materi sebelum UTS.}
+\end{chapterbox}
+
+\question{UTS.1}{3}{Untuk \(f(x)=x^3-x-1\), gunakan Metode Biseksi pada \([1,1.5]\) sampai \(\varepsilon_a<2\%\) atau maksimal 6 iterasi. Sajikan hasilnya dalam tabel iterasi.}
+\question{UTS.2}{4}{Untuk \(f(x)=e^{-x}-x\), gunakan Newton-Raphson dari \(x_0=0\). Tentukan turunannya terlebih dahulu, lakukan 5 iterasi, dan hitung \(\varepsilon_a\).}
+\question{UTS.3}{4}{Susun model tiga reaktor \(100c_1-20c_3=160\), \(-40c_1+60c_2=20\), \(-60c_1-60c_2+120c_3=0\) ke bentuk \(A\mathbf{c}=\mathbf{b}\), lalu tentukan solusi eksaknya.}
+\question{UTS.4}{5}{Gunakan Gauss-Seidel untuk model reaktor pada UTS.3 dengan tebakan awal \((0,0,0)^T\). Lakukan 3 iterasi dan hitung galat absolut terhadap solusi eksak.}
+
+\begin{chapterbox}
+{\color{white}\bfseries Mock-Up UAS}\\
+{\color{white!88}\scriptsize Fokus: turunan numerik, integral numerik, dan persamaan diferensial biasa.}
+\end{chapterbox}
+
+\question{UAS.1}{3}{Untuk \(f(x)=x\sqrt{x}-7x\): (a) tentukan turunan analitik \(f'(x)\); (b) hampiri \(f'(1.5)\) dengan beda pusat \(h=0.5\); (c) hitung galat relatif sebenarnya.}
+\question{UAS.2}{4}{Hitung \(I=\int_0^2 (x^2+1)\,dx\) dengan (a) nilai eksak, (b) Trapezoid satu panel, dan (c) Simpson \(1/3\). Bandingkan galat kedua hampiran numerik.}
+\question{UAS.3}{4}{Gunakan Heun untuk masalah \(\frac{dy}{dt}=2y^2(t-1)\), \(y(0)=1\) dengan \(h=0.2\) untuk memperoleh \(y_1\). Tuliskan langkah prediktor dan korektornya.}
+\question{UAS.4}{5}{Untuk masalah pada UAS.3, bandingkan hasil Euler, Heun, dan RK4 pada \(t=0.2\) dengan solusi eksak \(y(t)=\frac{1}{1+2t-t^2}\). Berikan simpulan mengenai hubungan biaya komputasi dan akurasi.}
+
+\end{multicols}
+
+\section*{Sumber}
+{\scriptsize Dokumen ini disusun dengan rujukan utama: Steven C. Chapra dan Raymond P. Canale, \textit{Numerical Methods for Engineers}, edisi ke-7.}
+
+\end{document}

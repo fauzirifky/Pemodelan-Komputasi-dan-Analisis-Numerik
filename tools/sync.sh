@@ -20,7 +20,8 @@ if [ -d "$GITDIR/rebase-merge" ] || \
   exit 1
 fi
 
-for f in $(git ls-files '*.pdf' 2>/dev/null || true); do
+git ls-files '*.pdf' 2>/dev/null | while IFS= read -r f; do
+  [ -n "$f" ] || continue
   git restore --source=HEAD --staged --worktree -- "$f" >/dev/null 2>&1 || true
 done
 

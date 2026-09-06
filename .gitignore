@@ -16,3 +16,11 @@ __MACOSX/
 *.xdv
 *.bcf
 *.run.xml
+*.upa
+*.upb
+*.idx
+*.ilg
+*.ind
+*.bak
+*.bak1
+*.bak2
