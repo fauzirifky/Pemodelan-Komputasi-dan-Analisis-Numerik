@@ -1,0 +1,217 @@
+\chapter{Praktikum 1: Akar Persamaan Nonlinear}
+
+\CP{Mahasiswa mampu menerapkan Biseksi dan Regula Falsi sebagai metode pengurungan, memahami Titik Tetap, Newton-Raphson, dan Secant, serta mengevaluasi konvergensi menggunakan residual dan galat iterasi.}
+
+\Target{Kode contoh kelas untuk Biseksi dan Regula Falsi, tabel iterasi, dan grafik konvergensi. Latihan utama dikerjakan dengan Biseksi, Newton-Raphson, dan Secant.}
+
+\section{Masalah pencarian akar}
+
+Tujuan pencarian akar adalah mencari $x$ sehingga
+
+\begin{equation}
+f(x)=0.
+\end{equation}
+
+Sebelum menghitung, gambar grafik untuk melihat posisi perubahan tanda dan memilih interval atau tebakan awal yang masuk akal.
+
+Urutan metode dalam praktikum ini adalah:
+
+\begin{enumerate}
+\item Biseksi,
+\item Regula Falsi,
+\item Titik Tetap,
+\item Newton-Raphson,
+\item Secant.
+\end{enumerate}
+
+\section{Biseksi}
+
+Jika $f$ kontinu pada $[a,b]$ dan
+
+\begin{equation}
+f(a)f(b)<0,
+\end{equation}
+
+maka sedikitnya satu akar berada di dalam interval.
+
+Biseksi mengambil titik tengah
+
+\begin{equation}
+x_r=\frac{a+b}{2}.
+\end{equation}
+
+Kemudian interval diperbarui:
+
+\begin{equation}
+\begin{cases}
+b\leftarrow x_r, & f(a)f(x_r)<0,\\
+a\leftarrow x_r, & f(a)f(x_r)>0.
+\end{cases}
+\end{equation}
+
+Galat iterasi yang dipakai:
+
+\begin{equation}
+e_a=
+\frac{|x_{r,\mathrm{new}}-x_{r,\mathrm{old}}|}
+{\max(1,|x_{r,\mathrm{new}}|)}.
+\end{equation}
+
+\subsection*{Langkah algoritma}
+
+\begin{enumerate}
+\item Pilih $a,b$ sehingga $f(a)f(b)<0$.
+\item Hitung $x_r=(a+b)/2$.
+\item Hitung $f(x_r)$ dan $e_a$.
+\item Pilih interval baru berdasarkan tanda $f(a)f(x_r)$.
+\item Ulangi sampai toleransi atau iterasi maksimum.
+\end{enumerate}
+
+\section{Regula Falsi}
+
+Regula Falsi tetap memakai interval yang mengurung akar, tetapi kandidat akar tidak lagi menggunakan titik tengah.
+Bangun garis yang melalui $(a,f(a))$ dan $(b,f(b))$.
+Titik potong garis tersebut dengan sumbu-$x$ adalah
+
+\begin{equation}
+x_r
+=
+b-\frac{f(b)(b-a)}{f(b)-f(a)}
+=
+\frac{a f(b)-b f(a)}{f(b)-f(a)}.
+\end{equation}
+
+Setelah $x_r$ diperoleh, aturan pemilihan interval \textbf{sama dengan Biseksi}:
+
+\begin{equation}
+\begin{cases}
+b\leftarrow x_r, & f(a)f(x_r)<0,\\
+a\leftarrow x_r, & f(a)f(x_r)>0.
+\end{cases}
+\end{equation}
+
+Jadi perbedaan inti kedua metode hanya terletak pada cara menghitung $x_r$.
+
+\section{Titik Tetap}
+
+Persamaan $f(x)=0$ diubah menjadi
+
+\begin{equation}
+x=g(x),
+\end{equation}
+
+kemudian dilakukan iterasi
+
+\begin{equation}
+x_{k+1}=g(x_k).
+\end{equation}
+
+Contoh:
+
+\begin{equation}
+e^{-x}-x=0
+\qquad\Longrightarrow\qquad
+x=e^{-x}.
+\end{equation}
+
+Syarat lokal sederhana untuk kecenderungan konvergen adalah
+
+\begin{equation}
+|g'(x^\ast)|<1.
+\end{equation}
+
+\section{Newton-Raphson}
+
+Newton-Raphson menggunakan garis singgung pada titik $(x_k,f(x_k))$:
+
+\begin{equation}
+x_{k+1}
+=
+x_k-\frac{f(x_k)}{f'(x_k)}.
+\end{equation}
+
+Turunan harus ditentukan terlebih dahulu.
+
+Contoh, untuk
+
+\begin{equation}
+f(x)=e^{-x}-x,
+\end{equation}
+
+diperoleh
+
+\begin{equation}
+f'(x)=-e^{-x}-1.
+\end{equation}
+
+\section{Secant}
+
+Secant tidak memerlukan turunan analitik:
+
+\begin{equation}
+x_{k+1}
+=
+x_k-
+f(x_k)
+\frac{x_k-x_{k-1}}
+{f(x_k)-f(x_{k-1})}.
+\end{equation}
+
+\section{Contoh kelas: Biseksi dan Regula Falsi}
+
+Gunakan fungsi yang sama:
+
+\begin{equation}
+f(x)=x^3-x-1,
+\qquad [a,b]=[1,1.5].
+\end{equation}
+
+Karena $f(1)=-1$ dan $f(1.5)=0.875$, interval mengurung akar.
+
+Untuk Biseksi,
+
+\begin{equation}
+x_r=\frac{1+1.5}{2}=1.25.
+\end{equation}
+
+Untuk Regula Falsi,
+
+\begin{equation}
+x_r
+=
+1.5-\frac{0.875(1.5-1)}{0.875-(-1)}
+\approx1.266667.
+\end{equation}
+
+Setelah nilai $x_r$ diperoleh, bagian kode yang memilih interval baru adalah identik.
+
+\section{Program MATLAB yang dibahas di kelas}
+
+Kode kelas hanya membandingkan Biseksi dan Regula Falsi.
+
+\texttt{akar\_demo.m}
+
+\lstinputlisting[language=Matlab]{matlab/akar_demo.m}
+
+\section{Latihan / tugas utama}
+
+\begin{enumerate}
+\item \textbf{Biseksi.} Selesaikan $x^3-4x-9=0$. Tentukan interval sendiri, tampilkan tabel iterasi, simpan \texttt{errs}, dan gambar grafik konvergensi.
+\item \textbf{Newton-Raphson.} Untuk $f(x)=e^{-x}-x$, tentukan $f'(x)$, gunakan sedikitnya dua tebakan awal, simpan \texttt{errs}, dan gambar grafik konvergensi.
+\item \textbf{Secant.} Gunakan fungsi yang sama dengan Newton-Raphson, pilih dua tebakan awal, simpan \texttt{errs}, lalu bandingkan jumlah iterasi dan pola grafiknya dengan Newton-Raphson.
+\end{enumerate}
+
+\section{Latihan terintegrasi dari Lembar Kerja}
+
+\begin{enumerate}
+\item[\textbf{B1.1 (L1)}] Untuk \(f(x)=x^3-x-1\), buat tabel nilai \(f(x)\) untuk \(x=0.5,1,1.25,1.5,2\) dan tentukan interval yang masuk akal sebagai \textit{bracket}.
+\item[\textbf{B1.2 (L2)}] Gunakan Biseksi untuk \(f(x)=x^3-x-1\) pada \([1,1.5]\). Lakukan 4 iterasi dan tuliskan tabel iterasinya.
+\item[\textbf{B1.3 (L3)}] Gunakan Regula Falsi untuk fungsi yang sama dengan \(a=1\), \(b=1.5\). Lakukan 5 iterasi.
+\item[\textbf{B1.4 (L4)}] Gunakan Newton-Raphson untuk \(f(x)=x^3-x-1\). Tentukan turunannya terlebih dahulu.
+\item[\textbf{B1.5 (L5)}] Gunakan Newton-Raphson untuk \(f(x)=e^{-x}-x\). Tentukan turunannya, lakukan 5 iterasi, dan bandingkan konvergensinya dengan B1.4.
+\item[\textbf{B2.1 (L1)}] Untuk \(e^{-x}-x=0\), gunakan \(g(x)=e^{-x}\) dan hitung 5 iterasi titik tetap dari \(x_0=0\).
+\item[\textbf{B2.2 (L2)}] Evaluasi \(|g'(x^\ast)|\) di sekitar \(x^\ast\approx0.567\).
+\item[\textbf{B2.3 (L3)}] Gunakan Secant untuk \(f(x)=e^{-x}-x\) dengan \(x_0=0\), \(x_1=1\), dan lakukan 5 pembaruan.
+\item[\textbf{B2.4 (L4)}] Untuk \(\cos x-x=0\), tuliskan dua kemungkinan bentuk titik tetap dan diskusikan kecenderungan konvergensinya.
+\item[\textbf{B2.5 (L5)}] Bandingkan Biseksi, Regula Falsi, Titik Tetap, Newton-Raphson, dan Secant dari kebutuhan tebakan awal, turunan, kecepatan, dan risiko divergensi.
+\end{enumerate}

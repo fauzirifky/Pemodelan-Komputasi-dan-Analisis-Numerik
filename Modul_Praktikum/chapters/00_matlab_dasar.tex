@@ -1,0 +1,182 @@
+\chapter{MATLAB Dasar}
+
+\CP{Mahasiswa mampu menggunakan MATLAB untuk membuat variabel, percabangan, pengulangan, fungsi, dan grafik sederhana serta memahami ukuran galat sebelum menerapkannya pada algoritma numerik.}
+
+\Target{Satu skrip MATLAB dasar yang memuat variabel, \texttt{if--else}, \texttt{for}/\texttt{while}, pemanggilan fungsi, tabel hasil, dan grafik sederhana.}
+
+\section{Variabel dan operasi dasar}
+
+MATLAB dapat digunakan sebagai kalkulator numerik sekaligus bahasa pemrograman.
+Contoh paling dasar:
+
+\begin{lstlisting}[language=Matlab]
+clear; clc; close all
+
+a = 1;
+b = 1.5;
+tol = 1e-6;
+maxit = 100;
+
+x = 0:0.1:2;
+y = x.^3 - x - 1;
+\end{lstlisting}
+
+Untuk operasi elemen-per-elemen pada vektor gunakan
+\texttt{.*}, \texttt{./}, dan \texttt{.\^}.
+
+\section{Percabangan \texttt{if--else}}
+
+Percabangan digunakan ketika program harus mengambil keputusan.
+
+\begin{lstlisting}[language=Matlab]
+f = @(x) x.^3 - x - 1;
+
+if f(a)*f(b) < 0
+    disp('Interval mengurung akar')
+else
+    disp('Belum ada perubahan tanda')
+end
+\end{lstlisting}
+
+\section{Pengulangan}
+
+\subsection*{\texttt{for}}
+
+Gunakan \texttt{for} ketika jumlah pengulangan sudah diketahui.
+
+\begin{lstlisting}[language=Matlab]
+for k = 1:5
+    fprintf('Iterasi ke-%d\n',k)
+end
+\end{lstlisting}
+
+\subsection*{\texttt{while}}
+
+Gunakan \texttt{while} ketika pengulangan bergantung pada suatu kondisi.
+
+\begin{lstlisting}[language=Matlab]
+err = 1;
+k = 0;
+
+while err > 1e-6 && k < 100
+    k = k + 1;
+    err = err/2;
+end
+\end{lstlisting}
+
+\section{Membuat fungsi}
+
+Fungsi dibuat agar algoritma dapat dipakai kembali.
+
+\begin{lstlisting}[language=Matlab]
+% File: nilaiF.m
+function y = nilaiF(x)
+    y = x.^3 - x - 1;
+end
+\end{lstlisting}
+
+Kemudian dapat dipanggil dengan
+
+\begin{lstlisting}[language=Matlab]
+fx = nilaiF(1.25);
+\end{lstlisting}
+
+\section{Menggambar grafik sederhana}
+
+Grafik berguna untuk melihat bentuk fungsi sebelum melakukan perhitungan numerik.
+
+\begin{lstlisting}[language=Matlab]
+x = linspace(0.5,1.7,300);
+y = x.^3 - x - 1;
+
+plot(x,y,'LineWidth',1.5)
+yline(0,'--')
+grid on
+xlabel('x')
+ylabel('f(x)')
+title('Grafik f(x) = x^3 - x - 1')
+\end{lstlisting}
+
+Untuk grafik konvergensi, gunakan \texttt{semilogy} jika galat turun beberapa orde besaran.
+
+\begin{lstlisting}[language=Matlab]
+errs = [1e-1 4e-2 1.2e-2 3e-3 8e-4];
+semilogy(1:numel(errs),errs,'o-')
+grid on
+xlabel('Iterasi')
+ylabel('Galat')
+title('Grafik konvergensi')
+\end{lstlisting}
+
+\section{Galat: definisi sebelum latihan}
+
+Metode numerik menghasilkan hampiran. Karena itu ukuran galat harus didefinisikan sebelum digunakan.
+
+Jika nilai sebenarnya $x^\ast$ diketahui, galat absolut adalah
+
+\begin{equation}
+E_t = |x^\ast-x_a|.
+\end{equation}
+
+Galat relatif sebenarnya adalah
+
+\begin{equation}
+\varepsilon_t =
+\frac{|x^\ast-x_a|}{|x^\ast|},
+\qquad x^\ast\neq0.
+\end{equation}
+
+Pada proses iterasi, nilai sebenarnya biasanya belum diketahui.
+Gunakan perubahan relatif berskala
+
+\begin{equation}
+e_a^{(k)}
+=
+\frac{|x_{\mathrm{new}}-x_{\mathrm{old}}|}
+{\max\left(1,|x_{\mathrm{new}}|\right)}.
+\end{equation}
+
+Bentuk ini tetap terdefinisi ketika $x_{\mathrm{new}}=0$ atau sangat dekat nol.
+Jika ingin dinyatakan sebagai persen, gunakan $100e_a^{(k)}\%$.
+
+Untuk vektor,
+
+\begin{equation}
+e_a^{(k)}
+=
+\max_i
+\frac{|x_{i,\mathrm{new}}-x_{i,\mathrm{old}}|}
+{\max\left(1,|x_{i,\mathrm{new}}|\right)}.
+\end{equation}
+
+Implementasi MATLAB:
+
+\begin{lstlisting}[language=Matlab]
+function e = relerr(xnew,xold)
+    e = abs(xnew-xold)./max(1,abs(xnew));
+end
+\end{lstlisting}
+
+\section{Latihan MATLAB Dasar}
+
+\begin{enumerate}
+\item Buat variabel \texttt{a}, \texttt{b}, \texttt{tol}, dan \texttt{maxit}, lalu tampilkan dengan \texttt{fprintf}.
+\item Buat vektor $x=0:0.1:2$ dan hitung $f(x)=x^3-x-1$.
+\item Gunakan \texttt{if--else} untuk memeriksa apakah $f(a)f(b)<0$.
+\item Gunakan \texttt{for} untuk menghitung kuadrat bilangan 1 sampai 10.
+\item Gunakan \texttt{while} yang berhenti jika galat lebih kecil dari $10^{-6}$.
+\item Buat fungsi untuk $f(x)=x^3-x-1$.
+\item Buat fungsi \texttt{relerr.m} berdasarkan formula perubahan relatif berskala di atas.
+\item Gambar grafik $f(x)=x^3-x-1$ dan tambahkan garis $y=0$.
+\item Buat grafik \texttt{semilogy} untuk suatu vektor \texttt{errs}.
+\end{enumerate}
+
+\section{Latihan fondasi dari Lembar Kerja}
+
+\begin{enumerate}
+\item[\textbf{B0.1 (L1)}] Jelaskan apa yang dimaksud dengan \textit{metode numerik}. Apa perbedaan utama antara solusi eksak/analitik dan solusi numerik?
+\item[\textbf{B0.2 (L2)}] Nilai sebenarnya adalah \(x^\ast=\sqrt{3}\) dan hampiran yang diperoleh \(x_a=1.73\). Hitung galat absolut dan galat relatif sebenarnya.
+\item[\textbf{B0.3 (L3)}] Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung perubahan relatif antariternasi dan bandingkan formula biasa dengan formula berskala yang menggunakan \(\max(1,|x_{\mathrm{new}}|)\).
+\item[\textbf{B0.4 (L4)}] Jelaskan mengapa dua hampiran dapat mempunyai galat absolut yang sama tetapi kualitasnya berbeda. Kaitkan dengan galat relatif.
+\item[\textbf{B0.5 (L5)}] Jelaskan peran \textit{round-off error}, \textit{truncation error}, toleransi, dan jumlah iterasi maksimum dalam algoritma numerik.
+\end{enumerate}

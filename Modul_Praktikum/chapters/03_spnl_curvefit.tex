@@ -1,0 +1,213 @@
+\chapter{Praktikum 3: SPNL dan Pencocokan Kurva}
+
+\CP{Mahasiswa mampu menyelesaikan Sistem Persamaan Nonlinear dengan Newton multivariabel dan melakukan pencocokan kurva linear serta nonlinear, kemudian mengevaluasi kualitas model menggunakan MSE, RMSE, MAPE, dan $R^2$.}
+
+\Target{Dua bagian yang jelas: (A) SPNL, dan (B) pencocokan kurva pada satu data yang sama dengan model linear dan nonlinear.}
+
+\section{Bagian A: Sistem Persamaan Nonlinear (SPNL)}
+
+\subsection{Formulasi}
+
+SPNL ditulis
+
+\begin{equation}
+\mathbf{F}(\mathbf{x})=\mathbf{0}.
+\end{equation}
+
+Untuk dua variabel,
+
+\begin{equation}
+\mathbf{F}(x,y)
+=
+\begin{bmatrix}
+f_1(x,y)\\
+f_2(x,y)
+\end{bmatrix}.
+\end{equation}
+
+Matriks Jacobian adalah
+
+\begin{equation}
+J(\mathbf{x})
+=
+\left[
+\frac{\partial f_i}{\partial x_j}
+\right].
+\end{equation}
+
+Newton multivariabel:
+
+\begin{align}
+J(\mathbf{x}^{(k)})\Delta\mathbf{x}^{(k)}
+&=
+-\mathbf{F}(\mathbf{x}^{(k)}),\\
+\mathbf{x}^{(k+1)}
+&=
+\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}.
+\end{align}
+
+\subsection{Contoh SPNL}
+
+Gunakan
+
+\begin{align}
+x^2+y^2-5&=0,\\
+x-y-1&=0.
+\end{align}
+
+Maka
+
+\begin{equation}
+J(x,y)=
+\begin{bmatrix}
+2x&2y\\
+1&-1
+\end{bmatrix}.
+\end{equation}
+
+Mulai dari $(x_0,y_0)=(1.5,0.5)$ dan simpan galat iterasi dalam \texttt{errs}.
+
+\subsection{Program MATLAB}
+
+\texttt{spnl\_demo.m}
+
+\lstinputlisting[language=Matlab]{matlab/spnl_demo.m}
+
+\subsection{Latihan SPNL}
+
+\begin{enumerate}
+\item Gunakan tiga tebakan awal berbeda.
+\item Buat grafik \texttt{errs}.
+\item Buat grafik norma residual terhadap iterasi.
+\item Jelaskan sensitivitas terhadap tebakan awal.
+\end{enumerate}
+
+\section{Bagian B: Pencocokan Kurva}
+
+\subsection{Satu data, dua model}
+
+Gunakan data yang sama:
+
+\begin{center}
+\begin{tabular}{c|ccccc}
+\hline
+$x$ & 1&2&3&4&5\\
+$y$ & 0.5&2.5&2.0&4.0&3.5\\
+\hline
+\end{tabular}
+\end{center}
+
+Model pertama adalah regresi linear
+
+\begin{equation}
+\widehat y=a+bx.
+\end{equation}
+
+Model kedua adalah fungsi nonlinear
+
+\begin{equation}
+\widehat y=a e^{bx}.
+\end{equation}
+
+Dengan satu data yang sama, mahasiswa dapat membandingkan apakah penambahan nonlinearity benar-benar memperbaiki kualitas pencocokan.
+
+\subsection{Regresi linear}
+
+Bentuk least squares:
+
+\begin{equation}
+X\boldsymbol{\beta}\approx\mathbf{y},
+\qquad
+\boldsymbol{\beta}
+=
+\begin{bmatrix}a\\b\end{bmatrix}.
+\end{equation}
+
+Di MATLAB gunakan
+
+\begin{lstlisting}[language=Matlab]
+beta = X\y;
+\end{lstlisting}
+
+\subsection{Model nonlinear}
+
+Untuk
+
+\begin{equation}
+\widehat y_i=a e^{bx_i},
+\end{equation}
+
+definisikan residual
+
+\begin{equation}
+r_i=y_i-\widehat y_i.
+\end{equation}
+
+Parameter dicari dengan meminimalkan
+
+\begin{equation}
+S(a,b)=\sum_{i=1}^n r_i^2.
+\end{equation}
+
+Pada modul ini dipakai iterasi Gauss-Newton sederhana sehingga sejarah perubahan parameter dapat disimpan sebagai \texttt{errs}.
+
+\subsection{Metrik evaluasi}
+
+\begin{align}
+\mathrm{MSE}
+&=
+\frac{1}{n}\sum_{i=1}^n (y_i-\widehat y_i)^2,\\
+\mathrm{RMSE}
+&=
+\sqrt{\mathrm{MSE}},\\
+\mathrm{MAPE}
+&=
+\frac{100}{n}
+\sum_{i=1}^n
+\left|
+\frac{y_i-\widehat y_i}{y_i}
+\right|,\\
+R^2
+&=
+1-
+\frac{\sum_i(y_i-\widehat y_i)^2}
+{\sum_i(y_i-\bar y)^2}.
+\end{align}
+
+MAPE klasik hanya dipakai jika semua $y_i\neq0$.
+
+\subsection{Program MATLAB}
+
+\texttt{curvefit\_demo.m}
+
+\lstinputlisting[language=Matlab]{matlab/curvefit_demo.m}
+
+\subsection{Grafik yang wajib dibuat}
+
+\begin{enumerate}
+\item Scatter data dan dua kurva model pada satu grafik.
+\item Grafik residual model linear.
+\item Grafik residual model nonlinear.
+\item Grafik \texttt{errs} untuk iterasi model nonlinear.
+\end{enumerate}
+
+\subsection{Latihan pencocokan kurva}
+
+\begin{enumerate}
+\item Hitung parameter model linear.
+\item Hitung parameter model nonlinear.
+\item Hitung MSE, RMSE, MAPE, dan $R^2$ untuk kedua model.
+\item Buat tabel perbandingan metrik.
+\item Buat grafik data-model, residual, dan \texttt{errs}.
+\item Berikan interpretasi model mana yang lebih baik dan mengapa.
+\end{enumerate}
+
+\section{Latihan terintegrasi dari Lembar Kerja}
+
+\begin{enumerate}
+\item[\textbf{B4.1 (L1)}] Tuliskan sistem \(x^2+y^2-5=0,\ x-y-1=0\) dalam bentuk vektor \(F(x,y)=\mathbf{0}\).
+\item[\textbf{B4.2 (L2)}] Tentukan matriks Jacobian \(J(x,y)\).
+\item[\textbf{B4.3 (L3)}] Dengan \((x_0,y_0)=(1.5,0.5)\), lakukan satu langkah Newton untuk SPNL.
+\item[\textbf{B4.4 (L4)}] Untuk data \((1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)\), carilah model regresi linear \(y=a+bx\) dengan least squares.
+\item[\textbf{B4.5 (L5)}] Untuk model nonlinear \(y\approx ae^{bx}\), tuliskan fungsi objektif least squares dan jelaskan kondisi optimalitasnya.
+\end{enumerate}

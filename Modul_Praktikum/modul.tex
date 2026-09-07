@@ -108,7 +108,7 @@ Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Kom
 \textbf{Praktik} & \textbf{Minggu} & \textbf{Indikator} & \textbf{Fokus}\\\hline
 1 & M2 & 6.1.1--6.1.3, 7.1.1 & Akar persamaan nonlinear: metode pengurungan dan metode terbuka\\
 2 & M3 & 6.1.4 & Sistem Persamaan Linear (SPL) iteratif: Jacobi, Gauss-Seidel, residual, konvergensi\\
-3 & M4 & 6.1.5, 7.1.1 & Sistem Persamaan Nonlinear (SPNL) dan kuadrat terkecil nonlinear/pencocokan kurva\\
+3 & M4 & 6.1.5, 7.1.1 & SPNL; regresi linear; pencocokan kurva nonlinear; MSE, RMSE, MAPE, dan $R^2$\\
 4 & M5 & 6.1.6 & Turunan numerik: beda maju, beda mundur, beda pusat\\
 5 & M6 & 6.1.7, 7.1.1 & Ukuran langkah, galat pemotongan, Richardson, reproduksi hasil\\
 6 & M7 & 6.1.8 & Integral numerik: Trapezoid dan Simpson; pembanding Titik Tengah\\
@@ -123,10 +123,10 @@ Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Kom
 \begin{tabularx}{\textwidth}{p{0.24\textwidth}p{0.22\textwidth}X}
 \hline
 \textbf{Bagian Lembar Kerja} & \textbf{Lokasi dalam modul} & \textbf{Cakupan}\\\hline
-B0.1--B0.5 & Bab 1 & Dasar metode numerik, galat, toleransi\\
+B0.1--B0.5 & MATLAB Dasar & Variabel, kontrol alur, fungsi, grafik, galat, toleransi\\
 B1.1--B1.5, B2.1--B2.5 & Praktikum 1 & Akar: grafik, Biseksi, Regula Falsi, Newton, Titik Tetap, Secant\\
 B3.1--B3.5 & Praktikum 2 & SPL, solusi eksak, Jacobi, Gauss-Seidel, reaktor\\
-B4.1--B4.5 & Praktikum 3 & SPNL, Jacobian, Newton sistem, least squares, curve fitting\\
+B4.1--B4.5 & Praktikum 3 & SPNL; regresi linear; nonlinear curve fitting; MSE, RMSE, MAPE, $R^2$\\
 B5.1--B5.4 & Praktikum 4 & Turunan analitik dan beda hingga\\
 B5.5 & Praktikum 5 & Ukuran langkah dan sumber galat\\
 B6.1--B6.3 & Praktikum 6 & Integral eksak, Trapezoid, Simpson\\
@@ -170,379 +170,13 @@ Setiap soal pada Lembar Kerja Praktikum memiliki ID tetap (B0.1--B7.5, UTS.1--UT
 
 
 % ================================================================
-\chapter{Keterulangan Komputasi dan Dasar MATLAB}
-\CP{Mahasiswa memahami prinsip keterulangan komputasi, mampu menjalankan MATLAB atau MATLAB Online, mampu memisahkan skrip utama dan fungsi, serta mampu membuat visualisasi dasar untuk menganalisis hasil numerik.}
-\Target{Folder kerja berisi satu skrip utama, beberapa fungsi terpisah, gambar hasil plot, dan catatan singkat cara menjalankan ulang program.}
+\input{chapters/00_matlab_dasar}
 
-\section{Materi singkat}
-Dalam praktikum komputasi, hasil yang baik harus dapat dijalankan ulang oleh orang lain dengan hasil yang sama atau sangat dekat. Prinsip ini disebut \textbf{keterulangan komputasi}. Kode yang dapat diulang biasanya memiliki struktur folder jelas, nama file konsisten, parameter tertulis eksplisit, dan fungsi numerik dipisahkan dari skrip utama.
+\input{chapters/01_akar}
 
-Gunakan pola berikut.
-\begin{enumerate}
-\item \textbf{Skrip utama}: memuat data, parameter, pemanggilan fungsi, tabel, dan plot. Contoh nama: \texttt{root\_compare.m}.
-\item \textbf{Fungsi}: memuat algoritma numerik yang dapat dipakai ulang. Contoh nama: \texttt{bisection\_fun.m}. Nama file harus sama dengan nama fungsi.
-\item \textbf{Luaran}: tabel, gambar, dan file \texttt{.mat} disimpan dengan nama yang informatif.
-\item \textbf{Catatan jalan ulang}: tuliskan versi MATLAB, folder kerja, nama file utama, dan parameter yang dipakai.
-\end{enumerate}
+\input{chapters/02_spl}
 
-MATLAB dapat digunakan melalui aplikasi desktop atau melalui \textbf{MATLAB Online} pada alamat \url{https://matlab.mathworks.com}. Setelah masuk, unggah folder kode praktikum, buka skrip utama, lalu tekan \texttt{Run}. Pastikan semua fungsi berada pada folder yang sama atau sudah masuk ke \texttt{path} MATLAB.
-
-\section{Perintah MATLAB dasar}
-\begin{tabularx}{\textwidth}{p{0.28\textwidth}X}
-\hline
-\textbf{Perintah} & \textbf{Kegunaan}\\\hline
-\texttt{clc} & Membersihkan tampilan Command Window.\\
-\texttt{clear} & Menghapus variabel dari workspace.\\
-\texttt{close all} & Menutup semua jendela gambar.\\
-\texttt{format long} & Menampilkan angka dengan digit lebih banyak.\\
-\texttt{whos} & Menampilkan daftar variabel, ukuran, dan tipe data.\\
-\texttt{help namaFungsi} & Membaca bantuan singkat suatu fungsi.\\
-\texttt{doc namaFungsi} & Membuka dokumentasi MATLAB.\\
-\texttt{linspace(a,b,n)} & Membuat vektor dari $a$ ke $b$ sebanyak $n$ titik.\\
-\texttt{zeros(n,m)}, \texttt{ones(n,m)}, \texttt{eye(n)} & Membuat matriks nol, satu, dan identitas.\\
-\texttt{length(x)}, \texttt{numel(x)}, \texttt{size(A)} & Mengecek ukuran vektor atau matriks.\\
-\texttt{disp}, \texttt{fprintf} & Menampilkan hasil ke layar.\\
-\texttt{save}, \texttt{load} & Menyimpan dan memanggil variabel dari file \texttt{.mat}.\\\hline
-\end{tabularx}
-
-\section{Contoh skrip utama dan fungsi terpisah}
-\begin{lstlisting}[language=Matlab]
-% File: main_demo.m
-clear; clc; close all; format long
-f = @(x) exp(x) + x;
-a = -1; b = 0; tol = 1e-8; maxit = 100;
-[x, hist] = bisection_fun(f, a, b, tol, maxit);
-fprintf('Akar = %.12f, residual = %.3e\n', x, abs(f(x)));
-semilogy(hist.iter, hist.res, 'o-'); grid on
-xlabel('Iterasi'); ylabel('Residual'); title('Konvergensi Biseksi')
-
-function [x, hist] = bisection_fun(f, a, b, tol, maxit)
-    if f(a)*f(b) > 0
-        error('Interval tidak mengurung akar')
-    end
-    for k = 1:maxit
-        x = (a+b)/2;
-        hist.iter(k,1) = k;
-        hist.res(k,1) = abs(f(x));
-        if hist.res(k) < tol, return, end
-        if f(a)*f(x) < 0, b = x; else, a = x; end
-    end
-end
-\end{lstlisting}
-
-\section{Plotting dasar}
-Visualisasi dipakai untuk membaca pola galat, konvergensi, dan kewajaran model. Gunakan label sumbu dan legenda agar grafik dapat dibaca tanpa penjelasan lisan.
-\begin{lstlisting}[language=Matlab]
-x = linspace(0, 2*pi, 200);
-y1 = sin(x); y2 = cos(x);
-plot(x, y1, 'LineWidth', 1.5); hold on
-plot(x, y2, '--', 'LineWidth', 1.5); grid on
-xlabel('x'); ylabel('nilai fungsi')
-title('Contoh plot sin dan cos')
-legend('sin(x)', 'cos(x)', 'Location', 'best')
-
-% Plot galat konvergensi
-semilogy(1:numel(err), err, 'o-'); grid on
-xlabel('Iterasi'); ylabel('Galat')
-
-% Plot orde terhadap ukuran langkah
-loglog(hs, errs, 's-'); grid on
-xlabel('h'); ylabel('Galat')
-\end{lstlisting}
-
-\section{Latihan}
-\begin{enumerate}
-\item Buat folder \texttt{Praktikum\_00} yang berisi \texttt{main\_demo.m} dan satu fungsi terpisah. Jalankan melalui MATLAB Online.
-\item Buat fungsi \texttt{relative\_error(xnew,xold)} untuk menghitung galat relatif iterasi.
-\item Buat tabel berisi $h$, hampiran, dan galat untuk fungsi $f(x)=\sin x$ di $x=1$.
-\item Buat tiga grafik: \texttt{plot}, \texttt{semilogy}, dan \texttt{loglog}. Jelaskan kapan masing-masing lebih sesuai dipakai.
-\item Simpan hasil perhitungan ke file \texttt{hasil\_praktikum00.mat}, lalu panggil ulang dengan \texttt{load}.
-\item Tulis catatan jalan ulang maksimal setengah halaman: perangkat lunak, folder, file utama, fungsi, parameter, dan cara menjalankan.
-
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
-
-\end{enumerate}
-
-% ================================================================
-\section{Latihan fondasi dari Lembar Kerja}
-Butir berikut memastikan konsep galat dan toleransi siap dipakai pada seluruh praktikum numerik.
-\begin{enumerate}
-\item[\textbf{B0.1 (L1)}] Jelaskan apa yang dimaksud dengan \textit{metode numerik}. Apa perbedaan utama antara solusi eksak/analitik dan solusi numerik?
-\item[\textbf{B0.2 (L2)}] Nilai sebenarnya adalah \(x^\ast=\sqrt{3}\) dan hampiran yang diperoleh \(x_a=1.73\). Hitung galat absolut \(E_t=\left|x^\ast-x_a\right|\) dan galat relatif sebenarnya \(\varepsilon_t=\left|\frac{x^\ast-x_a}{x^\ast}\right|100\%\).
-\item[\textbf{B0.3 (L3)}] Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung \(\varepsilon_a=\left|\frac{x_i-x_{i-1}}{x_i}\right|100\%\) untuk setiap dua iterasi berurutan.
-\item[\textbf{B0.4 (L4)}] Jelaskan mengapa dua hampiran dapat mempunyai galat absolut yang sama tetapi kualitasnya berbeda. Gunakan contoh numerik sederhana dan kaitkan dengan galat relatif.
-\item[\textbf{B0.5 (L5)}] Jelaskan peran \textit{round-off error}, \textit{truncation error}, toleransi, dan jumlah iterasi maksimum dalam sebuah algoritma numerik.
-\end{enumerate}
-
-\chapter{Praktikum 1: Akar Persamaan Nonlinear}
-\CP{Mahasiswa mampu menjelaskan sumber galat, akurasi, kriteria berhenti, dan konvergensi; menerapkan Biseksi, Regula Falsi, Titik Tetap, Newton-Raphson, dan Sekan; serta membandingkan karakteristik konvergensinya (indikator 6.1.1--6.1.3 dan 7.1.1).}
-\Target{Satu skrip utama MATLAB yang membandingkan sedikitnya empat metode pencarian akar, tabel iterasi, residual, grafik konvergensi, dan interpretasi mengapa metode tertentu lebih cepat atau lebih tahan gangguan.}
-
-\section{Materi singkat dan landasan teori}
-Masalah pencarian akar dinyatakan sebagai
-\begin{equation}
-f(x)=0.
-\end{equation}
-Pada model nyata, akar dapat bermakna titik impas, waktu ketika suatu ambang tercapai, temperatur kesetimbangan, atau parameter yang membuat residual sama dengan nol. Dua keluarga utama metode adalah \textit{metode pengurungan} dan \textit{metode terbuka}. Metode pengurungan mempertahankan interval yang mengurung akar, sedangkan metode terbuka membangun aproksimasi baru tanpa harus mempertahankan perubahan tanda.
-
-Jika $f$ kontinu pada $[a,b]$ dan $f(a)f(b)<0$, Teorema Nilai Antara menjamin sedikitnya satu akar di dalam interval. Kondisi ini menjadi dasar Biseksi dan Regula Falsi. Biseksi selalu mengurangi panjang interval menjadi setengah, sehingga konvergensinya linear tetapi sangat tahan gangguan. Regula Falsi memakai perpotongan garis secant melalui $(a,f(a))$ dan $(b,f(b))$ dengan sumbu-$x$ sehingga sering lebih cepat, walaupun salah satu ujung interval dapat tertahan terlalu lama.
-
-Newton-Raphson dapat diperoleh dari linearisasi Taylor
-\begin{equation}
-f(x_i+\Delta x)\approx f(x_i)+f'(x_i)\Delta x=0,
-\end{equation}
-sehingga
-\begin{equation}
-x_{i+1}=x_i-\frac{f(x_i)}{f'(x_i)}.
-\end{equation}
-Dekat akar sederhana, Newton biasanya memiliki konvergensi kuadratik. Namun performanya sensitif terhadap tebakan awal dan nilai turunan yang kecil. Metode Sekan menghindari evaluasi turunan dengan menggantinya menggunakan beda terbagi. Metode Titik Tetap menulis persamaan sebagai $x=g(x)$ dan mengiterasikan $x_{i+1}=g(x_i)$. Syarat lokal sederhana untuk konvergensi titik tetap adalah $|g'(x^*)|<1$ di sekitar solusi.
-
-Dua ukuran penting adalah residual $|f(x_i)|$ dan perubahan iterasi. Kriteria perubahan relatif yang stabil secara numerik dapat ditulis
-\begin{equation}
-e_i=\frac{|x_i-x_{i-1}|}{\max(1,|x_i|)}.
-\end{equation}
-Residual kecil menunjukkan persamaan hampir terpenuhi, sedangkan perubahan iterasi kecil menunjukkan proses iterasi sudah stagnan. Keduanya sebaiknya diperiksa bersama.
-
-\section{Algoritma}
-\subsection{Biseksi}
-\begin{algorithm}
-\caption{Metode Biseksi}
-\begin{algorithmic}[1]
-\State Pilih $a,b$ dengan $f(a)f(b)<0$, toleransi $\tau$, dan $N_{\max}$.
-\For{$k=1,2,\ldots,N_{\max}$}
-\State $c\gets(a+b)/2$.
-\If{$|f(c)|\le\tau$ atau perubahan iterasi $\le\tau$} \State berhenti. \EndIf
-\If{$f(a)f(c)<0$} \State $b\gets c$ \Else \State $a\gets c$ \EndIf
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-\subsection{Newton-Raphson}
-\begin{algorithm}
-\caption{Metode Newton-Raphson}
-\begin{algorithmic}[1]
-\State Pilih $x_0$, toleransi $\tau$, dan $N_{\max}$.
-\For{$k=0,1,\ldots,N_{\max}-1$}
-\State Periksa $|f'(x_k)|$ tidak terlalu kecil.
-\State $x_{k+1}\gets x_k-f(x_k)/f'(x_k)$.
-\State Hitung residual dan perubahan iterasi.
-\If{kriteria berhenti terpenuhi} \State berhenti. \EndIf
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-\section{Contoh}
-Tentukan akar $e^x+x=0$. Grafik menunjukkan perubahan tanda pada $[-1,0]$. Nilai referensi adalah
-\begin{equation}
-x^*\approx -0.567143290409784.
-\end{equation}
-Biseksi menggunakan interval $[-1,0]$, Newton dapat dimulai dari $x_0=0$, sedangkan Sekan menggunakan dua titik awal $-1$ dan $0$. Hasil yang baik bukan hanya angka akhir, tetapi juga rekaman jumlah iterasi, residual, dan kurva penurunan galat.
-
-\Note{Kecepatan konvergensi tidak sama dengan tahan gangguanness. Metode yang sangat cepat dapat gagal jika tebakan awal buruk. Karena itu perbandingan metode harus menyebutkan kebutuhan informasi awal dan mode kegagalan.}
-
-\section{Program MATLAB}
-\MatlabFile{root\_compare.m}
-\lstinputlisting[language=Matlab]{matlab/root_compare.m}
-\MatlabFile{bisection\_fun.m}
-\lstinputlisting[language=Matlab]{matlab/bisection_fun.m}
-\MatlabFile{newton\_fun.m}
-\lstinputlisting[language=Matlab]{matlab/newton_fun.m}
-Fungsi \texttt{regula\_falsi\_fun.m}, \texttt{secant\_fun.m}, dan \texttt{fixedpoint\_fun.m} tersedia pada paket kode.
-
-\AnalysisCheck{(i) Apakah residual dan galat iterasi keduanya turun? (ii) Metode mana yang paling cepat? (iii) Apakah perubahan tebakan awal mengubah keberhasilan Newton/Sekan/Titik Tetap? (iv) Apakah interval Biseksi benar-benar mengurung akar?}
-
-\section{Latihan}
-\begin{enumerate}
-\item Selesaikan $x^3-4x-9=0$ dengan Biseksi, Regula Falsi, Newton, dan Sekan sampai toleransi $10^{-8}$. Bandingkan jumlah iterasi.
-\item Untuk $f(x)=\cos x-x$, uji dua bentuk titik tetap yang berbeda. Jelaskan mengapa salah satunya dapat lebih stabil.
-\item Ubah tebakan awal Newton pada $x^3-2x+2=0$. Dokumentasikan tebakan yang konvergen dan yang gagal/berosilasi.
-\item Buat grafik $\log(e_k)$ terhadap iterasi. Gunakan pola grafik untuk membedakan konvergensi linear dan lebih cepat dari linear.
-\item Cari satu artikel yang memakai pencarian akar. Identifikasi persamaan yang dicari akarnya, metode, toleransi, dan bagaimana penulis memvalidasi akar tersebut.
-
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
-
-\end{enumerate}
-
-% ================================================================
-\section{Latihan terintegrasi dari Lembar Kerja}
-Seluruh metode akar pada Lembar Kerja dicakup di sini. Gunakan MATLAB untuk memverifikasi tabel iterasi setelah perhitungan manual.
-\begin{enumerate}
-\item[\textbf{B1.1 (L1)}] Untuk \(f(x)=x^3-x-1\), buat tabel nilai \(f(x)\) untuk \(x=0.5,1,1.25,1.5,2\). Berdasarkan tabel itu, tentukan interval yang masuk akal sebagai \textit{bracket} akar.
-\item[\textbf{B1.2 (L2)}] Gunakan Metode Biseksi untuk \(f(x)=x^3-x-1\) dengan interval awal \([1,1.5]\). Lakukan 4 iterasi. Untuk setiap iterasi tuliskan \(a,b,x_r,f(a),f(x_r)\), interval baru, dan \(\varepsilon_a\).
-\item[\textbf{B1.3 (L3)}] Gunakan Metode Regula Falsi untuk \(f(x)=x^3-x-1\) dengan \(a=1\) dan \(b=1.5\). Lakukan 5 iterasi menggunakan \(x_r=b-\frac{f(b)(b-a)}{f(b)-f(a)}\).
-\item[\textbf{B1.4 (L4)}] Gunakan Metode Newton-Raphson untuk \(f(x)=x^3-x-1\). (a) Tentukan turunannya \(f'(x)\). (b) Mulai dari \(x_0=1.5\), lakukan 4 iterasi Newton. (c) Hitung \(\varepsilon_a\) pada setiap iterasi.
-\item[\textbf{B1.5 (L5)}] Gunakan Metode Newton-Raphson untuk fungsi kedua \(f(x)=e^{-x}-x\). (a) Tentukan turunannya \(f'(x)\). (b) Gunakan \(x_0=0\) dan lakukan 5 iterasi. (c) Bandingkan karakter konvergensinya secara singkat dengan soal B1.4.
-\item[\textbf{B2.1 (L1)}] Untuk persamaan \(e^{-x}-x=0\), ubah ke bentuk titik tetap \(x=g(x)\) dengan memilih \(g(x)=e^{-x}\). Mulai dari \(x_0=0\), hitung 5 iterasi pertama.
-\item[\textbf{B2.2 (L2)}] Untuk soal B2.1, hitung \(g'(x)=-e^{-x}\). Jika akar berada di sekitar \(x^\ast\approx0.567\), hitung \(|g'(x^\ast)|\). Apakah syarat lokal \(|g'(x^\ast)|<1\) terpenuhi?
-\item[\textbf{B2.3 (L3)}] Gunakan Metode Secant untuk \(f(x)=e^{-x}-x\) dengan \(x_0=0\) dan \(x_1=1\). Lakukan 5 pembaruan akar dan hitung \(\varepsilon_a\).
-\item[\textbf{B2.4 (L4)}] Persamaan \(\cos x-x=0\) sering dipakai sebagai contoh titik tetap. Tuliskan dua kemungkinan bentuk \(x=g(x)\), lalu diskusikan mana yang lebih berpotensi konvergen di sekitar akar berdasarkan nilai \(|g'(x)|\).
-\item[\textbf{B2.5 (L5)}] Bandingkan Biseksi, Regula Falsi, Newton-Raphson, Titik Tetap, dan Secant dari segi: kebutuhan tebakan awal, kebutuhan turunan, kecepatan konvergensi, dan risiko divergensi.
-\end{enumerate}
-
-\chapter{Praktikum 2: Sistem Persamaan Linear Iteratif}
-\CP{Mahasiswa mampu menyelesaikan sistem persamaan linear secara iteratif dengan Jacobi dan Gauss-Seidel serta mengevaluasi residual dan konvergensi (indikator 6.1.4).}
-\Target{Implementasi Jacobi dan Gauss-Seidel untuk SPL berdimensi umum, kurva residual, serta analisis kondisi yang membuat iterasi konvergen atau lambat.}
-
-\section{Materi singkat dan landasan teori}
-Sistem persamaan linear dinyatakan $A\mathbf{x}=\mathbf{b}$. Metode langsung mencari solusi dalam jumlah operasi terbatas (dalam aritmetika eksak), sedangkan metode iteratif membangun barisan $\mathbf{x}^{(k)}$ yang diharapkan menuju solusi. Metode iteratif penting untuk sistem besar dan sparse, serta menjadi dasar untuk banyak penyelesai numerik pada pemodelan komputasi.
-
-Pisahkan $A=D+L+U$, dengan $D$ diagonal, $L$ bagian segitiga bawah, dan $U$ bagian segitiga atas. Jacobi menggunakan seluruh nilai iterasi lama:
-\begin{equation}
-\mathbf{x}^{(k+1)}=D^{-1}\left(\mathbf{b}-(L+U)\mathbf{x}^{(k)}\right).
-\end{equation}
-Gauss-Seidel langsung menggunakan komponen baru yang sudah tersedia pada iterasi yang sama. Dalam bentuk matriks,
-\begin{equation}
-(D+L)\mathbf{x}^{(k+1)}=\mathbf{b}-U\mathbf{x}^{(k)}.
-\end{equation}
-Secara komputasi, bentuk tersebut tidak perlu diimplementasikan dengan invers. Gunakan operasi skalar per baris atau penyelesaian sistem segitiga.
-
-Residual didefinisikan
-\begin{equation}
-\mathbf{r}^{(k)}=A\mathbf{x}^{(k)}-\mathbf{b}.
-\end{equation}
-Norma residual mengukur seberapa baik solusi aproksimasi memenuhi persamaan asli. Konvergensi iterasi linear $\mathbf{x}^{(k+1)}=B\mathbf{x}^{(k)}+\mathbf{c}$ dijamin jika radius spektral $\rho(B)<1$. Diagonal dominan ketat merupakan syarat cukup yang mudah diperiksa untuk banyak kasus Jacobi/Gauss-Seidel, walaupun bukan syarat perlu.
-
-\section{Algoritma}
-\begin{algorithm}
-\caption{Jacobi untuk $A\mathbf{x}=\mathbf{b}$}
-\begin{algorithmic}[1]
-\State Tetapkan $\mathbf{x}^{(0)}$, $\tau$, $N_{\max}$.
-\For{$k=0,1,\ldots$}
-\For{$i=1,\ldots,n$}
-\State $x_i^{(k+1)}\gets\left(b_i-\sum_{j\ne i}a_{ij}x_j^{(k)}\right)/a_{ii}$.
-\EndFor
-\State Hitung perubahan iterasi dan $\|A\mathbf{x}^{(k+1)}-\mathbf{b}\|$.
-\State Hentikan jika kriteria terpenuhi atau $N_{\max}$ tercapai.
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-\section{Contoh}
-Gunakan
-\begin{equation}
-A=\begin{bmatrix}3&-0.1&-0.2\\0.1&7&-0.3\\0.3&-0.2&10\end{bmatrix},\qquad
-\mathbf{b}=\begin{bmatrix}7.85\\-19.3\\71.4\end{bmatrix}.
-\end{equation}
-Solusi referensi adalah $\mathbf{x}=[3,-2.5,7]^T$. Karena matriks dominan diagonal, kedua metode diharapkan konvergen dari tebakan nol. Pada contoh ini Gauss-Seidel biasanya membutuhkan lebih sedikit iterasi karena memakai informasi yang baru diperbarui.
-
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/spl_iterative.m}
-\lstinputlisting[language=Matlab]{matlab/jacobi_iter.m}
-\lstinputlisting[language=Matlab]{matlab/gauss_seidel_iter.m}
-
-\Note{Jangan menilai konvergensi hanya dari $\|x^{(k+1)}-x^{(k)}\|$. Iterasi dapat berubah sangat kecil tetapi masih memiliki residual besar pada masalah yang terskala buruk.}
-\AnalysisCheck{Periksa diagonal dominan, plot residual, bandingkan jumlah iterasi, dan uji perubahan skala baris. Laporkan norma yang digunakan.}
-
-\section{Latihan}
-\begin{enumerate}
-\item Selesaikan SPL $10x_1+2x_2-x_3=27$, $-3x_1-6x_2+2x_3=-61.5$, $x_1+x_2+5x_3=-21.5$ dengan Jacobi dan Gauss-Seidel.
-\item Tukar urutan dua persamaan dan amati pengaruhnya terhadap konvergensi.
-\item Bangun matriks tridiagonal ukuran $n=50$ dan bandingkan waktu/iterasi kedua metode.
-\item Hitung matriks iterasi Jacobi dan radius spektralnya menggunakan \texttt{eig}. Hubungkan $\rho(B)$ dengan kurva residual.
-
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
-
-\end{enumerate}
-
-% ================================================================
-\section{Latihan terintegrasi dari Lembar Kerja}
-Bandingkan solusi iteratif dengan solusi eksak atau residual ketika pembanding eksak tersedia.
-\begin{enumerate}
-\item[\textbf{B3.1 (L1)}] Tuliskan sistem berikut ke bentuk \(A\mathbf{x}=\mathbf{b}\): \(\ 10x_1-x_2+2x_3=6,\ -x_1+11x_2-x_3=25,\ 2x_1-x_2+10x_3=-11.\)
-\item[\textbf{B3.2 (L2)}] Tentukan solusi eksak/analitik dari SPL pada B3.1 dengan salah satu cara: eliminasi Gauss, invers matriks, atau aturan Cramer. Tuliskan hasilnya dalam bentuk \((x_1,x_2,x_3)\).
-\item[\textbf{B3.3 (L3)}] Gunakan metode Jacobi untuk SPL pada B3.1 dengan tebakan awal \((0,0,0)^T\). Lakukan 3 iterasi dan hitung \(\varepsilon_a\) setiap komponen pada iterasi terakhir.
-\item[\textbf{B3.4 (L4)}] Gunakan metode Gauss-Seidel untuk SPL pada B3.1 dengan tebakan awal yang sama. Lakukan 3 iterasi. Bandingkan hampiran iteratif Anda dengan solusi eksak pada B3.2 dan hitung galat absolut tiap komponen.
-\item[\textbf{B3.5 (L5)}] Tiga reaktor tercampur sempurna mempunyai konsentrasi tak diketahui \(c_1,c_2,c_3\). Dari neraca massa tunak diperoleh: \(100c_1-20c_3=160\), \(-40c_1+60c_2=20\), dan \(-60c_1-60c_2+120c_3=0\). (a) Jelaskan mengapa model ini membentuk SPL. (b) Susun bentuk \(A\mathbf{c}=\mathbf{b}\). (c) Tentukan solusi eksaknya.
-\end{enumerate}
-
-\chapter{Praktikum 3: Sistem Nonlinear dan Pencocokan Kurva}
-\CP{Mahasiswa mampu menerapkan penyelesaian sistem nonlinear dan kuadrat terkecil/pencocokan kurva sebagai jembatan menuju pemodelan komputasi (indikator 6.1.5 dan 7.1.1).}
-\Target{Penyelesai numerik Newton untuk sistem nonlinear dan penyelesai numerik Gauss-Newton teredam untuk kuadrat terkecil nonlinear, dilengkapi residual, grafik data-model, dan interpretasi parameter.}
-
-\section{Materi singkat dan landasan teori}
-Sistem Persamaan Nonlinear (SPNL) ditulis
-\begin{equation}
-\mathbf{F}(\mathbf{x})=\mathbf{0},\qquad \mathbf{F}:\mathbb{R}^n\rightarrow\mathbb{R}^n.
-\end{equation}
-Newton multivariabel mengganti turunan skalar dengan matriks Jacobian $J_F(\mathbf{x})$. Linearisasi memberikan
-\begin{equation}
-J_F(\mathbf{x}^{(k)})\Delta\mathbf{x}^{(k)}=-\mathbf{F}(\mathbf{x}^{(k)}),\qquad
-\mathbf{x}^{(k+1)}=\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}.
-\end{equation}
-Perhatikan bahwa persamaan untuk $\Delta\mathbf{x}$ adalah SPL. Implementasi yang baik memakai \texttt{delta = -J\textbackslash F} dan tidak menghitung \texttt{inv(J)}.
-
-Pada pencocokan kurva, jumlah data biasanya lebih banyak daripada jumlah parameter. Jika $y_i\approx f(x_i;\mathbf{p})$, residual didefinisikan $r_i=y_i-f(x_i;\mathbf{p})$ dan objektif kuadrat terkecil
-\begin{equation}
-S(\mathbf{p})=\frac12\|\mathbf{r}(\mathbf{p})\|_2^2.
-\end{equation}
-Gauss-Newton melinearkan model terhadap parameter dan menyelesaikan
-\begin{equation}
-(J^TJ)\Delta\mathbf{p}=J^T\mathbf{r}.
-\end{equation}
-Jika $J^TJ$ berkondisi buruk atau langkah terlalu agresif, peredaman dan pelacakan balik dapat digunakan. Prinsip ini merupakan jembatan menuju optimisasi nonlinear dan kalibrasi model.
-
-\section{Algoritma}
-\begin{algorithm}
-\caption{Newton untuk sistem nonlinear}
-\begin{algorithmic}[1]
-\State Pilih $\mathbf{x}^{(0)}$, $\tau$, $N_{\max}$.
-\For{$k=0,1,\ldots$}
-\State Evaluasi $\mathbf{F}_k$ dan $J_k$.
-\State Selesaikan $J_k\Delta\mathbf{x}=-\mathbf{F}_k$.
-\State $\mathbf{x}^{(k+1)}=\mathbf{x}^{(k)}+\Delta\mathbf{x}$.
-\State Hentikan jika $\|\mathbf{F}(\mathbf{x}^{(k+1)})\|$ atau langkah relatif cukup kecil.
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-\section{Contoh}
-Untuk SPNL
-\begin{equation}
-x^2+y^2=4,\qquad e^x+y-1=0,
-\end{equation}
-tebakan $[1,-1]^T$ menghasilkan salah satu solusi sekitar $[1.00416874,-1.72963729]^T$.
-
-Untuk pencocokan kurva, gunakan model saturasi
-\begin{equation}
-y=\frac{a x}{b+x}
-\end{equation}
-terhadap data $x=[0.25,0.75,1.25,1.75,2.25]^T$ dan $y=[0.28,0.57,0.68,0.74,0.79]^T$. Gauss-Newton teredam memberikan parameter sekitar $a=1.0057$ dan $b=0.6077$ dengan residual kuadrat kecil.
-
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/spnl_curvefit.m}
-\lstinputlisting[language=Matlab]{matlab/newton_system.m}
-\lstinputlisting[language=Matlab]{matlab/gauss_newton_damped.m}
-
-\AnalysisCheck{Untuk SPNL: cek norma residual dan sensitivitas terhadap tebakan awal. Untuk pencocokan kurva: cek jumlah kuadrat galat (SSE), pola residual versus $x$, kewajaran parameter, dan apakah parameter dapat diidentifikasi dari data.}
-
-\section{Latihan}
-\begin{enumerate}
-\item Selesaikan sistem $x^2+y^2=5$ dan $x-y=1$ dengan Newton dari tiga tebakan awal berbeda.
-\item Fit model eksponensial $y=a\exp(bx)$ tanpa transformasi linear menggunakan Gauss-Newton. Bandingkan dengan hasil transformasi log.
-\item Pada model saturasi, ubah tebakan awal $[a,b]$ dan dokumentasikan sensitivitas penyelesai numerik.
-\item Cari artikel yang melakukan estimasi parameter nonlinear. Identifikasi fungsi objektif, algoritma estimasi, dan metrik kualitas kecocokan.
-
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
-
-\end{enumerate}
-
-% ================================================================
-\section{Latihan terintegrasi dari Lembar Kerja}
-\begin{enumerate}
-\item[\textbf{B4.1 (L1)}] Tuliskan sistem \(x^2+y^2-5=0,\ x-y-1=0\) dalam bentuk vektor \(F(x,y)=\mathbf{0}\).
-\item[\textbf{B4.2 (L2)}] Untuk sistem pada B4.1, tentukan matriks Jacobian \(J(x,y)\).
-\item[\textbf{B4.3 (L3)}] Dengan tebakan awal \((x_0,y_0)=(1.5,0.5)\), lakukan satu langkah Newton untuk SPNL: \(J(\mathbf{x}_k)\Delta \mathbf{x}=-F(\mathbf{x}_k)\), \(\mathbf{x}_{k+1}=\mathbf{x}_k+\Delta \mathbf{x}\).
-\item[\textbf{B4.4 (L4)}] Diberikan data \((1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)\). Carilah model regresi linear \(y=a+bx\) dengan metode \textit{least squares}.
-\item[\textbf{B4.5 (L5)}] Untuk model nonlinear \(y\approx ae^{bx}\), jelaskan mengapa pencarian parameter terbaik dapat dipandang sebagai masalah numerik dengan meminimalkan jumlah kuadrat residual. Tuliskan fungsi objektifnya dan kondisi optimalitasnya.
-\end{enumerate}
+\input{chapters/03_spnl_curvefit}
 
 \chapter{Praktikum 4: Turunan Numerik dengan Beda Hingga}
 \CP{Mahasiswa mampu menerapkan beda maju, beda mundur, dan beda pusat serta menjelaskan orde akurasi turunan numerik (indikator 6.1.6).}
@@ -1024,6 +658,11 @@ Keterulangan & Dapatkah orang lain menjalankan kode dan memperoleh hasil yang sa
 Paket kode menyertakan skrip utama dan fungsi berikut.
 \begin{multicols}{2}
 \begin{itemize}
+\item \texttt{relerr.m}
+\item \texttt{akar\_demo.m}
+\item \texttt{spl\_demo.m}
+\item \texttt{spnl\_demo.m}
+\item \texttt{curvefit\_demo.m}
 \item \texttt{root\_compare.m}
 \item \texttt{bisection\_fun.m}
 \item \texttt{regula\_falsi\_fun.m}

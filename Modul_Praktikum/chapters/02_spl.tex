@@ -1,0 +1,181 @@
+\chapter{Praktikum 2: Sistem Persamaan Linear Iteratif}
+
+\CP{Mahasiswa mampu membangun algoritma Jacobi dan Gauss-Seidel dari bentuk persamaan skalar, kemudian menggunakan notasi matriks, mengevaluasi residual, galat, dan konvergensi.}
+
+\Target{Implementasi Jacobi dan Gauss-Seidel, tabel iterasi, solusi pembanding, residual, dan grafik \texttt{errs}.}
+
+\section{Mulai dari persamaan, bukan matriks}
+
+Pertimbangkan tiga persamaan
+
+\begin{align}
+a_{11}x_1+a_{12}x_2+a_{13}x_3 &= b_1,\\
+a_{21}x_1+a_{22}x_2+a_{23}x_3 &= b_2,\\
+a_{31}x_1+a_{32}x_2+a_{33}x_3 &= b_3.
+\end{align}
+
+Masing-masing persamaan diselesaikan terhadap variabel diagonalnya:
+
+\begin{align}
+x_1 &=
+\frac{b_1-a_{12}x_2-a_{13}x_3}{a_{11}},\\
+x_2 &=
+\frac{b_2-a_{21}x_1-a_{23}x_3}{a_{22}},\\
+x_3 &=
+\frac{b_3-a_{31}x_1-a_{32}x_2}{a_{33}}.
+\end{align}
+
+Dari bentuk inilah Jacobi dan Gauss-Seidel dibangun.
+
+\section{Formula Jacobi}
+
+Jacobi menggunakan seluruh nilai dari iterasi lama:
+
+\begin{align}
+x_1^{(k+1)}
+&=
+\frac{b_1-a_{12}x_2^{(k)}-a_{13}x_3^{(k)}}{a_{11}},\\
+x_2^{(k+1)}
+&=
+\frac{b_2-a_{21}x_1^{(k)}-a_{23}x_3^{(k)}}{a_{22}},\\
+x_3^{(k+1)}
+&=
+\frac{b_3-a_{31}x_1^{(k)}-a_{32}x_2^{(k)}}{a_{33}}.
+\end{align}
+
+Untuk $n$ variabel,
+
+\begin{equation}
+x_i^{(k+1)}
+=
+\frac{1}{a_{ii}}
+\left(
+b_i-\sum_{\substack{j=1\\j\ne i}}^n a_{ij}x_j^{(k)}
+\right).
+\end{equation}
+
+\section{Formula Gauss-Seidel}
+
+Gauss-Seidel langsung memakai nilai baru yang sudah tersedia:
+
+\begin{align}
+x_1^{(k+1)}
+&=
+\frac{b_1-a_{12}x_2^{(k)}-a_{13}x_3^{(k)}}{a_{11}},\\
+x_2^{(k+1)}
+&=
+\frac{b_2-a_{21}x_1^{(k+1)}-a_{23}x_3^{(k)}}{a_{22}},\\
+x_3^{(k+1)}
+&=
+\frac{b_3-a_{31}x_1^{(k+1)}-a_{32}x_2^{(k+1)}}{a_{33}}.
+\end{align}
+
+Untuk $n$ variabel,
+
+\begin{equation}
+x_i^{(k+1)}
+=
+\frac{1}{a_{ii}}
+\left[
+b_i
+-\sum_{j=1}^{i-1}a_{ij}x_j^{(k+1)}
+-\sum_{j=i+1}^{n}a_{ij}x_j^{(k)}
+\right].
+\end{equation}
+
+Perbedaan utama:
+
+\begin{itemize}
+\item Jacobi: semua komponen memakai iterasi $k$.
+\item Gauss-Seidel: komponen yang sudah dihitung langsung memakai iterasi $k+1$.
+\end{itemize}
+
+\section{Baru kemudian notasi matriks}
+
+Sistem dapat diringkas menjadi
+
+\begin{equation}
+A\mathbf{x}=\mathbf{b}.
+\end{equation}
+
+Notasi matriks berguna untuk implementasi umum, tetapi algoritma di atas tetap berasal dari persamaan skalar.
+
+\section{Galat iterasi dan residual}
+
+Gunakan
+
+\begin{equation}
+e_a^{(k)}
+=
+\max_i
+\frac{|x_i^{(k+1)}-x_i^{(k)}|}
+{\max(1,|x_i^{(k+1)}|)}.
+\end{equation}
+
+Residual adalah
+
+\begin{equation}
+\mathbf{r}^{(k)}
+=
+\mathbf{b}-A\mathbf{x}^{(k)},
+\end{equation}
+
+dan salah satu ukuran residual adalah
+
+\begin{equation}
+r_k=\|\mathbf{r}^{(k)}\|_\infty.
+\end{equation}
+
+\section{Contoh}
+
+Gunakan
+
+\begin{align}
+10x_1-x_2+2x_3&=6,\\
+-x_1+11x_2-x_3&=25,\\
+2x_1-x_2+10x_3&=-11.
+\end{align}
+
+Cari solusi eksak/analitik terlebih dahulu sebagai pembanding, lalu lakukan Jacobi dan Gauss-Seidel dari tebakan $(0,0,0)^T$.
+
+\section{Program MATLAB}
+
+\texttt{spl\_demo.m}
+
+\lstinputlisting[language=Matlab]{matlab/spl_demo.m}
+
+\section{Grafik konvergensi}
+
+Simpan galat setiap iterasi pada vektor \texttt{errs}.
+
+\begin{lstlisting}[language=Matlab]
+semilogy(1:numel(errs),errs,'o-')
+grid on
+xlabel('Iterasi')
+ylabel('e_a')
+title('Grafik konvergensi')
+\end{lstlisting}
+
+Jika membandingkan Jacobi dan Gauss-Seidel, gambarkan kedua kurva pada satu grafik.
+
+\section{Latihan}
+
+\begin{enumerate}
+\item Turunkan formula iterasi dari sistem persamaan, jangan mulai dari notasi matriks.
+\item Tentukan solusi eksak/analitik sebagai pembanding.
+\item Lakukan Jacobi dan Gauss-Seidel.
+\item Hitung galat iterasi dan residual.
+\item Simpan sejarah galat pada \texttt{errs}.
+\item Buat grafik konvergensi kedua metode.
+\item Jelaskan metode mana yang lebih cepat pada kasus tersebut.
+\end{enumerate}
+
+\section{Latihan terintegrasi dari Lembar Kerja}
+
+\begin{enumerate}
+\item[\textbf{B3.1 (L1)}] Tuliskan sistem \(10x_1-x_2+2x_3=6\), \(-x_1+11x_2-x_3=25\), \(2x_1-x_2+10x_3=-11\) ke bentuk \(A\mathbf{x}=\mathbf{b}\).
+\item[\textbf{B3.2 (L2)}] Tentukan solusi eksak/analitik SPL tersebut.
+\item[\textbf{B3.3 (L3)}] Gunakan Jacobi dari \((0,0,0)^T\), lakukan 3 iterasi, dan hitung galat setiap komponen.
+\item[\textbf{B3.4 (L4)}] Gunakan Gauss-Seidel dari tebakan yang sama, lakukan 3 iterasi, lalu bandingkan dengan solusi eksak.
+\item[\textbf{B3.5 (L5)}] Untuk model tiga reaktor, jelaskan pembentukan SPL dari neraca massa, susun bentuk matriksnya, dan tentukan solusi eksaknya.
+\end{enumerate}
