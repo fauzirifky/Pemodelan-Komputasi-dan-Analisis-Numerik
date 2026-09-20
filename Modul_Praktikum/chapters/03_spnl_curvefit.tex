@@ -188,8 +188,21 @@ MAPE klasik tidak terdefinisi untuk $y_i=0$; $R^2$ tidak terdefinisi jika seluru
 \item[\textbf{B4.1 (L1)}] Susun $x^2+y^2-5=0$ dan $x-y-1=0$ dalam bentuk vektor $\mathbf{F}(x,y)=\mathbf{0}$. Jelaskan hubungan dengan pencarian akar skalar.
 \item[\textbf{B4.2 (L2)}] Tentukan Jacobian $J_F(x,y)$ dan daerah di mana Jacobian tidak invertibel.
 \item[\textbf{B4.3 (L3)}] Mulai dari $(1.5,0.5)$, kerjakan satu langkah Newton multivariabel secara manual, lalu cocokkan dengan \texttt{driver\_spnl.m}.
-\item[\textbf{B4.4 (L4, di kelas)}] Sesuai Lembar Kerja, gunakan data $ (1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)$. (a) Cari model regresi linear $\widehat y=a+bx$ dengan OLS, turunkan SPL normalnya. (b) \textbf{Tambahan nonlinear:} pada \emph{data yang sama} fit $\widehat y=a_0(1-e^{-a_1x})$, bentuk Jacobian parameter $Z$, lalu jalankan Gauss--Newton. (c) Hitung MSE, RMSE, MAPE, $R^2$ dan buat grafik data-model, residual serta \texttt{errs}. Bandingkan pula dengan contoh data kelas di bagian sebelumnya.
-\item[\textbf{B4.5 (L5, tugas)}] Gunakan dua belas data saturasi pada tabel berikut. Model \textbf{default} adalah $\widehat y=a_0(1-e^{-a_1x})$. Hitung parameter dan keempat metrik serta grafik \texttt{errs}. Untuk tantangan, coba model saturasi rasional $\widehat y=c_0x/(c_1+x)$ pada \textbf{data yang sama}; turunkan Jacobian parameter dan bandingkan metriknya. Jelaskan perbedaan bentuk model dan batasan parameter. Untuk mempertahankan butir asli B4.5, tuliskan juga objektif $S(a,b)=\sum_i(y_i-ae^{bx_i})^2$ dan kondisi optimalitas $\partial_a S=\partial_b S=0$ untuk model eksponensial $ae^{bx}$.
+\item[\textbf{B4.4 (L4)}] Sesuai Lembar Kerja, gunakan data $ (1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)$. (a) Cari model regresi linear $\widehat y=a+bx$ dengan OLS, turunkan SPL normalnya. (b) \textbf{Tentukan model nonlinear:} pada \emph{data yang sama} fit $\widehat y=a_0(1-e^{-a_1x})$, bentuk Jacobian parameter $Z$, lalu jalankan Gauss--Newton. (c) Hitung MSE, RMSE, MAPE, $R^2$ dan buat grafik data-model, residual serta \texttt{errs}. Bandingkan pula dengan contoh data kelas di bagian sebelumnya.
+\item[\textbf{B4.5 (L5)}] Gunakan dua belas data saturasi pada tabel berikut. Model \textbf{default} adalah $\widehat y=a_0(1-e^{-a_1x})$. Hitung parameter dan keempat metrik serta grafik \texttt{errs}. Untuk tantangan, coba model saturasi rasional $\widehat y=c_0x/(c_1+x)$ pada \textbf{data yang sama}; turunkan Jacobian parameter dan bandingkan metriknya. Jelaskan perbedaan bentuk model dan batasan parameter. Untuk mempertahankan butir asli B4.5, tuliskan juga objektif $S(a,b)=\sum_i(y_i-ae^{bx_i})^2$ dan kondisi optimalitas $\partial_a S=\partial_b S=0$ untuk model eksponensial $ae^{bx}$.
+
+\item[\textbf{B4.6 (L6)}]  Gunakan fungsi $\widehat y=ae^{bx}$ pada latihan B4.5, gunakan data sintetis \emph{berbeda} berikut:
+\begin{center}\small
+\begin{tabular}{c|rrrrrr}\hline
+$x$&0.5&1.0&1.5&2.0&2.5&3.0\\
+$y$&0.806&0.920&1.159&1.410&1.641&2.057\\\hline
+$x$&3.5&4.0&4.5&5.0&5.5&6.0\\
+$y$&2.488&2.932&3.604&4.366&5.235&6.395\\\hline
+\end{tabular}
+\end{center}
+Sebagai tantangan lain, bandingkan dengan fungsi pangkat $f(x;c,d)=cx^d$ (untuk $x>0$).
+
+
 \end{enumerate}
 \begin{center}\small
 \begin{tabular}{c|rrrrrr}\hline
@@ -199,19 +212,9 @@ $x$&3.25&3.75&4.25&4.75&5.25&5.75\\
 $y$&0.988&1.044&1.065&1.097&1.102&1.118\\\hline
 \end{tabular}
 \end{center}
-\Note{Data tugas adalah data sintetis pembelajaran, bukan hasil pengukuran lapangan. Bila ingin mencoba model eksponensial tumbuh $\widehat y=ae^{bx}$, gunakan dataset tambahan dalam \texttt{matlab/data\_eksponensial.csv}; model itu \emph{tidak} mempunyai plateau dan karena itu tidak otomatis cocok untuk data saturasi. Untuk dua parameter $a,b$, turunan Jacobian-nya adalah $\partial f/\partial a=e^{bx}$ dan $\partial f/\partial b=ax e^{bx}$.}
 
-\subsection*{Dataset opsional: pertumbuhan eksponensial (12 titik)}
-Untuk mahasiswa yang ingin mencoba fungsi $\widehat y=ae^{bx}$ dari butir awal B4.5, gunakan data sintetis \emph{berbeda} berikut, bukan data saturasi di atas:
-\begin{center}\small
-\begin{tabular}{c|rrrrrr}\hline
-$x$&0.5&1.0&1.5&2.0&2.5&3.0\\
-$y$&0.806&0.920&1.159&1.410&1.641&2.057\\\hline
-$x$&3.5&4.0&4.5&5.0&5.5&6.0\\
-$y$&2.488&2.932&3.604&4.366&5.235&6.395\\\hline
-\end{tabular}
-\end{center}
-Fit $f(x;a,b)=ae^{bx}$ dengan Jacobian model $Z_i=[e^{bx_i},\; ax_i e^{bx_i}]$. Sebagai tantangan lain, bandingkan dengan fungsi pangkat $f(x;c,d)=cx^d$ (untuk $x>0$), dengan turunan parameter $\partial_c f=x^d$ dan $\partial_d f=cx^d\ln x$. Hitung empat metrik pada \textbf{data yang sama} dan gambarkan \texttt{errs}. Jangan menggabungkan dataset pertumbuhan ini dengan dataset saturasi pada satu fitting.
+
+
 
 \section{Tugas refleksi komputasi}
 Jalankan seluruh driver dengan data sesuai instruksi. Jelaskan isi input/output tiap function, tunjukkan apa yang berubah ketika tebakan awal diganti, serta simpan grafik \texttt{errs} dan residual dengan label lengkap.
