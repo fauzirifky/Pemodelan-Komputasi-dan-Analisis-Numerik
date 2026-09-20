@@ -108,6 +108,12 @@ ylabel('Galat')
 title('Grafik konvergensi')
 \end{lstlisting}
 
+\section{Pola kerja driver dan function}
+\textbf{Driver} adalah skrip yang menentukan masalah, data, toleransi, memanggil function, dan menggambar grafik. \textbf{Function} menerima input formal, menghitung, dan mengembalikan output tanpa menghapus workspace pengguna. Pisahkan keduanya dalam file \texttt{.m} berbeda; nama file function harus sesuai nama fungsi.
+
+Contoh file \texttt{relative\_error.m} berikut digunakan di berbagai bab:
+\lstinputlisting[language=Matlab]{matlab/relative_error.m}
+
 \section{Galat: definisi sebelum latihan}
 
 Metode numerik menghasilkan hampiran. Karena itu ukuran galat harus didefinisikan sebelum digunakan.
@@ -176,7 +182,7 @@ end
 \begin{enumerate}
 \item[\textbf{B0.1 (L1)}] Jelaskan apa yang dimaksud dengan \textit{metode numerik}. Apa perbedaan utama antara solusi eksak/analitik dan solusi numerik?
 \item[\textbf{B0.2 (L2)}] Nilai sebenarnya adalah \(x^\ast=\sqrt{3}\) dan hampiran yang diperoleh \(x_a=1.73\). Hitung galat absolut dan galat relatif sebenarnya.
-\item[\textbf{B0.3 (L3)}] Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung perubahan relatif antariternasi dan bandingkan formula biasa dengan formula berskala yang menggunakan \(\max(1,|x_{\mathrm{new}}|)\).
+\item[\textbf{B0.3 (L3)}] Suatu iterasi menghasilkan urutan hampiran \(2.0000,\ 1.7500,\ 1.7143,\ 1.7321\). Hitung perubahan relatif antariterasi dan bandingkan formula biasa dengan formula berskala yang menggunakan \(\max(1,|x_{\mathrm{new}}|)\).
 \item[\textbf{B0.4 (L4)}] Jelaskan mengapa dua hampiran dapat mempunyai galat absolut yang sama tetapi kualitasnya berbeda. Kaitkan dengan galat relatif.
 \item[\textbf{B0.5 (L5)}] Jelaskan peran \textit{round-off error}, \textit{truncation error}, toleransi, dan jumlah iterasi maksimum dalam algoritma numerik.
 \end{enumerate}

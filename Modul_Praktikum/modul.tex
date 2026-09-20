@@ -126,7 +126,7 @@ Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Kom
 B0.1--B0.5 & MATLAB Dasar & Variabel, kontrol alur, fungsi, grafik, galat, toleransi\\
 B1.1--B1.5, B2.1--B2.5 & Praktikum 1 & Akar: grafik, Biseksi, Regula Falsi, Newton, Titik Tetap, Secant\\
 B3.1--B3.5 & Praktikum 2 & SPL, solusi eksak, Jacobi, Gauss-Seidel, reaktor\\
-B4.1--B4.5 & Praktikum 3 & SPNL; regresi linear; nonlinear curve fitting; MSE, RMSE, MAPE, $R^2$\\
+B4.1--B4.5 & Praktikum 3 & Newton multivariabel, OLS, Gauss--Newton, MSE, RMSE, MAPE, $R^2$\\
 B5.1--B5.4 & Praktikum 4 & Turunan analitik dan beda hingga\\
 B5.5 & Praktikum 5 & Ukuran langkah dan sumber galat\\
 B6.1--B6.3 & Praktikum 6 & Integral eksak, Trapezoid, Simpson\\
@@ -144,6 +144,11 @@ Setiap bab memuat enam komponen wajib: (1) capaian pembelajaran, (2) materi/teor
 
 \section*{Sinkronisasi dengan Lembar Kerja}
 Setiap soal pada Lembar Kerja Praktikum memiliki ID tetap (B0.1--B7.5, UTS.1--UTS.4, dan UAS.1--UAS.4). ID yang sama dipertahankan di modul. Dengan demikian, asisten dapat mengambil soal pre-test dari Lembar Kerja sementara mahasiswa dapat menemukan konsep, contoh, atau latihan yang relevan pada bab modul yang sesuai.
+
+\section*{Pola penulisan function dan driver}
+Setiap praktikum memakai dua jenis file. \textbf{Function} menyimpan algoritma umum yang menerima input dan mengembalikan hasil serta riwayat. \textbf{Driver} menyiapkan data, model, parameter, memanggil function, lalu membuat tabel dan visualisasi. Jalankan skrip driver dari folder \path{Modul_Praktikum/matlab}. Jangan menaruh \texttt{clear} di dalam function numerik. Notasi \texttt{err} dan \texttt{errs} menyatakan rasio desimal, bukan persen.
+
+\noindent\textbf{Konsistensi lintas bab:} akar dan SPNL memakai grafik perubahan parameter/solusi terhadap iterasi; SPL memakai galat serta residual terhadap iterasi; turunan/integral/PDB memakai galat terhadap ukuran langkah atau jumlah grid ketika algoritma bukan iterasi akar. Selalu beri label sumbu dan toleransi yang dipakai.
 
 \section*{Prinsip pemrograman numerik}
 \begin{enumerate}
@@ -216,11 +221,20 @@ f(x)=\frac{e^x}{\sin(\sqrt{x})},\qquad x_0=1.2.
 \end{equation}
 Turunan analitik pada $x_0$ sekitar $2.85683778241$. Dengan $h=0.1$, beda pusat memberikan sekitar $2.86120081209$, jauh lebih akurat daripada beda maju/mundur pada step yang sama. Ketika $h$ dibagi dua berulang kali, galat beda pusat menunjukkan orde mendekati dua sebelum efek pembulatan muncul.
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/finite_difference.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{numdiff.m (function)}
 \lstinputlisting[language=Matlab]{matlab/numdiff.m}
 
+\MatlabFile{driver\_turunan.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_turunan.m}
+
+
 \AnalysisCheck{Jangan hanya melaporkan nilai turunan. Tunjukkan hubungan $h$-galat dan jawab: skema mana paling akurat pada biaya evaluasi fungsi yang sebanding?}
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
 
 \section{Latihan}
 \begin{enumerate}
@@ -278,8 +292,18 @@ Nilai $p_{obs}$ mendekati orde teori hanya pada rentang asimtotik. Jika terlalu 
 \section{Contoh}
 Untuk fungsi pada Praktikum 4 dan $x_0=1.2$, beda pusat dengan $h=0.2$ memberi sekitar $2.87423645$ dan dengan $h=0.1$ sekitar $2.86120081$. Richardson menghasilkan sekitar $2.85685560$, sangat dekat dengan nilai analitik $2.85683778$.
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/richardson_diff.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{numdiff.m (function)}
+\lstinputlisting[language=Matlab]{matlab/numdiff.m}
+
+\MatlabFile{driver\_richardson.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_richardson.m}
+
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
 
 \section{Latihan}
 \begin{enumerate}
@@ -333,13 +357,26 @@ dengan galat global $O(h^4)$.
 \section{Contoh}
 Untuk $\int_0^\pi\sin x\,dx=2$, gunakan $n=4,8,16,\ldots$. Trapezoid dan Titik Tengah menunjukkan galat berorde dua, sedangkan Simpson turun jauh lebih cepat karena berorde empat pada fungsi mulus.
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/integration_basic.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{trap\_comp.m (function)}
 \lstinputlisting[language=Matlab]{matlab/trap_comp.m}
+
+\MatlabFile{midpoint\_comp.m (function)}
 \lstinputlisting[language=Matlab]{matlab/midpoint_comp.m}
+
+\MatlabFile{simpson\_comp.m (function)}
 \lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
 
+\MatlabFile{driver\_integral.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_integral.m}
+
+
 \Note{Aturan dengan orde tinggi tidak selalu unggul pada data tidak mulus atau noisy. Asumsi regularitas fungsi harus dipertimbangkan sebelum menyimpulkan metode terbaik.}
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
 
 \section{Latihan}
 \begin{enumerate}
@@ -401,11 +438,23 @@ I=\int_0^2\frac{e^x\sin x}{1+x^2}\,dx.
 \end{equation}
 Nilai referensi numerik presisi tinggi sekitar $1.94013002203$. Tabel Romberg memperlihatkan bagaimana perhalusan berturut-turut dan ekstrapolasi menghasilkan konvergensi cepat tanpa langsung memanggil penyelesai numerik bawaan sebagai solusi utama.
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/romberg_demo.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{romberg\_fun.m (function)}
 \lstinputlisting[language=Matlab]{matlab/romberg_fun.m}
 
+\MatlabFile{trap\_comp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/trap_comp.m}
+
+\MatlabFile{driver\_romberg.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_romberg.m}
+
+
 \AnalysisCheck{Bandingkan bukan hanya galat akhir, tetapi juga jumlah evaluasi $f$. Penyelesai numerik dengan galat kecil tetapi evaluasi sangat banyak belum tentu efisien.}
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
 
 \section{Latihan}
 \begin{enumerate}
@@ -446,6 +495,14 @@ y_{n+1}=y_n+h f(t_n,y_n).
 \end{equation}
 Galat pemotongan lokal per langkah adalah $O(h^2)$, sedangkan galat global setelah banyak langkah adalah $O(h)$. Ini menjelaskan mengapa pembagian ukuran langkah menjadi dua idealnya mengurangi galat global kira-kira faktor dua pada rentang asimtotik.
 
+\subsection*{Metode Heun (prediktor--korektor)}
+Dua evaluasi kemiringan meningkatkan akurasi terhadap Euler. Prediktor dan korektor adalah
+\begin{align}
+\widetilde y_{n+1}&=y_n+h f(t_n,y_n),\\
+y_{n+1}&=y_n+\frac h2\bigl[f(t_n,y_n)+f(t_n+h,\widetilde y_{n+1})\bigr].
+\end{align}
+Metode Heun inilah yang digunakan pada B7.2 dan Mock-Up UAS.3, sehingga tidak cukup hanya menampilkan Euler dan RK4.
+
 Runge-Kutta orde empat (RK4) mencapai akurasi global $O(h^4)$ tanpa membutuhkan turunan eksplisit $f$. Ia menggabungkan empat estimasi kemiringan:
 \begin{align}
 k_1&=f(t_n,y_n),\\
@@ -475,10 +532,24 @@ Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solu
 \item Jika referensi tersedia, hitung galat maksimum dan ulangi untuk beberapa $h$.
 \end{enumerate}
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/ode_euler_rk4.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{euler\_ivp.m (function)}
 \lstinputlisting[language=Matlab]{matlab/euler_ivp.m}
+
+\MatlabFile{heun\_ivp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/heun_ivp.m}
+
+\MatlabFile{rk4\_ivp.m (function)}
 \lstinputlisting[language=Matlab]{matlab/rk4_ivp.m}
+
+\MatlabFile{driver\_ode.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_ode.m}
+
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Bila metode mengulang dalam waktu, plot galat terhadap waktu dan ulangi eksperimen dengan beberapa $h$.
 
 \section{Latihan}
 \begin{enumerate}
@@ -531,10 +602,23 @@ Reproduksi artikel harus membedakan data/model parameter dari parameter numerik.
 \section{Contoh}
 Ambil $y'=-15y$, $y(0)=1$. Euler dengan $h=0.2$ memiliki faktor amplifikasi $1-3=-2$, sehingga tidak stabil. Dengan $h=0.1$, faktor $-0.5$ dan iterasi stabil tetapi berosilasi tanda. Ini merupakan contoh sederhana bahwa ukuran langkah adalah bagian dari kualitas solusi.
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/ode_stability.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{euler\_ivp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/euler_ivp.m}
+
+\MatlabFile{rk4\_ivp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/rk4_ivp.m}
+
+\MatlabFile{driver\_stabilitas.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_stabilitas.m}
+
 
 \AnalysisCheck{Pada reproduksi artikel, catat: model, parameter, kondisi awal, interval waktu, penyelesai numerik, ukuran langkah/tolerance, dan pengolahan akhir. Jika salah satu tidak tersedia, nyatakan asumsi secara eksplisit.}
+
+\section{Luaran driver dan grafik galat}
+Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Bila metode mengulang dalam waktu, plot galat terhadap waktu dan ulangi eksperimen dengan beberapa $h$.
 
 \section{Latihan}
 \begin{enumerate}
@@ -600,8 +684,21 @@ Gunakan model logistik pada Praktikum 8. Pertanyaan komputasi dapat dirangkai se
 \end{algorithmic}
 \end{algorithm}
 
-\section{Program MATLAB}
-\lstinputlisting[language=Matlab]{matlab/integrated_review.m}
+\section{Program MATLAB: pisahkan function dan driver}
+\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+
+\MatlabFile{bisection\_fun.m (function)}
+\lstinputlisting[language=Matlab]{matlab/bisection_fun.m}
+
+\MatlabFile{rk4\_ivp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/rk4_ivp.m}
+
+\MatlabFile{simpson\_comp.m (function)}
+\lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
+
+\MatlabFile{driver\_terpadu.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_terpadu.m}
+
 
 \section{Latihan terpadu}
 \begin{enumerate}
@@ -654,6 +751,16 @@ Keterulangan & Dapatkah orang lain menjalankan kode dan memperoleh hasil yang sa
 \end{tabularx}
 
 \chapter*{Daftar File MATLAB}
+\noindent\textbf{File utama edisi ini:}\par
+\begin{itemize}
+\item Akar dan SPL: \texttt{driver\_akar.m}, \texttt{driver\_spl.m}.
+\item SPNL dan regresi: \texttt{driver\_spnl.m}, \texttt{driver\_regresi.m}, \texttt{driver\_tugas\_curvefit.m}.
+\item Turunan dan integral: \texttt{driver\_turunan.m}, \texttt{driver\_richardson.m}, \texttt{driver\_integral.m}, \texttt{driver\_romberg.m}.
+\item PDB dan sintesis: \texttt{driver\_ode.m}, \texttt{driver\_stabilitas.m}, \texttt{driver\_terpadu.m}.
+\end{itemize}
+Function yang dipakai dijelaskan di setiap bab. Fungsi tambahan antara lain \texttt{relative\_error.m}, \texttt{regresi\_linear.m}, \texttt{regresi\_nonlinear.m}, serta \texttt{metrik\_regresi.m}. Nama file lama masih disimpan sebagai kompatibilitas; jalankan driver baru sesuai bab.
+
+
 \addcontentsline{toc}{chapter}{Daftar File MATLAB}
 Paket kode menyertakan skrip utama dan fungsi berikut.
 \begin{multicols}{2}

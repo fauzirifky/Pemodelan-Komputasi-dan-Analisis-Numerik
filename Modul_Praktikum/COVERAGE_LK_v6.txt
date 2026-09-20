@@ -1,0 +1,52 @@
+Modul Praktikum v6 — ketercakupan ID Lembar Kerja
+Terdeteksi: 48/48
+B0.1
+B0.2
+B0.3
+B0.4
+B0.5
+B1.1
+B1.2
+B1.3
+B1.4
+B1.5
+B2.1
+B2.2
+B2.3
+B2.4
+B2.5
+B3.1
+B3.2
+B3.3
+B3.4
+B3.5
+B4.1
+B4.2
+B4.3
+B4.4
+B4.5
+B5.1
+B5.2
+B5.3
+B5.4
+B5.5
+B6.1
+B6.2
+B6.3
+B6.4
+B6.5
+B7.1
+B7.2
+B7.3
+B7.4
+B7.5
+UAS.1
+UAS.2
+UAS.3
+UAS.4
+UTS.1
+UTS.2
+UTS.3
+UTS.4
+Catatan: B4.4 mengandung soal asli (1..5) dan tambahan model nonlinear.
+B4.5 memuat kondisi optimalitas ae^(bx) dan tugas default model saturasi 12 data.

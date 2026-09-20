@@ -138,11 +138,17 @@ Gunakan
 
 Cari solusi eksak/analitik terlebih dahulu sebagai pembanding, lalu lakukan Jacobi dan Gauss-Seidel dari tebakan $(0,0,0)^T$.
 
-\section{Program MATLAB}
+\section{Program MATLAB: function dan driver}
+\textbf{Function} \texttt{jacobi.m} dan \texttt{gauss\_seidel.m} menerima $A,b,x_0,\tau,N_{\max}$ lalu mengembalikan solusi dan \texttt{history}. \textbf{Driver} \texttt{driver\_spl.m} menyiapkan sistem dan solusi pembanding, memanggil kedua function, menampilkan tabel dan membuat grafik galat serta residual.
 
-\texttt{spl\_demo.m}
+\MatlabFile{jacobi.m (function)}
+\lstinputlisting[language=Matlab]{matlab/jacobi.m}
+\MatlabFile{gauss\_seidel.m (function)}
+\lstinputlisting[language=Matlab]{matlab/gauss_seidel.m}
+\MatlabFile{driver\_spl.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_spl.m}
 
-\lstinputlisting[language=Matlab]{matlab/spl_demo.m}
+\Note{Jacobi membaca seluruh komponen \texttt{xold}; Gauss-Seidel membaca komponen kiri dari \texttt{xnew} dan kanan dari \texttt{xold}. Input dipaksa menjadi vektor kolom agar dimensi perhitungan konsisten.}
 
 \section{Grafik konvergensi}
 

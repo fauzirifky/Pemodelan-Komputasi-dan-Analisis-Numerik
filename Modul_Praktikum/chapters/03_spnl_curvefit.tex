@@ -1,213 +1,217 @@
 \chapter{Praktikum 3: SPNL dan Pencocokan Kurva}
+\CP{Mahasiswa mampu menurunkan dan menjalankan Newton untuk beberapa variabel, merumuskan OLS linear sebagai SPL, membentuk Jacobian model nonlinear, menjalankan Gauss--Newton, dan mengevaluasi hasil dengan galat serta grafik konvergensi.}
+\Target{Dua bagian terpisah: SPNL dan pencocokan kurva. Kode terdiri atas fungsi algoritma yang dapat digunakan ulang dan \emph{driver} berisi data, parameter, tabel, serta visualisasi.}
 
-\CP{Mahasiswa mampu menyelesaikan Sistem Persamaan Nonlinear dengan Newton multivariabel dan melakukan pencocokan kurva linear serta nonlinear, kemudian mengevaluasi kualitas model menggunakan MSE, RMSE, MAPE, dan $R^2$.}
-
-\Target{Dua bagian yang jelas: (A) SPNL, dan (B) pencocokan kurva pada satu data yang sama dengan model linear dan nonlinear.}
-
-\section{Bagian A: Sistem Persamaan Nonlinear (SPNL)}
-
-\subsection{Formulasi}
-
-SPNL ditulis
-
+\section{Bagian A --- Newton untuk Sistem Persamaan Nonlinear}
+\subsection{Dari akar skalar ke beberapa variabel}
+Pada satu variabel, Newton mencari akar $f(x)=0$ dengan menggunakan turunan $f'(x)$. Pada $n$ variabel, kita mencari vektor $\mathbf{x}=(x_1,\ldots,x_n)^T$ yang membuat \emph{seluruh} persamaan bernilai nol:
 \begin{equation}
-\mathbf{F}(\mathbf{x})=\mathbf{0}.
+\mathbf{F}(\mathbf{x})=\begin{bmatrix}f_1(\mathbf{x})\\ \vdots\\ f_n(\mathbf{x})\end{bmatrix}=\mathbf{0}.
 \end{equation}
-
-Untuk dua variabel,
-
+Turunan $f'(x)$ digantikan oleh \textbf{matriks Jacobian}, yaitu kumpulan turunan parsial:
 \begin{equation}
-\mathbf{F}(x,y)
-=
-\begin{bmatrix}
-f_1(x,y)\\
-f_2(x,y)
-\end{bmatrix}.
+J_F(\mathbf{x})=\left[\frac{\partial f_i}{\partial x_j}(\mathbf{x})\right]_{i,j=1}^{n}.
 \end{equation}
+Jangan mencampurkan nama \emph{matriks Jacobian} ($J_F$) dengan metode \emph{Jacobi} pada SPL: keduanya berbeda.
 
-Matriks Jacobian adalah
-
+\subsection{Penurunan Newton multivariabel}
+Linearisasi Taylor orde pertama di titik $\mathbf{x}^{(k)}$ menghasilkan
 \begin{equation}
-J(\mathbf{x})
-=
-\left[
-\frac{\partial f_i}{\partial x_j}
-\right].
+\mathbf{F}(\mathbf{x}^{(k)}+\Delta\mathbf{x})\approx
+\mathbf{F}(\mathbf{x}^{(k)})+J_F(\mathbf{x}^{(k)})\Delta\mathbf{x}.
 \end{equation}
-
-Newton multivariabel:
-
+Kita meminta model linear ini sama dengan nol. Akibatnya, \textbf{setiap iterasi Newton menyelesaikan SPL}:
 \begin{align}
-J(\mathbf{x}^{(k)})\Delta\mathbf{x}^{(k)}
-&=
--\mathbf{F}(\mathbf{x}^{(k)}),\\
-\mathbf{x}^{(k+1)}
-&=
-\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}.
+J_F(\mathbf{x}^{(k)})\Delta\mathbf{x}^{(k)}&=-\mathbf{F}(\mathbf{x}^{(k)}),\\
+\mathbf{x}^{(k+1)}&=\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}.
 \end{align}
+Di MATLAB gunakan \texttt{delta = -J(z)\textbackslash F(z)}, bukan menghitung \texttt{inv(J)}.
 
-\subsection{Contoh SPNL}
-
-Gunakan
-
-\begin{align}
-x^2+y^2-5&=0,\\
-x-y-1&=0.
-\end{align}
-
-Maka
-
+\subsection{Algoritma Newton multivariabel}
+\begin{enumerate}
+\item Tentukan $\mathbf{F}$, Jacobian $J_F$, tebakan awal $\mathbf{x}^{(0)}$, toleransi $\tau$, dan batas iterasi $N_{\max}$.
+\item Pada iterasi $k$, hitung $\mathbf{F}_k=\mathbf{F}(\mathbf{x}^{(k)})$ dan $J_k=J_F(\mathbf{x}^{(k)})$.
+\item Pastikan Jacobian tidak singular/nyaris singular; selesaikan SPL $J_k\Delta\mathbf{x}^{(k)}=-\mathbf{F}_k$.
+\item Perbarui $\mathbf{x}^{(k+1)}=\mathbf{x}^{(k)}+\Delta\mathbf{x}^{(k)}$. Jika langkah penuh memperbesar residual, coba langkah teredam atau ubah tebakan awal.
+\item Simpan galat perubahan relatif berskala dan residual:
 \begin{equation}
-J(x,y)=
-\begin{bmatrix}
-2x&2y\\
-1&-1
-\end{bmatrix}.
+ e_k=\max_i\frac{|x_i^{(k+1)}-x_i^{(k)}|}{\max(1,|x_i^{(k+1)}|)},
+ \qquad r_k=\|\mathbf{F}(\mathbf{x}^{(k+1)})\|_\infty.
 \end{equation}
+\item Hentikan jika kriteria yang dipilih terpenuhi; laporkan \emph{kedua} ukuran dan status bila $N_{\max}$ tercapai.
+\end{enumerate}
+\Note{Tebakan awal adalah \emph{educated guess}, bukan harus angka tertentu. Patuhi domain model (misalnya konsentrasi positif), lihat grafik/arti variabel, dan hindari tebakan pada Jacobian singular. Newton lokal tidak menjamin konvergensi dari sebarang tebakan.}
 
-Mulai dari $(x_0,y_0)=(1.5,0.5)$ dan simpan galat iterasi dalam \texttt{errs}.
+\subsection{Contoh terhitung}
+Tentukan penyelesaian
+\begin{align}
+f_1(x,y)&=x^2+y^2-5=0,\\
+f_2(x,y)&=x-y-1=0.
+\end{align}
+Dengan $\mathbf{x}^{(0)}=(1.5,0.5)^T$, diperoleh
+\begin{equation}
+\mathbf{F}(\mathbf{x}^{(0)})=\begin{bmatrix}-2.5\\0\end{bmatrix},\qquad
+J_F(\mathbf{x}^{(0)})=\begin{bmatrix}3&1\\1&-1\end{bmatrix}.
+\end{equation}
+Selesaikan $J_F\Delta\mathbf{x}=-\mathbf{F}$ untuk memperoleh $\Delta\mathbf{x}=(0.625,0.625)^T$; jadi $\mathbf{x}^{(1)}=(2.125,1.125)^T$. Lanjutkan sampai residual kecil. Periksa solusi analitik $(2,1)$ dan $(-1,-2)$: sistem ini mempunyai lebih dari satu akar.
 
-\subsection{Program MATLAB}
-
-\texttt{spnl\_demo.m}
-
-\lstinputlisting[language=Matlab]{matlab/spnl_demo.m}
+\subsection{Pisahkan function dan driver}
+\textbf{Function:} \texttt{newton\_spnl.m} memuat algoritma dan \texttt{history}. \textbf{Driver:} \texttt{driver\_spnl.m} menetapkan persamaan, Jacobian, tebakan awal, tabel, serta grafik.
+\MatlabFile{newton\_spnl.m (function)}
+\lstinputlisting[language=Matlab]{matlab/newton_spnl.m}
+\MatlabFile{driver\_spnl.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_spnl.m}
 
 \subsection{Latihan SPNL}
-
 \begin{enumerate}
-\item Gunakan tiga tebakan awal berbeda.
-\item Buat grafik \texttt{errs}.
-\item Buat grafik norma residual terhadap iterasi.
-\item Jelaskan sensitivitas terhadap tebakan awal.
+\item Turunkan $J_F$ sendiri sebelum menjalankan kode; hitung satu iterasi manual.
+\item Jalankan dari tiga tebakan awal dan identifikasi solusi yang diperoleh; perhatikan domain yang relevan.
+\item Buat \texttt{semilogy} untuk \texttt{history.errs} dan \texttt{history.residual}; jelaskan jika suatu grafik stagnan.
+\item Modifikasi driver untuk sistem lain, sedangkan function Newton tetap sama.
 \end{enumerate}
 
-\section{Bagian B: Pencocokan Kurva}
-
-\subsection{Satu data, dua model}
-
-Gunakan data yang sama:
-
+\section{Bagian B --- Regresi linear dan nonlinear}
+\subsection{Data dan definisi dua model}
+Pada contoh kelas, gunakan \textbf{data yang sama} untuk kedua model:
 \begin{center}
-\begin{tabular}{c|ccccc}
-\hline
-$x$ & 1&2&3&4&5\\
-$y$ & 0.5&2.5&2.0&4.0&3.5\\
-\hline
+\begin{tabular}{c|ccccc}\hline
+$x_i$&0.25&0.75&1.25&1.75&2.25\\
+$y_i$&0.28&0.57&0.68&0.74&0.79\\\hline
 \end{tabular}
 \end{center}
-
-Model pertama adalah regresi linear
-
+Model linear: $\widehat y_i=a+b x_i$. Model nonlinear (saturasi sesuai contoh kelas):
 \begin{equation}
-\widehat y=a+bx.
+\widehat y_i=f(x_i;\mathbf{a})=a_0\bigl(1-e^{-a_1x_i}\bigr),
+\qquad \mathbf{a}=(a_0,a_1)^T,\quad \mathbf{a}^{(0)}=(1,1)^T.
+\label{eq:model_saturasi}
 \end{equation}
+Model linear mempunyai koefisien linear dalam parameter. Model saturasi nonlinear dalam parameter $a_1$, sehingga membutuhkan iterasi untuk mendapatkan nilai least squares.
 
-Model kedua adalah fungsi nonlinear
-
+\subsection{Regresi linear: dari OLS sampai SPL}
+Residual $r_i=y_i-(a+bx_i)$. \emph{Ordinary least squares} (OLS) meminimalkan
 \begin{equation}
-\widehat y=a e^{bx}.
+S(a,b)=\sum_{i=1}^n\bigl[y_i-a-bx_i\bigr]^2.
 \end{equation}
-
-Dengan satu data yang sama, mahasiswa dapat membandingkan apakah penambahan nonlinearity benar-benar memperbaiki kualitas pencocokan.
-
-\subsection{Regresi linear}
-
-Bentuk least squares:
-
-\begin{equation}
-X\boldsymbol{\beta}\approx\mathbf{y},
-\qquad
-\boldsymbol{\beta}
-=
-\begin{bmatrix}a\\b\end{bmatrix}.
-\end{equation}
-
-Di MATLAB gunakan
-
-\begin{lstlisting}[language=Matlab]
-beta = X\y;
-\end{lstlisting}
-
-\subsection{Model nonlinear}
-
-Untuk
-
-\begin{equation}
-\widehat y_i=a e^{bx_i},
-\end{equation}
-
-definisikan residual
-
-\begin{equation}
-r_i=y_i-\widehat y_i.
-\end{equation}
-
-Parameter dicari dengan meminimalkan
-
-\begin{equation}
-S(a,b)=\sum_{i=1}^n r_i^2.
-\end{equation}
-
-Pada modul ini dipakai iterasi Gauss-Newton sederhana sehingga sejarah perubahan parameter dapat disimpan sebagai \texttt{errs}.
-
-\subsection{Metrik evaluasi}
-
+Setel kedua turunan parsial objektif ke nol:
 \begin{align}
-\mathrm{MSE}
-&=
-\frac{1}{n}\sum_{i=1}^n (y_i-\widehat y_i)^2,\\
-\mathrm{RMSE}
-&=
-\sqrt{\mathrm{MSE}},\\
-\mathrm{MAPE}
-&=
-\frac{100}{n}
-\sum_{i=1}^n
-\left|
-\frac{y_i-\widehat y_i}{y_i}
-\right|,\\
-R^2
-&=
-1-
-\frac{\sum_i(y_i-\widehat y_i)^2}
-{\sum_i(y_i-\bar y)^2}.
+\frac{\partial S}{\partial a}&=-2\sum_i(y_i-a-bx_i)=0,\\
+\frac{\partial S}{\partial b}&=-2\sum_ix_i(y_i-a-bx_i)=0.
 \end{align}
+Diperoleh SPL \emph{normal equations}:
+\begin{equation}
+\underbrace{\begin{bmatrix}n&\sum x_i\\\sum x_i&\sum x_i^2\end{bmatrix}}_{X^TX}
+\underbrace{\begin{bmatrix}a\\b\end{bmatrix}}_{\boldsymbol\beta}
+=\underbrace{\begin{bmatrix}\sum y_i\\\sum x_i y_i\end{bmatrix}}_{X^T\mathbf{y}},\quad
+X=\begin{bmatrix}1&x_1\\\vdots&\vdots\\1&x_n\end{bmatrix}.
+\label{eq:linear_normal}
+\end{equation}
+Untuk data kelas,
+\begin{equation}
+\begin{bmatrix}5&6.25\\6.25&10.3125\end{bmatrix}
+\begin{bmatrix}a\\b\end{bmatrix}
+=\begin{bmatrix}3.06\\4.42\end{bmatrix},\qquad
+\widehat{\boldsymbol\beta}=\begin{bmatrix}0.3145\\0.2380\end{bmatrix}.
+\end{equation}
+Dalam perangkat lunak, \texttt{X\textbackslash y} menyelesaikan OLS lebih stabil daripada \texttt{inv(X'*X)*X'*y}; persamaan normal dipakai untuk \textbf{memahami formulasi}, bukan perintah wajib menghitung invers.
+\MatlabFile{regresi\_linear.m (function)}
+\lstinputlisting[language=Matlab]{matlab/regresi_linear.m}
 
-MAPE klasik hanya dipakai jika semua $y_i\neq0$.
+\subsection{Regresi nonlinear: fungsi, Jacobian, dan pembaruan parameter}
+Untuk model \eqref{eq:model_saturasi}, residual dan objektifnya ialah
+\begin{equation}
+D_i(\mathbf{a})=y_i-f(x_i;\mathbf{a}),\qquad
+S(\mathbf{a})=\tfrac12\sum_iD_i(\mathbf{a})^2.
+\end{equation}
+Turunan parsial \textbf{model terhadap parameter}:
+\begin{align}
+\frac{\partial f}{\partial a_0}&=1-e^{-a_1x},\\
+\frac{\partial f}{\partial a_1}&=a_0x e^{-a_1x}.
+\end{align}
+Susun Jacobian model $Z\in\mathbb{R}^{n\times2}$ dengan baris
+\begin{equation}
+Z_{i,:}(\mathbf{a})=
+\begin{bmatrix}1-e^{-a_1x_i}&a_0x_i e^{-a_1x_i}\end{bmatrix}.
+\end{equation}
+Di $\mathbf{a}^{(0)}=(1,1)^T$ berlaku (pembulatan empat desimal):
+\begin{equation}
+Z_0=\begin{bmatrix}
+0.2212&0.1947\\0.5276&0.3543\\0.7135&0.3581\\0.8262&0.3041\\0.8946&0.2371
+\end{bmatrix},\qquad
+\mathbf{D}_0=\begin{bmatrix}0.0588\\0.0424\\-0.0335\\-0.0862\\-0.1046\end{bmatrix}.
+\label{eq:class_Z_D}
+\end{equation}
+Ini adalah matriks dan residual pada \textbf{gambar contoh kelas}; nilai lengkap tanpa pembulatan digunakan dalam program.
 
-\subsection{Program MATLAB}
+\subsection{Menurunkan algoritma Gauss--Newton}
+Linearisasi model $f(\mathbf{a}+\Delta\mathbf{a})\approx f(\mathbf{a})+Z\Delta\mathbf{a}$ menghasilkan
+\begin{equation}
+\mathbf{D}(\mathbf{a}+\Delta\mathbf{a})\approx\mathbf{D}-Z\Delta\mathbf{a}.
+\end{equation}
+Cari $\Delta\mathbf{a}$ yang meminimalkan $\|\mathbf{D}-Z\Delta\mathbf{a}\|_2^2$. Persamaan normal untuk langkah adalah
+\begin{equation}
+\underbrace{(Z^TZ)}_{2\times2}\Delta\mathbf{a}=Z^T\mathbf{D},
+\label{eq:gn_normal}
+\end{equation}
+lalu perbarui parameter:
+\begin{equation}
+\mathbf{a}^{(k+1)}=\mathbf{a}^{(k)}+\alpha_k\Delta\mathbf{a}^{(k)},\qquad 0<\alpha_k\le1.
+\label{eq:gn_update}
+\end{equation}
+Secara numerik, implementasi \texttt{delta = Z\textbackslash D} memecahkan masalah least squares tanpa membentuk $Z^TZ$ secara eksplisit. \texttt{alpha} dapat dibagi dua bila objektif justru membesar. Untuk data contoh, langkah penuh pertama sekitar $\Delta\mathbf{a}=(-0.27148,\,0.50193)^T$.
 
-\texttt{curvefit\_demo.m}
-
-\lstinputlisting[language=Matlab]{matlab/curvefit_demo.m}
-
-\subsection{Grafik yang wajib dibuat}
-
+\subsection{Algoritma fungsi regresi nonlinear}
 \begin{enumerate}
-\item Scatter data dan dua kurva model pada satu grafik.
-\item Grafik residual model linear.
-\item Grafik residual model nonlinear.
-\item Grafik \texttt{errs} untuk iterasi model nonlinear.
+\item Input $x,y$, model $f(x;\mathbf{a})$, Jacobian model $Z(x,\mathbf{a})$, tebakan awal, toleransi dan batas iterasi.
+\item Evaluasi vektor residual $\mathbf{D}=\mathbf{y}-\widehat{\mathbf{y}}$ dan Jacobian $Z$ berukuran $n\times p$.
+\item Periksa dimensi dan rank, lalu selesaikan masalah least squares $Z\Delta\mathbf{a}\approx\mathbf{D}$ (ekuivalen dengan \eqref{eq:gn_normal} bila rank penuh).
+\item Uji parameter $\mathbf{a}+\alpha\Delta\mathbf{a}$; kurangi $\alpha$ jika SSE membesar.
+\item Catat parameter, \texttt{errs} dan SSE untuk grafik; ulangi sampai toleransi atau iterasi maksimum.
+\item Periksa kewajaran parameter, pola residual dan kualitas hasil; perubahan parameter kecil saja tidak membuktikan kecocokan data baik.
 \end{enumerate}
+\MatlabFile{regresi\_nonlinear.m (function)}
+\lstinputlisting[language=Matlab]{matlab/regresi_nonlinear.m}
+\MatlabFile{driver\_regresi.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_regresi.m}
 
-\subsection{Latihan pencocokan kurva}
-
-\begin{enumerate}
-\item Hitung parameter model linear.
-\item Hitung parameter model nonlinear.
-\item Hitung MSE, RMSE, MAPE, dan $R^2$ untuk kedua model.
-\item Buat tabel perbandingan metrik.
-\item Buat grafik data-model, residual, dan \texttt{errs}.
-\item Berikan interpretasi model mana yang lebih baik dan mengapa.
-\end{enumerate}
+\subsection{Evaluasi model dan grafik}
+Dengan $r_i=y_i-\widehat y_i$, $\bar y=\frac1n\sum_i y_i$, dan $\mathrm{SSE}=\sum r_i^2$:
+\begin{align}
+\mathrm{MSE}&=\frac1n\sum_i r_i^2, &
+\mathrm{RMSE}&=\sqrt{\mathrm{MSE}},\\
+\mathrm{MAPE}&=\frac{100}{n}\sum_i\left|\frac{r_i}{y_i}\right|, &
+R^2&=1-\frac{\mathrm{SSE}}{\sum_i(y_i-\bar y)^2}.
+\end{align}
+MAPE klasik tidak terdefinisi untuk $y_i=0$; $R^2$ tidak terdefinisi jika seluruh $y_i$ sama. Jangan menuliskan hasil metrik tanpa memeriksa kondisi tersebut. \texttt{driver\_regresi.m} menghasilkan grafik titik data dan kedua model, grafik residual, serta \texttt{semilogy} galat parameter per iterasi.
 
 \section{Latihan terintegrasi dari Lembar Kerja}
-
 \begin{enumerate}
-\item[\textbf{B4.1 (L1)}] Tuliskan sistem \(x^2+y^2-5=0,\ x-y-1=0\) dalam bentuk vektor \(F(x,y)=\mathbf{0}\).
-\item[\textbf{B4.2 (L2)}] Tentukan matriks Jacobian \(J(x,y)\).
-\item[\textbf{B4.3 (L3)}] Dengan \((x_0,y_0)=(1.5,0.5)\), lakukan satu langkah Newton untuk SPNL.
-\item[\textbf{B4.4 (L4)}] Untuk data \((1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)\), carilah model regresi linear \(y=a+bx\) dengan least squares.
-\item[\textbf{B4.5 (L5)}] Untuk model nonlinear \(y\approx ae^{bx}\), tuliskan fungsi objektif least squares dan jelaskan kondisi optimalitasnya.
+\item[\textbf{B4.1 (L1)}] Susun $x^2+y^2-5=0$ dan $x-y-1=0$ dalam bentuk vektor $\mathbf{F}(x,y)=\mathbf{0}$. Jelaskan hubungan dengan pencarian akar skalar.
+\item[\textbf{B4.2 (L2)}] Tentukan Jacobian $J_F(x,y)$ dan daerah di mana Jacobian tidak invertibel.
+\item[\textbf{B4.3 (L3)}] Mulai dari $(1.5,0.5)$, kerjakan satu langkah Newton multivariabel secara manual, lalu cocokkan dengan \texttt{driver\_spnl.m}.
+\item[\textbf{B4.4 (L4, di kelas)}] Sesuai Lembar Kerja, gunakan data $ (1,0.5),(2,2.5),(3,2.0),(4,4.0),(5,3.5)$. (a) Cari model regresi linear $\widehat y=a+bx$ dengan OLS, turunkan SPL normalnya. (b) \textbf{Tambahan nonlinear:} pada \emph{data yang sama} fit $\widehat y=a_0(1-e^{-a_1x})$, bentuk Jacobian parameter $Z$, lalu jalankan Gauss--Newton. (c) Hitung MSE, RMSE, MAPE, $R^2$ dan buat grafik data-model, residual serta \texttt{errs}. Bandingkan pula dengan contoh data kelas di bagian sebelumnya.
+\item[\textbf{B4.5 (L5, tugas)}] Gunakan dua belas data saturasi pada tabel berikut. Model \textbf{default} adalah $\widehat y=a_0(1-e^{-a_1x})$. Hitung parameter dan keempat metrik serta grafik \texttt{errs}. Untuk tantangan, coba model saturasi rasional $\widehat y=c_0x/(c_1+x)$ pada \textbf{data yang sama}; turunkan Jacobian parameter dan bandingkan metriknya. Jelaskan perbedaan bentuk model dan batasan parameter. Untuk mempertahankan butir asli B4.5, tuliskan juga objektif $S(a,b)=\sum_i(y_i-ae^{bx_i})^2$ dan kondisi optimalitas $\partial_a S=\partial_b S=0$ untuk model eksponensial $ae^{bx}$.
 \end{enumerate}
+\begin{center}\small
+\begin{tabular}{c|rrrrrr}\hline
+$x$&0.25&0.75&1.25&1.75&2.25&2.75\\
+$y$&0.165&0.440&0.612&0.771&0.859&0.945\\\hline
+$x$&3.25&3.75&4.25&4.75&5.25&5.75\\
+$y$&0.988&1.044&1.065&1.097&1.102&1.118\\\hline
+\end{tabular}
+\end{center}
+\Note{Data tugas adalah data sintetis pembelajaran, bukan hasil pengukuran lapangan. Bila ingin mencoba model eksponensial tumbuh $\widehat y=ae^{bx}$, gunakan dataset tambahan dalam \texttt{matlab/data\_eksponensial.csv}; model itu \emph{tidak} mempunyai plateau dan karena itu tidak otomatis cocok untuk data saturasi. Untuk dua parameter $a,b$, turunan Jacobian-nya adalah $\partial f/\partial a=e^{bx}$ dan $\partial f/\partial b=ax e^{bx}$.}
+
+\subsection*{Dataset opsional: pertumbuhan eksponensial (12 titik)}
+Untuk mahasiswa yang ingin mencoba fungsi $\widehat y=ae^{bx}$ dari butir awal B4.5, gunakan data sintetis \emph{berbeda} berikut, bukan data saturasi di atas:
+\begin{center}\small
+\begin{tabular}{c|rrrrrr}\hline
+$x$&0.5&1.0&1.5&2.0&2.5&3.0\\
+$y$&0.806&0.920&1.159&1.410&1.641&2.057\\\hline
+$x$&3.5&4.0&4.5&5.0&5.5&6.0\\
+$y$&2.488&2.932&3.604&4.366&5.235&6.395\\\hline
+\end{tabular}
+\end{center}
+Fit $f(x;a,b)=ae^{bx}$ dengan Jacobian model $Z_i=[e^{bx_i},\; ax_i e^{bx_i}]$. Sebagai tantangan lain, bandingkan dengan fungsi pangkat $f(x;c,d)=cx^d$ (untuk $x>0$), dengan turunan parameter $\partial_c f=x^d$ dan $\partial_d f=cx^d\ln x$. Hitung empat metrik pada \textbf{data yang sama} dan gambarkan \texttt{errs}. Jangan menggabungkan dataset pertumbuhan ini dengan dataset saturasi pada satu fitting.
+
+\section{Tugas refleksi komputasi}
+Jalankan seluruh driver dengan data sesuai instruksi. Jelaskan isi input/output tiap function, tunjukkan apa yang berubah ketika tebakan awal diganti, serta simpan grafik \texttt{errs} dan residual dengan label lengkap.

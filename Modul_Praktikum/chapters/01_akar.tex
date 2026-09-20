@@ -185,13 +185,19 @@ x_r
 
 Setelah nilai $x_r$ diperoleh, bagian kode yang memilih interval baru adalah identik.
 
-\section{Program MATLAB yang dibahas di kelas}
+\section{Program MATLAB yang dibahas di kelas: function dan driver}
+Pisahkan kode sesuai contoh yang diberikan: \textbf{function} berisi algoritma dan mengembalikan akar beserta \texttt{history}, sedangkan \textbf{driver} menetapkan $f$, $a$, $b$, toleransi, menampilkan tabel, dan menggambar grafik. Tidak ada \texttt{clear}, data contoh, ataupun \texttt{plot} di dalam function.
 
-Kode kelas hanya membandingkan Biseksi dan Regula Falsi.
+\texttt{relative\_error.m} menyimpan formula $|x_{new}-x_{old}|/\max(1,|x_{new}|)$ dalam skala desimal; gunakan \texttt{100*err} hanya bila benar-benar memberi label persen.
 
-\texttt{akar\_demo.m}
+\MatlabFile{biseksi\_fun.m (function)}
+\lstinputlisting[language=Matlab]{matlab/biseksi_fun.m}
+\MatlabFile{regula\_fun.m (function)}
+\lstinputlisting[language=Matlab]{matlab/regula_fun.m}
+\MatlabFile{driver\_akar.m (driver)}
+\lstinputlisting[language=Matlab]{matlab/driver_akar.m}
 
-\lstinputlisting[language=Matlab]{matlab/akar_demo.m}
+\Note{Bandingkan kedua function baris demi baris: yang berubah adalah rumus $x_r$; pembaruan interval setelahnya identik. Newton-Raphson dan Secant dipakai sebagai \emph{tugas mandiri}, bukan demo kode utama di kelas.}
 
 \section{Latihan / tugas utama}
 
