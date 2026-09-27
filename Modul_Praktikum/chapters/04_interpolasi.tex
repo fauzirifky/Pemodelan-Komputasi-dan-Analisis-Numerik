@@ -1,0 +1,167 @@
+\chapter{Praktikum 4: Interpolasi Polinomial}
+
+\CP{Mahasiswa mampu membangun polinom interpolasi dari data diskret, menghubungkannya dengan Sistem Persamaan Linear, dan mengevaluasi pengaruh orde serta pemilihan titik data.}
+\Target{Polinom interpolasi beberapa orde, tabel selisih terbagi Newton, residual pada titik data, grafik data--polinom, dan analisis error.}
+
+\section{Dari data diskret ke fungsi}
+Diberikan titik
+\[
+(x_0,y_0),(x_1,y_1),\ldots,(x_n,y_n).
+\]
+Polinom interpolasi berderajat paling tinggi $n$ ditulis
+\begin{equation}
+ p_n(x)=a_0+a_1x+a_2x^2+\cdots+a_nx^n,
+\end{equation}
+dan melalui seluruh $n+1$ titik data. Dua titik membentuk polinom linear, tiga titik membentuk polinom kuadratik, dan seterusnya.
+
+\section{Interpolasi sebagai Sistem Persamaan Linear}
+Substitusi seluruh titik ke $p_n(x)$ menghasilkan
+\begin{equation}
+\underbrace{\begin{bmatrix}
+1&x_0&x_0^2&\cdots&x_0^n\\
+1&x_1&x_1^2&\cdots&x_1^n\\
+\vdots&\vdots&\vdots&&\vdots\\
+1&x_n&x_n^2&\cdots&x_n^n
+\end{bmatrix}}_{A}
+\underbrace{\begin{bmatrix}a_0\\a_1\\\vdots\\a_n\end{bmatrix}}_{\mathbf a}
+=
+\underbrace{\begin{bmatrix}y_0\\y_1\\\vdots\\y_n\end{bmatrix}}_{\mathbf y}.
+\label{eq:vandermonde}
+\end{equation}
+Dengan demikian, koefisien polinom diperoleh dari SPL $A\mathbf a=\mathbf y$. Setelah koefisien ditemukan, nilai di antara titik data dapat dihitung langsung dari $p_n(x)$.
+
+\section{Contoh 1: beberapa orde pada data yang sama}
+Gunakan delapan titik berikut.
+\[
+\begin{array}{c|rrrrrrrr}
+x&1&4&6&5&3&1.5&2.5&3.5\\\hline
+y&0&1.3862944&1.7917595&1.6094379&1.0986123&0.4054641&0.9162907&1.2527630
+\end{array}
+\]
+Data tersebut berasal dari $y=\ln x$. Estimasikan nilai pada $x=2$ dengan orde yang bertambah. Beberapa hasil awal adalah
+\[
+p_1(2)=0.462098,\qquad
+p_2(2)=0.565844,\qquad
+p_3(2)=0.628769.
+\]
+Dengan data yang lebih banyak, program dapat membangun polinom orde $1,2,\ldots,7$ dan menampilkan perubahan error terhadap orde. Nilai referensi $\ln 2$ hanya digunakan untuk menilai kualitas pendekatan.
+
+\section{Bentuk Newton dan divided differences}
+Bentuk Newton ditulis
+\begin{equation}
+\begin{aligned}
+p_n(x)=&\,b_0+b_1(x-x_0)+b_2(x-x_0)(x-x_1)+\cdots\\
+&+b_n(x-x_0)(x-x_1)\cdots(x-x_{n-1}).
+\end{aligned}
+\end{equation}
+Koefisien dihitung secara rekursif dari selisih terbagi:
+\begin{align}
+b_0&=f[x_0],\\
+b_1&=f[x_1,x_0]=\frac{f(x_1)-f(x_0)}{x_1-x_0},\\
+b_2&=f[x_2,x_1,x_0]
+=\frac{f[x_2,x_1]-f[x_1,x_0]}{x_2-x_0}.
+\end{align}
+Keuntungan bentuk Newton adalah orde polinom dapat dinaikkan dengan menambah satu suku baru tanpa menghitung seluruh bentuk polinom dari awal.
+
+\section{Contoh 2: banyak titik dan pemilihan titik dasar}
+Gunakan data
+\[
+\begin{array}{c|rrrrrr}
+x&1&2&3&5&7&8\\\hline
+y&3&6&19&99&291&444
+\end{array}
+\]
+dan estimasikan $f(4)$ dengan polinom orde $1$ sampai $4$. Untuk setiap orde, pilih titik dasar yang paling dekat dengan $x=4$. Bandingkan perubahan prediksi ketika orde bertambah. Jika suatu orde tertentu tiba-tiba menghasilkan hasil eksak atau hampir eksak, periksa kemungkinan bahwa data berasal dari polinom dengan orde tersebut.
+
+\section{Contoh 3: bentuk data yang lebih kompleks}
+Gunakan
+\[
+\begin{array}{c|rrrrrrrr}
+x&0&1&2&5.5&11&13&16&18\\\hline
+y&0.5&3.134&5.3&9.9&10.2&9.35&7.2&6.2
+\end{array}
+\]
+untuk mengestimasi nilai di sekitar $x=8$. Bandingkan orde $1,2,3,$ dan $5$. Untuk data seperti ini, tidak cukup hanya melihat nilai interpolasi di satu titik; gambar seluruh kurva karena polinom orde tinggi dapat berosilasi di antara titik data.
+
+\section{Function dan driver}
+Function pertama menyusun matriks Vandermonde dan menyelesaikan SPL. Function kedua membentuk tabel divided differences Newton. Driver membaca beberapa dataset, mencoba banyak orde, menyimpan error, dan menggambar kurva.
+
+\MatlabFile{interp\_poly\_spl.m}
+\lstinputlisting[language=Matlab]{matlab/interp_poly_spl.m}
+
+\MatlabFile{newton\_dd.m}
+\lstinputlisting[language=Matlab]{matlab/newton_dd.m}
+
+\MatlabFile{driver\_interpolasi.m}
+\lstinputlisting[language=Matlab]{matlab/driver_interpolasi.m}
+
+\section{Banyak titik: jangan otomatis memakai satu polinom sangat tinggi}
+Semakin banyak data memungkinkan orde semakin tinggi, tetapi bukan berarti polinom dengan orde maksimum selalu menjadi pilihan terbaik. Periksa grafik, perubahan prediksi antarorde, residual pada titik data, serta sensitivitas terhadap urutan dan lokasi titik dasar. Untuk data yang panjang, pendekatan \textit{piecewise} menggunakan polinom orde rendah merupakan alternatif alami.
+
+Sebagai pengantar, untuk data
+\[
+\begin{array}{c|rrrr}
+x&3&4.5&7&9\\\hline
+y&2.5&1&2.5&0.5
+\end{array}
+\]
+sebuah spline kubik menggunakan polinom kubik berbeda pada setiap interval dan mensyaratkan sambungan yang mulus. Syarat kontinuitas tersebut menghasilkan SPL untuk menentukan koefisien atau turunan pada titik sambung.
+
+\section{Latihan di kelas}
+\begin{enumerate}
+\item \textbf{Linear.} Gunakan $(1,2)$ dan $(3,8)$ untuk menentukan $p_1(x)$ dan nilai $p_1(2)$.
+
+\item \textbf{Kuadratik sebagai SPL.} Gunakan tiga titik pertama dari dataset $\ln x$, yaitu $(1,0)$, $(4,1.3862944)$, dan $(6,1.7917595)$. Susun matriks Vandermonde, hitung koefisien $p_2(x)$, lalu estimasikan $p_2(2)$. Hitung $\|A\mathbf a-\mathbf y\|_\infty$.
+
+\item \textbf{Newton.} Gunakan titik yang sama dengan soal 2. Buat tabel divided differences sampai orde dua dan verifikasi bahwa nilai di $x=2$ sama dengan hasil basis monomial/SPL.
+
+\item \textbf{Orde bertambah.} Pada dataset $\ln x$, hitung estimasi $\ln 2$ untuk orde 1 sampai 5. Buat tabel berisi orde, nilai estimasi, perubahan prediksi, dan error terhadap $\ln 2$.
+
+\item \textbf{Grafik.} Untuk soal 4, gambar data dan polinom orde 1, 2, 3, dan 5 dalam satu gambar. Jelaskan apa yang berubah ketika orde meningkat.
+\end{enumerate}
+
+\section{Latihan mandiri}
+\begin{enumerate}
+\setcounter{enumi}{5}
+\item Gunakan seluruh delapan titik dataset $\ln x$. Jalankan orde 1 sampai 7. Buat grafik $|\mathrm{error}|$ terhadap orde dengan \texttt{semilogy}. Tentukan pada orde berapa peningkatan mulai kecil.
+
+\item Gunakan dataset
+\[
+\begin{array}{c|rrrrrr}
+x&1&2&3&5&7&8\\\hline
+y&3&6&19&99&291&444
+\end{array}
+\]
+untuk menentukan $f(4)$ menggunakan Newton orde 1 sampai 4. Untuk setiap orde, pilih titik dasar yang paling dekat dengan $x=4$. Jelaskan apa yang dapat disimpulkan mengenai orde polinom yang mungkin menghasilkan data tersebut.
+
+\item Pada dataset yang sama dengan soal 7, ubah urutan titik dasar secara sengaja menjadi kurang baik. Bandingkan proses konvergensi prediksi dengan urutan titik yang dekat terhadap $x=4$. Tampilkan tabel dan grafik perubahan estimasi.
+
+\item Gunakan dataset
+\[
+\begin{array}{c|rrrrrrrr}
+x&0&1&2&5.5&11&13&16&18\\\hline
+y&0.5&3.134&5.3&9.9&10.2&9.35&7.2&6.2
+\end{array}
+\]
+untuk mengestimasi $y(8)$ dengan orde 1, 2, 3, dan 5. Pilih titik dasar yang dekat dengan $x=8$. Gambar semua polinom pada rentang data dan komentari adanya osilasi atau perilaku tidak wajar.
+
+\item Gunakan data
+\[
+\begin{array}{c|rrrrrrr}
+x&0&1.8&5&6&8.2&9.2&12\\\hline
+y&26&16.415&5.375&3.5&2.015&2.54&8
+\end{array}
+\]
+untuk menentukan $y(3.5)$. Coba beberapa orde dan susunan titik dasar. Pilih hasil yang menurut Anda paling meyakinkan berdasarkan kestabilan prediksi dan grafik.
+
+\item \textbf{Inverse interpolation.} Diberikan
+\[
+\begin{array}{c|rrrrrr}
+x&2&3&4&5&6&7\\\hline
+y&0.5&0.3333&0.25&0.2&0.1667&0.1429
+\end{array}
+\]
+carilah $x$ ketika $y=0.23$. Gunakan interpolasi kubik untuk membentuk $p(x)$ kemudian selesaikan $p(x)-0.23=0$ dengan salah satu metode pencarian akar yang telah dipelajari.
+
+\item \textbf{Piecewise.} Untuk data $(3,2.5)$, $(4.5,1)$, $(7,2.5)$, $(9,0.5)$, bandingkan satu polinom kubik global dengan interpolasi linear per interval. Kemudian tuliskan syarat tambahan yang diperlukan jika setiap interval diganti polinom kubik dan sambungan diharuskan kontinu pada fungsi, turunan pertama, dan turunan kedua.
+\end{enumerate}
