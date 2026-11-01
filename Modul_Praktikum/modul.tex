@@ -110,7 +110,7 @@ Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Kom
 2 & M3 & 6.1.4 & Sistem Persamaan Linear (SPL) iteratif: Jacobi, Gauss-Seidel, residual, konvergensi\\
 3 & M4 & 6.1.5, 7.1.1 & SPNL; regresi linear; pencocokan kurva nonlinear; MSE, RMSE, MAPE, dan $R^2$\\
 5 & M6 & 6.1.6 & Turunan numerik: beda maju, beda mundur, beda pusat\\
-6 & M7 & 6.1.7, 7.1.1 & Richardson umum, beda hingga multi-titik, studi orde, visualisasi, dan aplikasi data\\
+6 & M7 & 6.1.7, 7.1.1 & Richardson umum, studi orde, multi-titik, visualisasi, dan aplikasi data\\
 7 & M9 & 6.1.8 & Integral numerik: Trapezoid dan Simpson; pembanding Titik Tengah\\
 8 & M10 & 6.1.9, 7.1.1 & Titik Tengah, Romberg, studi akurasi dan reproduksi artikel\\
 9 & M11 & 6.1.10 & Masalah nilai awal: Euler dan evaluasi galat lokal/global\\
@@ -263,50 +263,44 @@ Untuk setiap fungsi, tentukan turunan analitik terlebih dahulu agar galat sebena
 
 
 \chapter{Praktikum 6: Richardson, Studi Orde, dan Turunan pada Data}
-\CP{Mahasiswa mampu menganalisis pengaruh ukuran langkah dan orde galat pada turunan numerik, menerapkan ekstrapolasi Richardson untuk beberapa orde skema dasar dan beberapa titik evaluasi, serta menginterpretasikan turunan dari model hasil fitting pada data tabel (indikator 6.1.7 dan 7.1.1).}
-\Target{Eksperimen yang membandingkan beda hingga biasa dengan Richardson untuk $p=1,2,$ dan $4$; tabel multi-titik; grafik hampiran dan galat; serta mini-project yang mengubah data kumulatif penyakit menular menjadi estimasi laju kasus melalui fitting dan turunan numerik.}
+\CP{Mahasiswa mampu menganalisis pengaruh ukuran langkah dan orde galat pada turunan numerik, menerapkan ekstrapolasi Richardson pada beberapa orde skema dasar dan banyak titik evaluasi, serta menginterpretasikan turunan dari model hasil fitting pada data tabel (indikator 6.1.7 dan 7.1.1).}
+\Target{Eksperimen yang membandingkan beda hingga biasa dengan Richardson untuk $p=1,2,$ dan $4$; tabel multi-titik; grafik hampiran dan galat; serta mini-project yang mengubah data kumulatif penyakit menular menjadi estimasi laju perubahan melalui fitting dan turunan numerik.}
 
 \section{Dari beda hingga ke ide Richardson}
-Pada materi turunan numerik sebelumnya, beda maju dan mundur memiliki galat utama $O(h)$, sedangkan beda pusat memiliki galat utama $O(h^2)$. Materi ini melanjutkan ide tersebut: bila bentuk galat utama diketahui, dua hasil dari \emph{metode yang sama} pada dua ukuran langkah dapat dikombinasikan untuk menghilangkan galat utama.
+Pada praktikum sebelumnya, beda maju dan mundur memiliki galat utama $O(h)$, sedangkan beda pusat memiliki galat utama $O(h^2)$. Richardson memanfaatkan informasi orde tersebut untuk menghilangkan suku galat utama.
 
-Misalkan $D^*$ adalah besaran yang sebenarnya ingin dihitung. Pada turunan numerik, $D^*=f'(x)$; pada masalah lain $D^*$ dapat berupa nilai integral, nilai solusi PDB pada suatu waktu, atau nilai solusi PDP pada suatu titik. Notasi
+Misalkan $D^*$ adalah besaran yang sebenarnya ingin dihitung. Pada turunan numerik, $D^*=f'(x)$. Notasi $D(h)$ berarti hasil numerik dari metode yang sama ketika ukuran diskretisasi adalah $h$. Secara umum,
 \begin{equation}
-D(h)
-\end{equation}
-berarti \textbf{hasil numerik yang diperoleh dengan ukuran diskretisasi $h$}. Dengan metode yang sama tetapi grid diperhalus, diperoleh
-\begin{equation}
-D(h/r), \qquad r>1.
-\end{equation}
-Untuk perhalusan standar $r=2$, notasi tersebut menjadi $D(h/2)$.
-
-Asumsikan galat utama mengikuti
-\begin{equation}
-D(h)=D^*+C h^p+O(h^q), \qquad q>p,
+D(h)=D^*+Ch^p+O(h^q),\qquad q>p.
 \label{eq:rich-model}
 \end{equation}
-dengan $p$ orde utama metode. Jika ukuran langkah diperkecil menjadi $h/r$,
+Konstanta $C$ adalah koefisien galat utama. Nilainya berasal dari suku Taylor pertama yang tidak berhasil dieliminasi oleh formula numerik. Contohnya, untuk beda maju $C=f''(x)/2$ dan $p=1$, sedangkan untuk beda pusat $C=f^{(3)}(x)/6$ dan $p=2$.
+
+Jika metode yang sama dihitung pada grid yang diperhalus dengan faktor $r>1$,
 \begin{equation}
 D(h/r)=D^*+C\left(\frac{h}{r}\right)^p+O(h^q).
+\label{eq:rich-refined}
 \end{equation}
-Kalikan persamaan terakhir dengan $r^p$, kemudian kurangkan dengan $D(h)$. Suku $Ch^p$ hilang, sehingga
+Kalikan Persamaan~\eqref{eq:rich-refined} dengan $r^p$, lalu kurangkan Persamaan~\eqref{eq:rich-model}. Suku $Ch^p$ saling menghapus, sehingga diperoleh
 \begin{equation}
 \boxed{
 D_R=\frac{r^pD(h/r)-D(h)}{r^p-1}
 }
 \label{eq:rich-general}
 \end{equation}
-menjadi hampiran yang telah diekstrapolasi. Untuk $r=2$,
+Untuk faktor perhalusan yang paling umum, $r=2$,
 \begin{equation}
 D_R=D(h/2)+\frac{D(h/2)-D(h)}{2^p-1}.
+\label{eq:rich-two}
 \end{equation}
 
-\Note{$D(h)$, $D(h/2)$, dan $D_R$ bukan tiga metode yang terpisah. $D(h)$ dan $D(h/2)$ berasal dari \emph{metode dasar yang sama} pada dua resolusi; $D_R$ adalah kombinasi keduanya untuk membatalkan suku galat utama.}
+\Note{$D(h)$ dan $D(h/2)$ bukan dua metode berbeda. Keduanya berasal dari metode dasar yang sama pada dua resolusi. $D_R$ adalah kombinasi keduanya untuk membatalkan galat utama.}
 
-\section{Apa arti $p$ dan bagaimana memilih rumus Richardson?}
-Nilai $p$ harus mengikuti orde galat utama metode dasar. Beberapa contoh untuk turunan pertama adalah
+\section{Memilih orde $p$}
+Nilai $p$ mengikuti orde galat metode dasar. Beberapa contoh:
 \begin{center}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{0.96\textwidth}{p{0.23\textwidth}c X X}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{0.96\textwidth}{p{0.22\textwidth}c X X}
 \hline
 \textbf{Metode dasar} & \textbf{$p$} & \textbf{$D(h)$} & \textbf{Richardson, $r=2$}\\\hline
 Beda maju & 1 &
@@ -321,93 +315,71 @@ $\displaystyle D_R=\frac{16D(h/2)-D(h)}{15}$\\[2mm]\hline
 \end{tabularx}
 \end{center}
 
-Untuk skema simetris seperti beda pusat, ekspansi galat biasanya hanya memuat pangkat genap. Karena itu, beda pusat $O(h^2)$ setelah satu Richardson biasanya menjadi $O(h^4)$, sedangkan beda pusat orde empat dapat naik menjadi $O(h^6)$. Untuk metode lain, orde setelah ekstrapolasi mengikuti suku galat berikutnya yang benar-benar muncul pada ekspansi.
+Jika solusi eksak tersedia, orde observasi dapat diperkirakan dari
+\begin{equation}
+p_{\mathrm{obs}}=
+\frac{\log(E_h/E_{h/r})}{\log r},
+\qquad E_h=|D(h)-D^*|.
+\label{eq:pobs}
+\end{equation}
 
-\AnalysisCheck{Sebelum memakai Richardson, identifikasi dulu: (1) apa $D^*$, (2) apa parameter $h$, (3) berapa orde utama $p$, dan (4) apakah $D(h)$ dan $D(h/r)$ dihitung dengan algoritma yang sama. Memasukkan $p$ yang salah dapat menghasilkan angka yang terlihat lebih halus tetapi tidak memiliki dasar galat yang benar.}
+\section{Rumus umum untuk masalah numerik lain}
+Richardson tidak khusus untuk turunan. Jika suatu kuantitas numerik memenuhi
+\begin{equation}
+Q(h)=Q^*+Ch^p+\cdots,
+\label{eq:rich-other}
+\end{equation}
+maka pola yang sama dapat dipakai untuk integral numerik, PDB, maupun PDP. Yang berubah hanyalah arti $Q$, parameter diskretisasi $h$, dan orde $p$.
 
-\section{Rumus yang sama untuk masalah numerik lain}
-Persamaan \eqref{eq:rich-general} tidak khusus untuk turunan. Bentuknya dapat dipakai kapan pun suatu metode mempunyai model galat $Q(h)=Q^*+Ch^p+\cdots$.
-\begin{itemize}
-\item \textbf{Turunan numerik:} $Q(h)$ adalah beda hingga dengan jarak titik $h$.
-\item \textbf{Integral numerik:} $Q(h)$ dapat berupa aturan Trapezoid komposit dengan lebar subinterval $h$. Romberg dibangun dari ide ini.
-\item \textbf{PDB:} $Q(h)$ dapat berupa $y_h(t)$ dari metode dengan ukuran langkah waktu $h$.
-\item \textbf{PDP:} $Q(h)$ dapat berupa nilai solusi pada grid dengan jarak ruang $h$.
-\end{itemize}
-Artinya, Richardson adalah pola berpikir tentang \textbf{perhalusan diskretisasi dan struktur galat}, bukan sekadar satu rumus untuk beda pusat.
-
-\section{Contoh yang sama dengan materi kelas: beda pusat dan Richardson}
+\section{Contoh dari materi kelas}
 Gunakan fungsi
 \begin{equation}
 f(x)=-0.1x^4-0.15x^3-0.5x^2-0.25x+1.25,
 \qquad x_i=0.5.
+\label{eq:poly-class}
 \end{equation}
-Turunan eksaknya adalah
+Turunan eksaknya
 \begin{equation}
 f'(x)=-0.4x^3-0.45x^2-x-0.25,
 \qquad f'(0.5)=-0.9125.
+\label{eq:poly-derivative}
 \end{equation}
-Dengan beda pusat,
-\begin{align}
-D(0.5)&=\frac{f(1)-f(0)}{1}=-1.0000,\\
-D(0.25)&=\frac{f(0.75)-f(0.25)}{0.5}=-0.934375.
-\end{align}
+Beda pusat dengan $h=0.5$ memberi
+\begin{equation}
+D(0.5)=\frac{f(1)-f(0)}{1}=-1.0000.
+\label{eq:class-dh}
+\end{equation}
+Dengan $h/2=0.25$,
+\begin{equation}
+D(0.25)=\frac{f(0.75)-f(0.25)}{0.5}=-0.934375.
+\label{eq:class-dh2}
+\end{equation}
 Karena beda pusat memiliki $p=2$,
 \begin{equation}
 D_R=\frac{4D(0.25)-D(0.5)}{3}=-0.9125.
+\label{eq:class-rich}
 \end{equation}
-Pada contoh polinom ini, suku galat utama dapat dieliminasi tepat sehingga hasil Richardson sama dengan turunan analitik pada presisi perhitungan.
 
 \section{Dari satu titik ke banyak titik}
-Pada aplikasi, turunan jarang hanya diperlukan pada satu $x_i$. Untuk sekumpulan titik
+Pada aplikasi, turunan dihitung pada sekumpulan titik
 \begin{equation}
-x_1,x_2,\ldots,x_m,
+x_1,x_2,\ldots,x_m.
+\label{eq:multipoints}
 \end{equation}
-hitung $D(h;x_i)$, $D(h/r;x_i)$, dan $D_R(x_i)$ untuk setiap $i$. Hasilnya adalah vektor estimasi turunan yang dapat diplot sebagai kurva.
-
-Untuk data tabel murni, terdapat batasan penting. Jika jarak observasi minimum adalah $h$, maka $D(h/2)$ belum tentu tersedia karena data pada setengah langkah tidak ada. Ada tiga pilihan:
-\begin{enumerate}
-\item gunakan data dengan resolusi lebih rapat;
-\item bangun interpolan atau model hasil fitting, kemudian evaluasi model pada $h/2$;
-\item gunakan formula satu sisi atau stencil lain yang sesuai dengan titik yang tersedia.
-\end{enumerate}
-Pilihan kedua menghubungkan materi \textit{curve fitting} dengan turunan numerik: \textbf{data $\rightarrow$ model fit $\rightarrow$ evaluasi fungsi $\rightarrow$ turunan $\rightarrow$ interpretasi laju perubahan}.
-
-\section{Algoritma Richardson umum}
-\begin{enumerate}
-\item Tentukan besaran target $D^*$ dan metode dasar dengan orde $p$.
-\item Pilih $h$ dan faktor perhalusan $r$ (umumnya $r=2$).
-\item Hitung $D(h)$ dengan metode dasar.
-\item Hitung $D(h/r)$ dengan metode dasar yang sama.
-\item Hitung
-\[
-D_R=\frac{r^pD(h/r)-D(h)}{r^p-1}.
-\]
-\item Ulangi untuk beberapa $h$ dan beberapa titik $x_i$.
-\item Jika solusi acuan tersedia, hitung galat. Jika tidak, bandingkan perhalusan berturut-turut.
-\item Visualisasikan hasil sebagai kurva turunan dan grafik galat terhadap $h$.
-\end{enumerate}
-
-Jika solusi eksak tersedia, orde observasi dapat diperkirakan dengan
-\begin{equation}
-p_{\mathrm{obs}}=
-\frac{\log(E_h/E_{h/r})}{\log r},
-\end{equation}
-dengan $E_h=|D(h)-D^*|$. Nilai $p_{\mathrm{obs}}$ mendekati orde teori hanya pada rentang asimtotik; $h$ terlalu besar masih dipengaruhi suku galat orde lebih tinggi, sedangkan $h$ terlalu kecil dapat dipengaruhi pembulatan.
+Untuk setiap $x_i$, hitung $D(h;x_i)$, $D(h/2;x_i)$, dan $D_R(x_i)$, kemudian tampilkan sebagai tabel dan kurva. Untuk data tabel murni, $h/2$ belum tentu tersedia. Karena itu, salah satu strategi adalah melakukan fitting/interpolasi terlebih dahulu, lalu mengevaluasi model halus pada titik yang dibutuhkan.
 
 \section{Program MATLAB: Richardson generik dan multi-titik}
-Fungsi \texttt{richardson\_extrap} tidak mengetahui apakah \texttt{approx(h)} berasal dari turunan, integral, atau metode lain. Ia hanya menggunakan $p$, $h$, dan faktor perhalusan $r$. Ini membuat implementasi sesuai dengan rumus umum \eqref{eq:rich-general}.
-
-\MatlabFile{numdiff.m (function beda hingga)}
+\MatlabFile{numdiff.m}
 \lstinputlisting[language=Matlab]{matlab/numdiff.m}
 
-\MatlabFile{richardson\_extrap.m (function Richardson umum)}
+\MatlabFile{richardson\_extrap.m}
 \lstinputlisting[language=Matlab]{matlab/richardson_extrap.m}
 
-\MatlabFile{driver\_richardson.m (driver multi-titik dan beberapa orde)}
+\MatlabFile{driver\_richardson.m}
 \lstinputlisting[language=Matlab]{matlab/driver_richardson.m}
 
 \section{Mini-project: dari data kumulatif penyakit menular ke laju kasus}
-Misalkan tersedia data ilustratif jumlah kasus kumulatif $C(t)$ pada beberapa hari. Data di bawah ini \textbf{sintetik} dan hanya digunakan untuk latihan numerik, bukan data surveilans nyata.
+Misalkan tersedia data sintetik jumlah kasus kumulatif $C(t)$:
 \begin{center}
 \renewcommand{\arraystretch}{1.08}
 \begin{tabular}{c|rrrrrrrrrrr}
@@ -417,76 +389,108 @@ $C(t)$ & 6&9&15&26&43&68&98&129&153&170&180\\
 \hline
 \end{tabular}
 \end{center}
+Data ini hanya untuk latihan numerik dan bukan data surveilans nyata.
 
-Jumlah kumulatif selalu bertambah, tetapi pertanyaan epidemiologis yang lebih informatif adalah: \emph{kapan penambahan kasus paling cepat?} Jika $C(t)$ telah di-fit dengan kurva halus $\widehat C(t)$, maka
+Jika $C(t)$ difit dengan kurva halus $\widehat C(t)$, maka
 \begin{equation}
 I(t)=\frac{d\widehat C(t)}{dt}
+\label{eq:incidence-rate}
 \end{equation}
-dapat diinterpretasikan sebagai laju kasus baru, dalam satuan kasus per hari. Turunan positif yang membesar menunjukkan pertambahan kasus makin cepat; puncak $I(t)$ menunjukkan periode pertumbuhan tercepat; sesudah puncak, laju kasus baru menurun walaupun kasus kumulatif tetap meningkat.
+dapat dibaca sebagai laju perubahan model kasus kumulatif, dalam satuan kasus per hari.
 
-Sebagai model ilustratif gunakan kurva logistik
+Model awal yang dipilih adalah logistik
 \begin{equation}
-\widehat C(t)=\frac{K}{1+\exp[-r(t-t_0)]},
+\widehat C(t)=\frac{K}{1+\exp[-r(t-t_0)]}.
+\label{eq:logistic-general}
 \end{equation}
-dengan $K,r,t_0$ ditentukan dari fitting nonlinear. Turunan analitik model logistik tersedia,
+Parameter ditentukan dengan \textit{nonlinear least squares}. Dari tabel di atas diperoleh
+\[
+K=194.6331,\qquad r=0.3165,\qquad t_0=11.9253.
+\]
+Dengan demikian, model yang digunakan pada mini-project adalah
+\begin{equation}
+\boxed{
+\widehat C(t)=
+\frac{194.6331}
+{1+\exp[-0.3165(t-11.9253)]}
+}
+\label{eq:epi-fit}
+\end{equation}
+Parameter pada Persamaan~\eqref{eq:epi-fit} ditulis empat angka desimal untuk penyajian. Program MATLAB menggunakan nilai hasil optimasi dengan presisi penuh.
+
+Turunan analitik model fit, yang dipakai hanya sebagai verifikasi, adalah
 \begin{equation}
 \widehat C'(t)=
-\frac{Kr\exp[-r(t-t_0)]}
-{\left(1+\exp[-r(t-t_0)]\right)^2},
+\frac{61.6110\,\exp[-0.3165(t-11.9253)]}
+{\left(1+\exp[-0.3165(t-11.9253)]\right)^2}.
+\label{eq:epi-derivative}
 \end{equation}
-tetapi pada praktikum nilai ini digunakan \textbf{sebagai verifikasi}. Estimasi utama tetap dihitung dari beda pusat dan Richardson pada banyak titik $t$.
 
-\MatlabFile{driver\_epidemi\_turunan.m (data $\rightarrow$ fitting $\rightarrow$ turunan $\rightarrow$ visualisasi)}
+Sebagai contoh, pada $t=12$ hari gunakan beda pusat dengan $h=2$ hari:
+\begin{align}
+D(2)
+&=\frac{\widehat C(14)-\widehat C(10)}{4}
+=\frac{128.1711-68.5463}{4}
+=14.9062,\\
+D(1)
+&=\frac{\widehat C(13)-\widehat C(11)}{2}
+=\frac{113.7116-83.1650}{2}
+=15.2733.
+\end{align}
+Richardson dengan $p=2$ memberikan
+\begin{equation}
+D_R(12)=\frac{4D(1)-D(2)}{3}
+=15.3957\quad\text{kasus/hari}.
+\label{eq:epi-rich-example}
+\end{equation}
+Turunan analitik model fit memberi $\widehat C'(12)=15.4006$ kasus/hari, sehingga galat absolut Richardson sekitar $0.0049$ kasus/hari.
+
+\MatlabFile{driver\_epidemi\_turunan.m}
 \lstinputlisting[language=Matlab]{matlab/driver_epidemi_turunan.m}
 
-Driver menghasilkan dua visual utama:
+Driver menghasilkan dua visual:
 \begin{enumerate}
 \item data kumulatif dan kurva hasil fitting $\widehat C(t)$;
-\item laju kasus $\widehat C'(t)$: beda pusat $D(h)$, beda pusat pada grid halus $D(h/2)$, Richardson $D_R$, dan turunan analitik model fit sebagai pembanding verifikasi.
+\item laju perubahan pada banyak titik: $D(h)$, $D(h/2)$, Richardson $D_R$, dan turunan analitik model fit sebagai pembanding verifikasi.
 \end{enumerate}
 
-\Note{Jika model fitting diganti dengan spline, polinom, model pertumbuhan lain, atau hasil simulasi yang hanya dapat dievaluasi secara numerik, prosedur Richardson tetap sama. Yang berubah hanyalah fungsi yang dievaluasi dan orde metode dasar. Inilah alasan contoh ini cocok sebagai jembatan menuju project.}
-
-\section{Luaran praktikum dan visualisasi}
-Setiap kelompok menyiapkan:
+\section{Latihan berorientasi project}
 \begin{enumerate}
-\item tabel $x_i$, $D(h)$, $D(h/2)$, $D_R$, dan nilai acuan bila tersedia;
-\item satu grafik kurva turunan pada banyak titik;
-\item satu grafik galat terhadap $h$ pada skala log-log untuk memeriksa orde;
-\item satu perbandingan Richardson dari sedikitnya dua orde dasar, misalnya $p=1$ dan $p=2$;
-\item interpretasi singkat: apa arti tanda, besar, puncak, atau perubahan turunan pada konteks masalah.
+\item \textbf{Beda hingga biasa versus Richardson pada model mini-project.}
+Gunakan Persamaan~\eqref{eq:epi-fit} pada $t=12$ hari. Hitung beda maju untuk $h=2$ dan $h=1$, lalu Richardson dengan $p=1$. Ulangi dengan beda pusat dan Richardson $p=2$. Bandingkan semua hasil dengan Persamaan~\eqref{eq:epi-derivative}.
+
+\item \textbf{Reproduksi contoh manual.}
+Hitung $\widehat C(10)$, $\widehat C(11)$, $\widehat C(13)$, dan $\widehat C(14)$ langsung dari Persamaan~\eqref{eq:epi-fit}. Reproduksi $D(2)$, $D(1)$, dan $D_R(12)$, lalu cocokkan dengan MATLAB.
+
+\item \textbf{Turunan pada banyak titik.}
+Untuk $t_i=4,6,8,10,12,14,16$, hitung $D(2;t_i)$, $D(1;t_i)$, dan $D_R(t_i)$. Tampilkan tabel dan grafik. Tentukan hari ketika laju Richardson maksimum dan jelaskan maknanya.
+
+\item \textbf{Eksplorasi orde.}
+Pada $t=8,12,16$, bandingkan Richardson dari beda maju ($p=1$), beda pusat ($p=2$), dan beda pusat orde empat ($p=4$). Catat jumlah evaluasi fungsi dan galat masing-masing.
+
+\item \textbf{Pipeline project lengkap.}
+Mulai dari file \texttt{data\_kasus\_kumulatif\_sintetik.csv}, lakukan
+\[
+\text{data}\rightarrow\text{fitting}\rightarrow
+\widehat C(t)\rightarrow D(h)\rightarrow D(h/2)\rightarrow D_R.
+\]
+Laporkan parameter fit, RMSE, grafik fitting, grafik laju perubahan, hari puncak laju, dan galat maksimum Richardson terhadap turunan analitik model fit.
+
+\item \textbf{Sensitivitas ukuran langkah.}
+Pada $t=12$, gunakan $h=4,2,1,0.5,0.25$. Plot galat beda pusat dan Richardson terhadap $h$ pada skala log-log. Hitung orde observasi.
+
+\item \textbf{Pengembangan menuju project nyata.}
+Ganti data sintetik dengan satu deret waktu penyakit menular yang memiliki data kumulatif atau dapat dikonstruksi menjadi kumulatif. Data nyata harus disertai sumber. Lakukan fitting, estimasi turunan pada banyak titik, Richardson, dan interpretasi periode pertumbuhan tercepat. Jelaskan bahwa turunan model fit adalah laju perubahan model, bukan otomatis jumlah kasus baru terobservasi tanpa galat.
+
+\item \textbf{Perbandingan model.}
+Gunakan data yang sama tetapi bandingkan dua model halus, misalnya logistik dan spline. Apakah waktu puncak laju perubahan tetap sama? Jelaskan sensitivitas kesimpulan terhadap model fitting.
 \end{enumerate}
 
-\section{Latihan}
-\begin{enumerate}
-\item \textbf{Beda hingga biasa versus Richardson.}
-Untuk fungsi polinom pada contoh kelas, hitung $f'(0.5)$ dengan beda maju dan beda pusat untuk $h=0.5$ dan $h=0.25$. Lakukan Richardson dengan $p=1$ untuk beda maju dan $p=2$ untuk beda pusat. Bandingkan semua galat terhadap nilai eksak.
+\AnalysisCheck{Laporan yang kuat tidak berhenti pada ``Richardson lebih akurat''. Jelaskan orde galat, biaya evaluasi fungsi, rentang $h$ yang dipakai, konsistensi di banyak titik, dan arti turunan pada konteks model/data.}
 
-\item \textbf{Eksplorasi orde lain.}
-Gunakan beda pusat orde empat pada fungsi yang sama. Hitung $D(h)$, $D(h/2)$, dan Richardson dengan $p=4$. Bandingkan dengan Richardson dari beda pusat biasa ($p=2$). Jelaskan apakah tambahan titik fungsi sebanding dengan peningkatan akurasi.
-
-\item \textbf{Banyak titik.}
-Untuk $x_i=0,0.25,0.5,0.75,1$, hitung turunan numerik dengan beda pusat dan Richardson. Buat tabel dan plot $f'(x_i)$ eksak, $D(h;x_i)$, dan $D_R(x_i)$ pada satu gambar. Gunakan $h=0.25$, lalu ulangi dengan $h=0.125$.
-
-\item \textbf{Studi ukuran langkah.}
-Untuk satu titik pilihan, gunakan $h=10^{-1},10^{-2},\ldots,10^{-10}$. Plot galat beda maju, beda pusat, dan Richardson terhadap $h$. Identifikasi wilayah galat pemotongan dan wilayah ketika pembulatan mulai mengganggu.
-
-\item \textbf{Mini-project penyakit menular.}
-Jalankan \texttt{driver\_epidemi\_turunan.m}. Laporkan parameter fit, grafik kasus kumulatif, dan grafik laju kasus. Tentukan hari ketika laju kasus hasil Richardson maksimum. Bandingkan dengan turunan analitik model fit dan jelaskan perbedaan numeriknya.
-
-\item \textbf{Modifikasi project.}
-Ganti tabel sintetik dengan satu data deret waktu lain yang memiliki makna akumulasi atau pertumbuhan. Pilih model fit yang masuk akal, jelaskan satuan turunannya, hitung turunan pada banyak titik, dan tampilkan grafik yang dapat dibaca tanpa melihat kode. Data nyata harus disertai sumber; jika data disimulasikan, nyatakan secara eksplisit bahwa data bersifat sintetik.
-
-\item \textbf{Reproduksi ilmiah.}
-Ambil satu figur atau tabel dari artikel yang menggunakan turunan numerik, beda hingga, atau laju perubahan. Reproduksi minimal satu hasil, kemudian gunakan Richardson sebagai pembanding jika struktur datanya memungkinkan. Bedakan verifikasi implementasi dari validasi model.
-\end{enumerate}
-
-\AnalysisCheck{Laporan yang kuat tidak berhenti pada ``Richardson lebih akurat''. Jelaskan mengapa berdasarkan orde galat, berapa biaya evaluasi fungsi tambahan, pada rentang $h$ mana perbaikan terlihat, apakah hasil konsisten di banyak titik, dan apa arti turunan pada konteks model/data.}
-
-% ================================================================
 \section{Latihan lanjutan dari Lembar Kerja}
 \begin{enumerate}
-\item[\textbf{B5.5 (L5)}] Jelaskan mengapa pemilihan \(h\) yang terlalu besar maupun terlalu kecil dapat menghasilkan kesalahan besar pada turunan numerik. Kaitkan dengan \textit{truncation error} dan \textit{round-off error}. Tambahkan satu eksperimen Richardson untuk menunjukkan bahwa perbaikan orde tidak menghilangkan masalah pembulatan ketika \(h\) sangat kecil.
+\item[\textbf{B5.5 (L5)}] Jelaskan mengapa pemilihan \(h\) yang terlalu besar maupun terlalu kecil dapat menghasilkan kesalahan besar pada turunan numerik. Kaitkan dengan \textit{truncation error} dan \textit{round-off error}. Tambahkan satu eksperimen Richardson untuk menunjukkan bahwa peningkatan orde tidak menghilangkan masalah pembulatan ketika \(h\) sangat kecil.
 \end{enumerate}
 
 \chapter{Praktikum 7: Integral Numerik Dasar}
