@@ -94,7 +94,7 @@ Format pembelajaran & Praktikum, bedah jurnal, reproduksi komputasi, dan pembela
 \end{tabularx}
 
 \section*{Tentang modul}
-Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Komputasi dan Analisis Numerik. Struktur penyajian mengikuti pola modul praktikum: capaian, target luaran, materi singkat, algoritma, contoh, program MATLAB, verifikasi, dan latihan. Struktur praktikum terdiri atas sebelas pertemuan terhitung. Seluruh butir pada Lembar Kerja/Bank Soal Praktikum B0.1--B7.5, Mock-Up UTS, dan Mock-Up UAS diintegrasikan kembali ke dalam contoh atau latihan modul dengan ID yang dipertahankan agar sinkron. Landasan teori utama modul menggunakan Chapra dan Canale, Numerical Methods for Engineers, edisi ke-7.
+Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Komputasi dan Analisis Numerik. Struktur penyajian mengikuti pola modul praktikum: capaian, target luaran, materi singkat, algoritma, contoh, program MATLAB, verifikasi, dan latihan. Struktur modul terdiri atas sepuluh bab praktikum utama; Praktikum 7 digunakan untuk rangkaian materi integrasi numerik pada M9--M10. Seluruh butir pada Lembar Kerja/Bank Soal Praktikum B0.1--B7.5, Mock-Up UTS, dan Mock-Up UAS diintegrasikan kembali ke dalam contoh atau latihan modul dengan ID yang dipertahankan agar sinkron. Landasan teori utama modul menggunakan Chapra dan Canale, Numerical Methods for Engineers, edisi ke-7.
 
 \section*{Capaian Pembelajaran Mata Kuliah (CPMK) utama}
 \textbf{CPMK 6.1.} Mahasiswa mampu memecahkan (C4) masalah optimasi termasuk (dan tidak terbatas pada) masalah program linier, masalah pengujian hipotesis dan masalah pada proses stokastik dengan memilih (C3) model matematika yang sesuai, menerapkan (C3) langkah-langkah metode numerik yang terukur dan valid secara analitik untuk mendapatkan solusi, serta menginterpretasikan solusi yang diperoleh sesuai konteks masalah.
@@ -111,11 +111,10 @@ Modul ini merupakan buku praktikum (bukan slide) untuk mata kuliah Pemodelan Kom
 3 & M4 & 6.1.5, 7.1.1 & SPNL; regresi linear; pencocokan kurva nonlinear; MSE, RMSE, MAPE, dan $R^2$\\
 5 & M6 & 6.1.6 & Turunan numerik: beda maju, beda mundur, beda pusat\\
 6 & M7 & 6.1.7, 7.1.1 & Richardson umum, studi orde, multi-titik, visualisasi, dan aplikasi data\\
-7 & M9 & 6.1.8 & Integral numerik: Trapezoid dan Simpson; pembanding Titik Tengah\\
-8 & M10 & 6.1.9, 7.1.1 & Titik Tengah, Romberg, studi akurasi dan reproduksi artikel\\
-9 & M11 & 6.1.10 & Masalah nilai awal: Euler dan evaluasi galat lokal/global\\
-10 & M12 & 6.1.11, 7.1.1 & Runge-Kutta, stabilitas, ukuran langkah, reproduksi kurva model\\
-11 & M13 & 6.1/7.1 & Praktikum terpadu: pemilihan metode, verifikasi dan validasi\\\hline
+7 & M9--M10 & 6.1.8--6.1.9, 7.1.1 & Integrasi numerik Newton--Cotes tertutup: Trapesium, Simpson $1/3$, Simpson $3/8$, Boole, konvergensi, dan aplikasi\\
+8 & M11 & 6.1.10 & Masalah nilai awal: Euler dan evaluasi galat lokal/global\\
+9 & M12 & 6.1.11, 7.1.1 & Runge-Kutta, stabilitas, ukuran langkah, reproduksi kurva model\\
+10 & M13 & 6.1/7.1 & Praktikum terpadu: pemilihan metode, verifikasi dan validasi\\\hline
 \end{tabularx}
 
 \section*{Peta ketercakupan Lembar Kerja}
@@ -129,10 +128,9 @@ B3.1--B3.5 & Praktikum 2 & SPL, solusi eksak, Jacobi, Gauss-Seidel, reaktor\\
 B4.1--B4.5 & Praktikum 3 & Newton multivariabel, OLS, Gauss--Newton, MSE, RMSE, MAPE, $R^2$\\
 B5.1--B5.4 & Praktikum 5 & Turunan analitik dan beda hingga\\
 B5.5 & Praktikum 6 & Ukuran langkah, Richardson, studi orde, multi-titik, dan aplikasi data\\
-B6.1--B6.3 & Praktikum 7 & Integral eksak, Trapezoid, Simpson\\
-B6.4--B6.5 & Praktikum 8 & Integral komposit, refinement, evaluasi galat\\
-B7.1--B7.2 & Praktikum 9 & Euler dan Heun\\
-B7.3--B7.5 & Praktikum 10 & RK4, solusi eksak, perbandingan metode\\
+B6.1--B6.5 & Praktikum 7 & Newton--Cotes tertutup, formula komposit, pemilihan aturan, konvergensi, dan evaluasi galat\\
+B7.1--B7.2 & Praktikum 8 & Euler dan Heun\\
+B7.3--B7.5 & Praktikum 9 & RK4, solusi eksak, perbandingan metode\\
 UTS.1--UTS.4 & Lampiran Mock-Up UTS & Akar dan SPL\\
 UAS.1--UAS.4 & Lampiran Mock-Up UAS & Turunan, integral, dan PDB\\\hline
 \end{tabularx}
@@ -264,7 +262,7 @@ Untuk setiap fungsi, tentukan turunan analitik terlebih dahulu agar galat sebena
 
 \chapter{Praktikum 6: Richardson, Studi Orde, dan Turunan pada Data}
 \CP{Mahasiswa mampu menganalisis pengaruh ukuran langkah dan orde galat pada turunan numerik, menerapkan ekstrapolasi Richardson pada beberapa orde skema dasar dan banyak titik evaluasi, serta menginterpretasikan turunan dari model hasil fitting pada data tabel (indikator 6.1.7 dan 7.1.1).}
-\Target{Eksperimen yang membandingkan beda hingga biasa dengan Richardson untuk $p=1,2,$ dan $4$; tabel multi-titik; grafik hampiran dan galat; serta mini-project yang mengubah data kumulatif penyakit menular menjadi estimasi laju perubahan melalui fitting dan turunan numerik.}
+\Target{Eksperimen yang membandingkan beda hingga biasa dengan Richardson untuk $p=1,2,$ dan $4$; exercise kelas turunan multi-titik; grafik hampiran dan galat; serta mini-project yang mengubah data kumulatif penyakit menular menjadi estimasi laju perubahan melalui fitting dan turunan numerik.}
 
 \section{Dari beda hingga ke ide Richardson}
 Pada praktikum sebelumnya, beda maju dan mundur memiliki galat utama $O(h)$, sedangkan beda pusat memiliki galat utama $O(h^2)$. Richardson memanfaatkan informasi orde tersebut untuk menghilangkan suku galat utama.
@@ -360,15 +358,12 @@ D_R=\frac{4D(0.25)-D(0.5)}{3}=-0.9125.
 \label{eq:class-rich}
 \end{equation}
 
-\section{Dari satu titik ke banyak titik}
-Pada aplikasi, turunan dihitung pada sekumpulan titik
-\begin{equation}
-x_1,x_2,\ldots,x_m.
-\label{eq:multipoints}
-\end{equation}
-Untuk setiap $x_i$, hitung $D(h;x_i)$, $D(h/2;x_i)$, dan $D_R(x_i)$, kemudian tampilkan sebagai tabel dan kurva. Untuk data tabel murni, $h/2$ belum tentu tersedia. Karena itu, salah satu strategi adalah melakukan fitting/interpolasi terlebih dahulu, lalu mengevaluasi model halus pada titik yang dibutuhkan.
 
-\section{Program MATLAB: Richardson generik dan multi-titik}
+\section{Program MATLAB: Richardson pada satu titik}
+Sebelum bekerja pada banyak titik, pastikan implementasi satu titik sudah benar. Gunakan fungsi pada
+Persamaan~(7.7)--(7.8), titik $x_0=0.5$, beda pusat, $h=0.5$, $p=2$, dan faktor perhalusan $r=2$.
+Program berikut harus mereproduksi nilai pada Persamaan~(7.9)--(7.11).
+
 \MatlabFile{numdiff.m}
 \lstinputlisting[language=Matlab]{matlab/numdiff.m}
 
@@ -377,6 +372,63 @@ Untuk setiap $x_i$, hitung $D(h;x_i)$, $D(h/2;x_i)$, dan $D_R(x_i)$, kemudian ta
 
 \MatlabFile{driver\_richardson.m}
 \lstinputlisting[language=Matlab]{matlab/driver_richardson.m}
+
+\section{Exercise Kelas: turunan pada banyak titik}
+\begin{tcolorbox}[colback=yellow!5,colframe=orange!70!black,title={Exercise Kelas}]
+Mulai dari \texttt{driver\_richardson.m} yang masih menghitung turunan di satu titik.
+Modifikasi program sehingga turunan dihitung pada banyak titik di interval
+\[
+0\le x\le 1.
+\]
+
+Gunakan fungsi dan turunan analitik pada Persamaan~(7.7)--(7.8), serta
+\[
+h=0.1,\qquad p=2,\qquad r=2.
+\]
+
+\begin{enumerate}
+\item Pilih sendiri jarak titik $\Delta x$, kemudian bentuk
+\[
+x_i=0,\Delta x,2\Delta x,\ldots,1.
+\]
+
+\item Pada setiap $x_i$, hitung beda maju, beda mundur, beda pusat, Richardson dari beda pusat,
+dan turunan analitik.
+
+\item Untuk Richardson gunakan
+\[
+\texttt{approx = @(hh) numdiff(f,x,'central',hh);}
+\]
+dan
+\[
+\texttt{[DR,Dh,Dhr] = richardson\_extrap(approx,h,p,r);}.
+\]
+
+\item Sajikan tabel hasil dan galat dengan
+\[
+e=\frac{|D_{\rm num}-D_{\rm eksak}|}{\max(1,|D_{\rm eksak}|)}.
+\]
+
+\item Buat dua grafik:
+\begin{enumerate}
+\item nilai turunan setiap metode terhadap $x$ bersama turunan analitik;
+\item galat setiap metode terhadap $x$.
+\end{enumerate}
+
+\item Berikan kesimpulan singkat:
+\begin{enumerate}
+\item apakah metode paling akurat sama untuk seluruh titik;
+\item apakah galat berubah terhadap $x$ walaupun $h$ tetap;
+\item apa masalah beda pusat di $x=0$ dan $x=1$ jika fungsi hanya tersedia sebagai data pada $[0,1]$.
+\end{enumerate}
+\end{enumerate}
+
+\textbf{Luaran:} satu tabel, dua grafik, dan kesimpulan maksimum lima kalimat.
+\end{tcolorbox}
+
+\Note{Kode solusi multi-titik tidak diberikan di modul. Exercise ini menjadi jembatan dari contoh
+satu titik menuju mini-project data pada bagian berikutnya.}
+
 
 \section{Mini-project: dari data kumulatif penyakit menular ke laju kasus}
 Misalkan tersedia data sintetik jumlah kasus kumulatif $C(t)$:
@@ -493,159 +545,328 @@ Gunakan data yang sama tetapi bandingkan dua model halus, misalnya logistik dan 
 \item[\textbf{B5.5 (L5)}] Jelaskan mengapa pemilihan \(h\) yang terlalu besar maupun terlalu kecil dapat menghasilkan kesalahan besar pada turunan numerik. Kaitkan dengan \textit{truncation error} dan \textit{round-off error}. Tambahkan satu eksperimen Richardson untuk menunjukkan bahwa peningkatan orde tidak menghilangkan masalah pembulatan ketika \(h\) sangat kecil.
 \end{enumerate}
 
-\chapter{Praktikum 7: Integral Numerik Dasar}
-\CP{Mahasiswa mampu menerapkan aturan Trapezoid dan Simpson serta mengevaluasi galat integrasi numerik (indikator 6.1.8).}
-\Target{Implementasi Trapezoid, Titik Tengah, dan Simpson komposit, studi jejaring perhalusan, serta perbandingan orde galat.}
+\chapter{Praktikum 7: Integrasi Numerik dengan Formula Newton--Cotes}
+\CP{Mahasiswa mampu menurunkan, menerapkan, dan membandingkan formula Newton--Cotes tertutup pada grid seragam, mengevaluasi galat serta konvergensinya, dan menggunakan integrasi numerik untuk menghitung kuantitas akumulatif pada model sederhana (indikator 6.1.8, 6.1.9, dan 7.1.1).}
+\Target{Implementasi modular Aturan Trapesium, Simpson $1/3$, Simpson $3/8$, dan Aturan Boole; strategi pemilihan formula berdasarkan jumlah subinterval; tabel galat dan grafik konvergensi; serta satu aplikasi integral pada masalah nilai awal berbentuk $y'=g(t)$.}
 
-\section{Materi singkat dan landasan teori}
-Integral tentu dapat dihampiri dengan mengintegralkan interpolan polinomial. Aturan Trapezoid memakai interpolan linear pada setiap subinterval. Untuk jejaring seragam $h=(b-a)/n$,
+\section{Dasar teoretis: formula Newton--Cotes tertutup}
+Untuk integral tentu
 \begin{equation}
-I_T=h\left[\frac12f(x_0)+\sum_{i=1}^{n-1}f(x_i)+\frac12f(x_n)\right],
+I=\int_a^b f(x)\,dx,
 \end{equation}
-dengan galat global $O(h^2)$ untuk fungsi cukup mulus.
+gagasan Newton--Cotes adalah mengganti $f(x)$ dengan polinom interpolasi lokal $p_n(x)$ yang dibangun dari titik-titik berjarak sama, kemudian mengintegralkan polinom tersebut:
+\begin{equation}
+I\approx \int_a^b p_n(x)\,dx.
+\end{equation}
+Formula disebut \textit{tertutup} karena titik ujung $a$ dan $b$ termasuk sebagai titik interpolasi.
 
-Aturan Titik Tengah juga berorde dua:
-\begin{equation}
-I_M=h\sum_{i=1}^{n} f\left(a+\left(i-\frac12\right)h\right).
-\end{equation}
-Aturan Simpson 1/3 mengintegralkan interpolan kuadratik dan, untuk $n$ genap,
-\begin{equation}
-I_S=\frac{h}{3}\left[f_0+f_n+4\sum_{i\;ganjil}f_i+2\sum_{i\;genap,\,i\ne 0,n}f_i\right],
-\end{equation}
-dengan galat global $O(h^4)$.
+Dengan $x_i=a+ih$ dan $h=(b-a)/n$, kenaikan derajat polinom menghasilkan keluarga formula:
+\begin{center}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{0.94\textwidth}{c c X c}
+\hline
+\textbf{Subinterval/panel} & \textbf{Titik/panel} & \textbf{Formula} & \textbf{Polinom lokal}\\\hline
+1 & 2 & Aturan Trapesium & linear\\
+2 & 3 & Simpson $1/3$ & kuadratik\\
+3 & 4 & Simpson $3/8$ & kubik\\
+4 & 5 & Aturan Boole & kuartik\\
+\hline
+\end{tabularx}
+\end{center}
 
-\section{Algoritma}
+\Note{Titik Tengah merupakan formula Newton--Cotes terbuka, sedangkan Romberg merupakan teknik ekstrapolasi lanjutan. Keduanya tidak menjadi fokus Praktikum 7 agar isi praktikum konsisten dengan materi Newton--Cotes tertutup pada Pertemuan 6.}
+
+\section{Bobot kuadratur dari interpolasi Lagrange}
+Untuk titik $x_0,x_1,\ldots,x_n$, polinom interpolasi Lagrange adalah
+\begin{equation}
+p_n(x)=\sum_{i=0}^{n} f(x_i)L_i(x),
+\qquad
+L_i(x)=\prod_{\substack{j=0\\j\ne i}}^n
+\frac{x-x_j}{x_i-x_j}.
+\end{equation}
+Jika diintegralkan,
+\begin{equation}
+\int_a^b p_n(x)\,dx
+=
+\sum_{i=0}^{n} f(x_i)
+\underbrace{\int_a^b L_i(x)\,dx}_{w_i}.
+\end{equation}
+Koefisien pada formula Newton--Cotes adalah bobot kuadratur $w_i$. Pola $1,4,1$ atau $7,32,12,32,7$ berasal dari integral basis Lagrange, bukan koefisien yang berdiri sendiri.
+
+\section{Aturan Trapesium}
+Dengan dua titik $x_0=a$ dan $x_1=b$, interpolan lokalnya linear:
+\begin{equation}
+p_1(x)=f(a)+\frac{f(b)-f(a)}{b-a}(x-a).
+\end{equation}
+Mengintegralkan garis tersebut memberikan
+\begin{equation}
+\boxed{
+I_T=(b-a)\frac{f(a)+f(b)}{2}
+}.
+\end{equation}
+Secara geometris, kurva diganti oleh garis yang menghubungkan dua titik ujung.
+
+Untuk fungsi cukup mulus, galat satu panel berorde $O(h^3)$, sedangkan galat global pada bentuk komposit berorde $O(h^2)$.
+
+\section{Aturan Trapesium komposit}
+Bagi $[a,b]$ menjadi $n$ subinterval seragam,
+\begin{equation}
+h=\frac{b-a}{n},\qquad x_i=a+ih.
+\end{equation}
+Menjumlahkan aturan Trapesium pada setiap subinterval menghasilkan
+\begin{equation}
+\boxed{
+I_T^{(n)}
+=
+\frac{h}{2}
+\left[
+f_0+2\sum_{i=1}^{n-1}f_i+f_n
+\right]
+}.
+\end{equation}
+Pola bobotnya
+\[
+1,2,2,\ldots,2,1.
+\]
+Titik interior berbobot dua karena menjadi ujung kanan satu panel sekaligus ujung kiri panel berikutnya.
+
+\section{Aturan Simpson $1/3$}
+Ambil tiga titik seragam
+\[
+x_0=a,\qquad x_1=a+h,\qquad x_2=a+2h=b.
+\]
+Interpolan kuadratik yang melewati ketiga titik diintegralkan sehingga diperoleh
+\begin{equation}
+\boxed{
+I_{1/3}
+=
+\frac{h}{3}
+\left(f_0+4f_1+f_2\right)
+}.
+\end{equation}
+Satu titik tengah memungkinkan kelengkungan lokal direpresentasikan oleh parabola. Galat satu panel berorde $O(h^5)$.
+
+\section{Aturan Simpson $1/3$ komposit}
+Karena satu panel Simpson $1/3$ menggunakan dua subinterval, bentuk komposit membutuhkan $n$ genap:
+\begin{equation}
+\boxed{
+I_{1/3}^{(n)}
+=
+\frac{h}{3}
+\left[
+f_0
++4\sum_{\substack{i=1\\i\ \mathrm{ganjil}}}^{n-1}f_i
++2\sum_{\substack{i=2\\i\ \mathrm{genap}}}^{n-2}f_i
++f_n
+\right]
+}.
+\end{equation}
+Pola bobotnya
+\[
+1,4,2,4,2,\ldots,4,1.
+\]
+Untuk fungsi cukup mulus, galat globalnya berorde $O(h^4)$.
+
+\section{Aturan Simpson $3/8$}
+Simpson $3/8$ menggunakan empat titik dan tiga subinterval berjarak sama:
+\begin{equation}
+\boxed{
+I_{3/8}
+=
+\frac{3h}{8}
+\left(f_0+3f_1+3f_2+f_3\right)
+}.
+\end{equation}
+Galat satu panel juga berorde $O(h^5)$. Dalam implementasi komposit, $n$ harus merupakan kelipatan tiga.
+
+Formula ini berguna ketika jumlah subinterval ganjil. Untuk $n\ge 3$ ganjil, gunakan Simpson $1/3$ pada bagian genap sebanyak mungkin, kemudian tutup tiga subinterval terakhir dengan Simpson $3/8$.
+
+\section{Aturan Boole}
+Aturan Boole memakai lima titik atau empat subinterval seragam:
+\begin{equation}
+\boxed{
+I_B
+=
+\frac{2h}{45}
+\left(
+7f_0+32f_1+12f_2+32f_3+7f_4
+\right)
+}.
+\end{equation}
+Pola bobotnya simetris. Untuk fungsi cukup mulus, galat satu panel berorde $O(h^7)$ dan bentuk kompositnya berorde global $O(h^6)$.
+
+\Note{Formula berorde lebih tinggi tidak otomatis menjadi pilihan terbaik. Untuk banyak aplikasi, Simpson sudah memadai dan akurasi lebih efektif ditingkatkan melalui bentuk komposit. Aturan Boole tetap penting untuk memahami struktur keluarga Newton--Cotes dan untuk verifikasi pada fungsi halus.}
+
+\section{Pemilihan formula pada grid seragam}
+Pemilihan formula harus mempertimbangkan jumlah subinterval dan struktur grid:
 \begin{enumerate}
-\item Pilih $n$, hitung $h=(b-a)/n$ dan titik grid.
-\item Evaluasi $f$ secara vektor bila memungkinkan.
-\item Terapkan bobot sesuai metode.
-\item Ulangi untuk $n,2n,4n,\ldots$ dan amati penurunan galat.
-\item Pastikan $n$ genap untuk Simpson 1/3 komposit.
+\item $n=1$: gunakan Aturan Trapesium.
+\item $n$ genap: gunakan Simpson $1/3$ komposit.
+\item $n=3$: gunakan Simpson $3/8$.
+\item $n\ge 3$ ganjil: gunakan Simpson $1/3$ untuk bagian genap dan Simpson $3/8$ untuk tiga subinterval terakhir.
+\item Jika $n$ merupakan kelipatan empat dan fungsi cukup mulus, Aturan Boole dapat digunakan sebagai pembanding orde lebih tinggi.
 \end{enumerate}
 
-\section{Contoh}
-Untuk $\int_0^\pi\sin x\,dx=2$, gunakan $n=4,8,16,\ldots$. Trapezoid dan Titik Tengah menunjukkan galat berorde dua, sedangkan Simpson turun jauh lebih cepat karena berorde empat pada fungsi mulus.
+\begin{center}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{0.94\textwidth}{X c c X}
+\hline
+\textbf{Formula} & \textbf{Titik/panel} & \textbf{Subinterval/panel} & \textbf{Syarat bentuk komposit}\\\hline
+Trapesium & 2 & 1 & sembarang $n\ge1$\\
+Simpson $1/3$ & 3 & 2 & $n$ genap\\
+Simpson $3/8$ & 4 & 3 & $n$ kelipatan 3\\
+Boole & 5 & 4 & $n$ kelipatan 4\\
+\hline
+\end{tabularx}
+\end{center}
 
-\section{Program MATLAB: pisahkan function dan driver}
-\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+\section{Contoh dengan pembanding analitik}
+Gunakan fungsi yang sama dengan materi kelas:
+\begin{equation}
+f(x)=0.2+25x-200x^2+675x^3-900x^4+400x^5,
+\qquad 0\le x\le0.8.
+\end{equation}
+Antiturunannya adalah
+\begin{equation}
+F(x)=0.2x+\frac{25}{2}x^2-\frac{200}{3}x^3
++\frac{675}{4}x^4-180x^5+\frac{400}{6}x^6,
+\end{equation}
+sehingga
+\begin{equation}
+I_{\mathrm{exact}}=F(0.8)-F(0)=1.6405333333.
+\end{equation}
 
-\MatlabFile{trap\_comp.m (function)}
+Beberapa hasil numerik:
+\begin{center}
+\renewcommand{\arraystretch}{1.16}
+\begin{tabularx}{0.96\textwidth}{X c c c}
+\hline
+\textbf{Formula} & \textbf{$n$} & \textbf{$I_{\mathrm{num}}$} & \textbf{Galat relatif (\%)}\\\hline
+Trapesium tunggal & 1 & 0.172800 & 89.4668\\
+Trapesium komposit & 2 & 1.068800 & 34.8505\\
+Simpson $1/3$ tunggal & 2 & 1.367467 & 16.6450\\
+Simpson $3/8$ tunggal & 3 & 1.519170 & 7.3978\\
+Simpson $1/3$ komposit & 4 & 1.623467 & 1.0403\\
+Boole & 4 & 1.640533 & $\approx 0$\\
+Kombinasi Simpson $1/3$ dan $3/8$ & 5 & 1.645077 & 0.2770\\
+\hline
+\end{tabularx}
+\end{center}
+
+Hasil Boole tepat sampai galat pembulatan pada contoh ini karena integran adalah polinom derajat lima, sedangkan galat Boole melibatkan turunan keenam.
+
+\section{Implementasi modular MATLAB}
+Pisahkan algoritma numerik dari driver. Function menerima $f,a,b,n$ dan mengembalikan nilai integral, sedangkan driver mengatur fungsi uji, pembanding, tabel, dan visualisasi.
+
+\MatlabFile{trap\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/trap_comp.m}
 
-\MatlabFile{midpoint\_comp.m (function)}
-\lstinputlisting[language=Matlab]{matlab/midpoint_comp.m}
-
-\MatlabFile{simpson\_comp.m (function)}
+\MatlabFile{simpson\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
 
-\MatlabFile{driver\_integral.m (driver)}
+\MatlabFile{simpson38\_comp.m}
+\lstinputlisting[language=Matlab]{matlab/simpson38_comp.m}
+
+\MatlabFile{boole\_comp.m}
+\lstinputlisting[language=Matlab]{matlab/boole_comp.m}
+
+\MatlabFile{simpson\_mixed\_comp.m}
+\lstinputlisting[language=Matlab]{matlab/simpson_mixed_comp.m}
+
+\MatlabFile{driver\_integral.m}
 \lstinputlisting[language=Matlab]{matlab/driver_integral.m}
 
+\section{Analisis konvergensi}
+Untuk memeriksa apakah implementasi mengikuti orde teori, gunakan fungsi halus dengan integral eksak yang diketahui, misalnya
+\[
+g(x)=e^x,\qquad
+\int_0^1e^x\,dx=e-1.
+\]
+Gunakan $n=4,8,16,32,64$. Untuk setiap $n$, hitung galat Trapesium, Simpson $1/3$, dan Boole. Plot galat terhadap $h=(b-a)/n$ pada skala log-log.
 
-\Note{Aturan dengan orde tinggi tidak selalu unggul pada data tidak mulus atau noisy. Asumsi regularitas fungsi harus dipertimbangkan sebelum menyimpulkan metode terbaik.}
+Jika
+\[
+E(h)\approx Ch^p,
+\]
+maka orde observasi dapat dihitung dengan
+\begin{equation}
+p_{\mathrm{obs}}
+=
+\frac{\log(E_h/E_{h/2})}{\log 2}.
+\end{equation}
+Pada rentang asimtotik diharapkan Trapesium mendekati orde 2, Simpson $1/3$ orde 4, dan Boole orde 6.
 
-\section{Luaran driver dan grafik galat}
-Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
+\AnalysisCheck{Jangan menyimpulkan ``lebih banyak titik selalu lebih baik''. Bandingkan galat, jumlah evaluasi fungsi, keteraturan grid, dan regularitas integran. Untuk $h$ yang sangat kecil, pembulatan juga dapat membatasi peningkatan akurasi.}
+
+\section{Aplikasi pada masalah nilai awal berbentuk $y'=g(t)$}
+Tidak semua PDB dapat diselesaikan hanya dengan kuadratur. Namun, jika
+\begin{equation}
+\frac{dy}{dt}=g(t),\qquad y(0)=y_0,
+\end{equation}
+maka
+\begin{equation}
+y(T)=y_0+\int_0^Tg(t)\,dt.
+\end{equation}
+Untuk
+\begin{equation}
+\frac{dy}{dt}=e^{-t^2},\qquad y(0)=1,
+\end{equation}
+diperoleh
+\begin{equation}
+y(1)=1+\int_0^1e^{-t^2}\,dt.
+\end{equation}
+Dengan Simpson $1/3$ komposit dan $n=4$,
+\begin{equation}
+\int_0^1e^{-t^2}\,dt\approx0.746855,
+\qquad
+\boxed{y(1)\approx1.746855}.
+\end{equation}
+Contoh ini menunjukkan bahwa integrasi numerik dapat digunakan untuk menghitung akumulasi ketika laju perubahan diketahui.
 
 \section{Latihan}
 \begin{enumerate}
-\item Evaluasi $\int_0^{\pi/2}(6+3\cos x)\,dx$ dengan beberapa $n$ dan hitung galat relatif.
-\item Terapkan Trapezoid pada data tabular $x=[0,0.1,\ldots,0.5]$ dengan $f=[1,8,4,3.5,5,1]$.
-\item Buat grafik galat terhadap $n$ dan estimasikan orde observasi.
-\item Jelaskan kondisi ketika data tabular membuat Simpson tidak dapat langsung diterapkan.
+\item \textbf{Reproduksi contoh kelas.}
+Gunakan fungsi polinom pada contoh. Reproduksi nilai Trapesium tunggal, Trapesium $n=2$, Simpson $1/3$ tunggal, dan Simpson $1/3$ komposit $n=4$. Bandingkan dengan $I_{\mathrm{exact}}$.
 
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
+\item \textbf{Simpson $3/8$ dan Boole.}
+Pada fungsi yang sama, hitung Simpson $3/8$ dengan $n=3$ dan Boole dengan $n=4$. Jelaskan mengapa Boole memberikan hasil tepat sampai galat pembulatan pada contoh ini.
 
+\item \textbf{Pemilihan formula untuk $n$ ganjil.}
+Gunakan $n=5$. Terapkan Simpson $1/3$ pada dua subinterval pertama dan Simpson $3/8$ pada tiga subinterval terakhir. Bandingkan dengan hasil eksak dan jelaskan mengapa Simpson $1/3$ komposit tidak dapat digunakan langsung pada seluruh interval.
+
+\item \textbf{Konvergensi.}
+Untuk $g(x)=e^x$ pada $[0,1]$, gunakan $n=4,8,16,32,64$. Buat grafik log-log galat terhadap $h$ untuk Trapesium, Simpson $1/3$, dan Boole. Estimasikan orde observasi masing-masing.
+
+\item \textbf{Data pada grid tidak seragam.}
+Diberikan data
+\[
+x=[0,0.15,0.40,0.65,1.00],\qquad
+f=[1.00,1.35,1.90,2.10,2.80].
+\]
+Jelaskan mengapa formula Simpson komposit standar tidak dapat langsung digunakan. Gunakan Trapesium per segmen sebagai hampiran dan nyatakan asumsi yang digunakan.
+
+\item \textbf{Aplikasi PDB.}
+Hitung
+\[
+y(1)=1+\int_0^1e^{-t^2}\,dt
+\]
+dengan Trapesium komposit, Simpson $1/3$ komposit, dan Boole. Gunakan jumlah subinterval yang memenuhi syarat masing-masing, kemudian bandingkan hasilnya dengan nilai referensi berakurasi tinggi.
+
+\item \textbf{Exercise orientasi project.}
+Pilih satu kuantitas akumulatif dari model atau data, misalnya total beban, total energi, total kasus selama interval, atau luas kumulatif. Nyatakan integran, satuan, interval, dan alasan pemilihan formula. Lakukan minimal dua tingkat perhalusan grid dan sajikan tabel serta grafik konvergensi.
 \end{enumerate}
 
-% ================================================================
 \section{Latihan terintegrasi dari Lembar Kerja}
 Jika integral analitik tersedia, hitung nilai eksaknya terlebih dahulu dan gunakan sebagai pembanding.
 \begin{enumerate}
 \item[\textbf{B6.1 (L1)}] Hitung nilai eksak \(I=\int_0^2 (x^2+1)\,dx\).
-\item[\textbf{B6.2 (L2)}] Gunakan aturan Trapezoid satu panel untuk menghampiri integral pada B6.1. Hitung galat absolut dan galat relatif sebenarnya.
-\item[\textbf{B6.3 (L3)}] Gunakan Simpson \(1/3\) satu segmen untuk menghampiri integral pada B6.1. Bandingkan hasilnya dengan Trapezoid.
-\end{enumerate}
-
-\chapter{Praktikum 8: Titik Tengah dan Romberg}
-\CP{Mahasiswa mampu menerapkan Titik Tengah dan Romberg serta membandingkan akurasinya dengan metode integrasi lain; mampu mereproduksi hasil integrasi numerik dari artikel (indikator 6.1.9 dan 7.1.1).}
-\Target{Tabel Romberg, pembandingan Trapezoid/Titik Tengah/Simpson/Romberg, dan analisis biaya terhadap akurasi.}
-
-\section{Materi singkat dan landasan teori}
-Romberg menggabungkan perhalusan berturut-turut Trapezoid dengan Richardson ekstrapolasi. Kolom pertama adalah
-\begin{equation}
-R_{j,1}=T(h_j),\qquad h_j=\frac{b-a}{2^{j-1}}.
-\end{equation}
-Kolom selanjutnya dibentuk rekursif
-\begin{equation}
-R_{j,k}=R_{j,k-1}+\frac{R_{j,k-1}-R_{j-1,k-1}}{4^{k-1}-1},\qquad k\le j.
-\end{equation}
-Karena galat utama Trapezoid mengandung pangkat genap $h^2,h^4,\ldots$, tiap ekstrapolasi menghilangkan satu suku galat utama. Tabel Romberg juga memberikan cara alami memantau konvergensi tanpa solusi analitik: bandingkan elemen diagonal successive.
-
-Titik Tengah berguna sebagai pembanding karena memakai titik interior dan memiliki galat $O(h^2)$ dengan konstanta berbeda dari Trapezoid. Dalam praktik, metode terbaik dipilih berdasarkan kemulusan, biaya evaluasi fungsi, dan target akurasi, bukan orde saja.
-
-\section{Algoritma Romberg}
-\begin{algorithm}
-\caption{Integrasi Romberg}
-\begin{algorithmic}[1]
-\For{$j=1,\ldots,m$}
-\State Hitung $R_{j,1}=T$ dengan $n=2^{j-1}$ subinterval.
-\For{$k=2,\ldots,j$}
-\State $R_{j,k}\gets R_{j,k-1}+[R_{j,k-1}-R_{j-1,k-1}]/(4^{k-1}-1)$.
-\EndFor
-\EndFor
-\State Ambil $R_{m,m}$ atau hentikan ketika diagonal sudah memenuhi toleransi.
-\end{algorithmic}
-\end{algorithm}
-
-\section{Contoh}
-Hampiri
-\begin{equation}
-I=\int_0^2\frac{e^x\sin x}{1+x^2}\,dx.
-\end{equation}
-Nilai referensi numerik presisi tinggi sekitar $1.94013002203$. Tabel Romberg memperlihatkan bagaimana perhalusan berturut-turut dan ekstrapolasi menghasilkan konvergensi cepat tanpa langsung memanggil penyelesai numerik bawaan sebagai solusi utama.
-
-\section{Program MATLAB: pisahkan function dan driver}
-\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
-
-\MatlabFile{romberg\_fun.m (function)}
-\lstinputlisting[language=Matlab]{matlab/romberg_fun.m}
-
-\MatlabFile{trap\_comp.m (function)}
-\lstinputlisting[language=Matlab]{matlab/trap_comp.m}
-
-\MatlabFile{driver\_romberg.m (driver)}
-\lstinputlisting[language=Matlab]{matlab/driver_romberg.m}
-
-
-\AnalysisCheck{Bandingkan bukan hanya galat akhir, tetapi juga jumlah evaluasi $f$. Penyelesai numerik dengan galat kecil tetapi evaluasi sangat banyak belum tentu efisien.}
-
-\section{Luaran driver dan grafik galat}
-Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Plot galat terhadap ukuran langkah $h$ atau banyak subinterval $n$; simpan nilainya sebagai \texttt{errs} pada driver bila diperlukan.
-
-\section{Latihan}
-\begin{enumerate}
-\item Gunakan Romberg untuk $\int_0^3 xe^{2x}\,dx$ dan bandingkan dengan solusi analitik.
-\item Buat kriteria berhenti berdasarkan $|R_{j,j}-R_{j-1,j-1}|$.
-\item Bandingkan Trapezoid, Titik Tengah, Simpson, dan Romberg pada fungsi dengan perubahan tajam.
-\item Reproduksi satu hasil integral numerik dari artikel. Laporkan grid, toleransi, dan penyelesai numerik pembanding.
-
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
-
-\end{enumerate}
-
-% ================================================================
-\section{Latihan lanjutan dari Lembar Kerja}
-\begin{enumerate}
-\item[\textbf{B6.4 (L4)}] Diberikan tabel \(x: 0,0.5,1,1.5,2\) dan \(f(x): 101,-2,54,147,-10\). Hitung hampiran integral \(\int_0^2 f(x)\,dx\) dengan Composite Trapezoid dan Composite Simpson \(1/3\).
+\item[\textbf{B6.2 (L2)}] Gunakan Aturan Trapesium satu panel untuk menghampiri integral pada B6.1. Hitung galat absolut dan galat relatif sebenarnya.
+\item[\textbf{B6.3 (L3)}] Gunakan Simpson \(1/3\) satu panel untuk menghampiri integral pada B6.1. Bandingkan hasilnya dengan Trapesium.
+\item[\textbf{B6.4 (L4)}] Diberikan tabel \(x:0,0.5,1,1.5,2\) dan \(f(x):101,-2,54,147,-10\). Hitung hampiran \(\int_0^2f(x)\,dx\) dengan Trapesium komposit dan Simpson \(1/3\) komposit.
 \item[\textbf{B6.5 (L5)}] Jelaskan kapan hasil integral numerik dapat dievaluasi dengan galat sebenarnya, dan kapan hanya galat hampiran atau perbandingan antarmetode yang dapat dipakai. Berikan masing-masing satu contoh singkat.
 \end{enumerate}
 
-\chapter{Praktikum 9: Masalah Nilai Awal - Euler dan Runge-Kutta}
+\chapter{Praktikum 8: Masalah Nilai Awal: Metode Euler, Heun, dan Runge--Kutta}
 \CP{Mahasiswa mampu menerapkan metode Euler untuk masalah nilai awal dan mengevaluasi galat lokal/global (indikator 6.1.10), serta memperoleh pengantar implementasi Runge-Kutta untuk pembandingan.}
 \Target{Penyelesai numerik Euler dan RK4 modular, kurva solusi, galat terhadap solusi referensi, dan studi ukuran langkah.}
 
@@ -741,7 +962,7 @@ Gunakan solusi eksak ketika tersedia untuk mengevaluasi galat metode.
 \item[\textbf{B7.2 (L2)}] Untuk masalah pada B7.1, gunakan metode Heun dengan \(h=0.2\) untuk menghitung \(y_1\).
 \end{enumerate}
 
-\chapter{Praktikum 10: Stabilitas, Ukuran Langkah, dan Reproduksi Model PDB}
+\chapter{Praktikum 9: Stabilitas, Ukuran Langkah, dan Reproduksi Model PDB}
 \CP{Mahasiswa mampu menerapkan Runge-Kutta dan menganalisis akurasi, stabilitas, serta pengaruh ukuran langkah; mampu mereproduksi kurva/model sederhana dari artikel (indikator 6.1.11 dan 7.1.1).}
 \Target{Studi stabilitas ukuran langkah pada persamaan uji, perbandingan Euler-RK4, serta satu reproduksi kurva model dari literatur.}
 
@@ -810,7 +1031,7 @@ Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta
 \item[\textbf{B7.5 (L5)}] Bandingkan Euler, Heun, dan RK4 dari aspek biaya komputasi per langkah, akurasi, dan kecocokan untuk masalah dengan dinamika halus.
 \end{enumerate}
 
-\chapter{Praktikum 11: Praktikum Terpadu, Verifikasi, dan Validasi}
+\chapter{Praktikum 10: Praktikum Terpadu, Verifikasi, dan Validasi}
 \CP{Mahasiswa mampu memilih metode numerik yang sesuai, mengintegrasikan beberapa metode dalam satu alur kerja, memeriksa keakuratan dan keterbatasan hasil, serta mendokumentasikan proses komputasi secara ilmiah (penguatan CPMK 6.1 dan 7.1).}
 \Target{Satu mini-pipeline komputasi yang menghubungkan formulasi masalah, penyelesai numerik, verifikasi, analisis sensitivitas numerik, dan interpretasi luaran sebagai persiapan UAS dan proyek.}
 
@@ -924,7 +1145,7 @@ Keterulangan & Dapatkah orang lain menjalankan kode dan memperoleh hasil yang sa
 \begin{itemize}
 \item Akar dan SPL: \texttt{driver\_akar.m}, \texttt{driver\_spl.m}.
 \item SPNL dan regresi: \texttt{driver\_spnl.m}, \texttt{driver\_regresi.m}, \texttt{driver\_tugas\_curvefit.m}.
-\item Turunan dan integral: \texttt{driver\_turunan.m}, \texttt{driver\_richardson.m}, \texttt{driver\_integral.m}, \texttt{driver\_romberg.m}.
+\item Turunan dan integral: \texttt{driver\_turunan.m}, \texttt{driver\_richardson.m}, dan \texttt{driver\_integral.m}.
 \item PDB dan sintesis: \texttt{driver\_ode.m}, \texttt{driver\_stabilitas.m}, \texttt{driver\_terpadu.m}.
 \end{itemize}
 Function yang dipakai dijelaskan di setiap bab. Fungsi tambahan antara lain \texttt{relative\_error.m}, \texttt{regresi\_linear.m}, \texttt{regresi\_nonlinear.m}, serta \texttt{metrik\_regresi.m}. Nama file lama masih disimpan sebagai kompatibilitas; jalankan driver baru sesuai bab.
@@ -961,6 +1182,9 @@ Paket kode menyertakan skrip utama dan fungsi berikut.
 \item \texttt{trap\_comp.m}
 \item \texttt{midpoint\_comp.m}
 \item \texttt{simpson\_comp.m}
+\item \texttt{simpson38\_comp.m}
+\item \texttt{boole\_comp.m}
+\item \texttt{simpson\_mixed\_comp.m}
 \item \texttt{romberg\_demo.m}
 \item \texttt{romberg\_fun.m}
 \item \texttt{ode\_euler\_rk4.m}
@@ -970,6 +1194,8 @@ Paket kode menyertakan skrip utama dan fungsi berikut.
 \item \texttt{integrated\_review.m}
 \end{itemize}
 \end{multicols}
+
+\noindent\textbf{Catatan kompatibilitas.} File \texttt{midpoint\_comp.m}, \texttt{romberg\_demo.m}, dan \texttt{romberg\_fun.m} tetap dapat dipertahankan sebagai bahan pengayaan, tetapi tidak digunakan sebagai materi inti Praktikum 7 edisi ini.
 
 
 \chapter*{Referensi Utama}
