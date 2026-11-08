@@ -547,80 +547,210 @@ Gunakan data yang sama tetapi bandingkan dua model halus, misalnya logistik dan 
 
 
 \chapter{Praktikum 7: Integrasi Numerik dengan Formula Newton--Cotes}
-\CP{Mahasiswa mampu menerapkan formula Newton--Cotes tertutup pada grid seragam, memeriksa galat dan orde konvergensi, serta menggunakan integrasi numerik untuk menghitung kuantitas akumulatif (indikator 6.1.8, 6.1.9, dan 7.1.1).}
-\Target{Kode MATLAB modular untuk Aturan Trapesium, Simpson $1/3$, Simpson $3/8$, dan Aturan Boole; tabel perbandingan; tiga visualisasi komputasi; serta analisis pengaruh jumlah subinterval terhadap galat.}
+\CP{Mahasiswa mampu menerapkan formula Newton--Cotes tertutup pada grid seragam, memeriksa galat hasil komputasi, dan menggunakan kuadratur sebagai dasar perhitungan kuantitas akumulatif (indikator 6.1.8, 6.1.9, dan 7.1.1).}
+\Target{Function MATLAB untuk Aturan Trapesium, Simpson $1/3$, Simpson $3/8$, dan Aturan Boole; driver pembanding; visualisasi interpolan kuadratur; serta latihan yang menghubungkan kuadratur dengan formulasi integral suatu masalah nilai awal.}
 
-\section{Ringkasan metode}
-Pada praktikum ini, integral
+\section{Aturan Trapesium}
+Untuk satu subinterval $[a,b]$, gunakan
+\begin{equation}
+\boxed{
+I_T=(b-a)\frac{f(a)+f(b)}{2}
+}
+\end{equation}
+atau, dengan $h=b-a$,
 \[
-I=\int_a^b f(x)\,dx
+I_T=\frac{h}{2}(f_0+f_1).
 \]
-dihampiri dari nilai fungsi pada titik-titik berjarak sama. Gunakan
-\[
-x_i=a+ih,\qquad h=\frac{b-a}{n}.
-\]
+Formula ini mengintegralkan interpolan linear yang melalui kedua titik ujung.
 
-\begin{center}
-\renewcommand{\arraystretch}{1.22}
-\begin{tabularx}{0.97\textwidth}{p{0.23\textwidth}p{0.17\textwidth}X p{0.13\textwidth}}
-\hline
-\textbf{Formula} & \textbf{Syarat $n$} & \textbf{Formula satu panel} & \textbf{Orde global}\\\hline
-Aturan Trapesium & $n\ge 1$ &
-$\displaystyle \frac{h}{2}(f_0+f_1)$ & $O(h^2)$\\[1.5mm]
-Simpson $1/3$ & $n$ genap &
-$\displaystyle \frac{h}{3}(f_0+4f_1+f_2)$ & $O(h^4)$\\[1.5mm]
-Simpson $3/8$ & $n$ kelipatan 3 &
-$\displaystyle \frac{3h}{8}(f_0+3f_1+3f_2+f_3)$ & $O(h^4)$\\[1.5mm]
-Aturan Boole & $n$ kelipatan 4 &
-$\displaystyle \frac{2h}{45}(7f_0+32f_1+12f_2+32f_3+7f_4)$ & $O(h^6)$\\
-\hline
-\end{tabularx}
-\end{center}
-
-Untuk $n$ ganjil dengan $n\ge3$, gunakan Simpson $1/3$ pada bagian yang memiliki jumlah subinterval genap dan Simpson $3/8$ pada tiga subinterval yang tersisa. Formula berorde lebih tinggi memerlukan fungsi yang cukup mulus; orde teori tidak menggantikan pemeriksaan galat dan konvergensi.
-
-\section{Function MATLAB}
-Seluruh function menerima fungsi $f$, batas $a,b$, dan jumlah subinterval $n$. Driver tidak menyimpan ulang algoritma kuadratur.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/integral_trapesium.png}
+\caption{Interpretasi Aturan Trapesium sebagai integral interpolan linear.}
+\end{figure}
 
 \MatlabFile{trap\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/trap_comp.m}
 
+Untuk satu panel:
+\begin{lstlisting}[language=Matlab]
+I = trap_comp(f,a,b,1);
+\end{lstlisting}
+
+\subsection*{Aturan Trapesium komposit}
+Jika $[a,b]$ dibagi menjadi $n$ subinterval seragam,
+\[
+h=\frac{b-a}{n},
+\]
+maka
+\begin{equation}
+\boxed{
+I_T^{(n)}
+=
+\frac{h}{2}
+\left[
+f_0+2\sum_{i=1}^{n-1}f_i+f_n
+\right].
+}
+\end{equation}
+Function yang sama digunakan dengan $n>1$:
+\begin{lstlisting}[language=Matlab]
+I = trap_comp(f,a,b,n);
+\end{lstlisting}
+
+\section{Aturan Simpson \texorpdfstring{$1/3$}{1/3}}
+Satu panel Simpson $1/3$ menggunakan tiga titik berjarak sama, atau dua subinterval:
+\begin{equation}
+\boxed{
+I_{1/3}
+=
+\frac{h}{3}
+(f_0+4f_1+f_2),
+\qquad
+h=\frac{b-a}{2}.
+}
+\end{equation}
+Formula ini mengintegralkan interpolan kuadratik melalui tiga titik.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/integral_simpson13.png}
+\caption{Simpson $1/3$ sebagai integral interpolan kuadratik.}
+\end{figure}
+
 \MatlabFile{simpson\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
+
+Untuk satu panel:
+\begin{lstlisting}[language=Matlab]
+I = simpson_comp(f,a,b,2);
+\end{lstlisting}
+
+\subsection*{Aturan Simpson \texorpdfstring{$1/3$}{1/3} komposit}
+Untuk $n$ genap,
+\begin{equation}
+\boxed{
+I_{1/3}^{(n)}
+=
+\frac{h}{3}
+\left[
+f_0
++4\sum_{\substack{i=1\\ i\ {\rm ganjil}}}^{n-1}f_i
++2\sum_{\substack{i=2\\ i\ {\rm genap}}}^{n-2}f_i
++f_n
+\right].
+}
+\end{equation}
+Pola bobotnya adalah
+\[
+1,4,2,4,2,\ldots,4,1.
+\]
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/integral_simpson13_komposit.png}
+\caption{Simpson $1/3$ komposit menggunakan interpolan kuadratik pada setiap dua subinterval.}
+\end{figure}
+
+Function yang sama digunakan dengan $n$ genap:
+\begin{lstlisting}[language=Matlab]
+n = 4;
+I = simpson_comp(f,a,b,n);
+\end{lstlisting}
+
+\section{Aturan Simpson \texorpdfstring{$3/8$}{3/8}}
+Simpson $3/8$ menggunakan empat titik berjarak sama, atau tiga subinterval:
+\begin{equation}
+\boxed{
+I_{3/8}
+=
+\frac{3h}{8}
+(f_0+3f_1+3f_2+f_3),
+\qquad
+h=\frac{b-a}{3}.
+}
+\end{equation}
+Interpolan lokalnya berderajat tiga.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/integral_simpson38.png}
+\caption{Simpson $3/8$ sebagai integral interpolan kubik.}
+\end{figure}
 
 \MatlabFile{simpson38\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/simpson38_comp.m}
 
+Untuk satu panel:
+\begin{lstlisting}[language=Matlab]
+I = simpson38_comp(f,a,b,3);
+\end{lstlisting}
+Untuk bentuk komposit, $n$ harus merupakan kelipatan tiga.
+
+\section{Aturan Boole}
+Aturan Boole menggunakan lima titik berjarak sama, atau empat subinterval:
+\begin{equation}
+\boxed{
+I_B
+=
+\frac{2h}{45}
+\left(
+7f_0+32f_1+12f_2+32f_3+7f_4
+\right),
+\qquad
+h=\frac{b-a}{4}.
+}
+\end{equation}
+Interpolan lokalnya berderajat empat.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/integral_boole.png}
+\caption{Aturan Boole sebagai integral interpolan kuartik.}
+\end{figure}
+
 \MatlabFile{boole\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/boole_comp.m}
+
+Untuk satu panel:
+\begin{lstlisting}[language=Matlab]
+I = boole_comp(f,a,b,4);
+\end{lstlisting}
+Untuk bentuk komposit, $n$ harus merupakan kelipatan empat.
+
+\section{Kombinasi Simpson pada jumlah subinterval ganjil}
+Simpson $1/3$ komposit memerlukan jumlah subinterval genap. Untuk $n\ge3$ yang ganjil, gunakan Simpson $1/3$ pada bagian dengan jumlah subinterval genap dan Simpson $3/8$ pada tiga subinterval yang tersisa.
 
 \MatlabFile{simpson\_mixed\_comp.m}
 \lstinputlisting[language=Matlab]{matlab/simpson_mixed_comp.m}
 
-\section{Driver praktikum dan visualisasi}
-Jalankan file berikut dari folder \path{Modul_Praktikum/matlab}. Driver menghasilkan tabel numerik dan tiga gambar: integran beserta titik grid, perbandingan galat antarmetode, dan grafik log-log untuk studi konvergensi.
+Contoh:
+\begin{lstlisting}[language=Matlab]
+n = 5;
+I = simpson_mixed_comp(f,a,b,n);
+\end{lstlisting}
+
+\section{Driver pembanding}
+Gunakan fungsi
+\begin{equation}
+f(x)=0.2+25x-200x^2+675x^3-900x^4+400x^5,
+\qquad 0\le x\le0.8.
+\end{equation}
+Nilai integral analitiknya
+\[
+I_{\rm exact}=1.6405333333.
+\]
+Driver berikut menjalankan seluruh formula pada konfigurasi panel yang sesuai, menyusun tabel galat, dan menghasilkan visualisasi titik kuadratur.
 
 \MatlabFile{driver\_integral.m}
 \lstinputlisting[language=Matlab]{matlab/driver_integral.m}
 
-\section{Percobaan 1: perbandingan formula Newton--Cotes}
-Gunakan
-\[
-f(x)=0.2+25x-200x^2+675x^3-900x^4+400x^5,
-\qquad 0\le x\le0.8.
-\]
-Nilai pembanding analitik adalah
-\[
-I_{\mathrm{exact}}=1.6405333333.
-\]
-
-Jalankan bagian A pada driver. Gunakan nilai berikut sebagai kontrol implementasi.
-
+Nilai kontrol implementasi:
 \begin{center}
-\renewcommand{\arraystretch}{1.16}
-\begin{tabularx}{0.90\textwidth}{X c c}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{0.92\textwidth}{X c c}
 \hline
-\textbf{Formula} & \textbf{$n$} & \textbf{Hampiran integral}\\\hline
+\textbf{Formula} & \textbf{$n$} & \textbf{Hampiran}\\\hline
 Trapesium & 1 & 0.172800\\
 Trapesium komposit & 2 & 1.068800\\
 Simpson $1/3$ & 2 & 1.367467\\
@@ -631,55 +761,6 @@ Simpson campuran & 5 & 1.645077\\
 \hline
 \end{tabularx}
 \end{center}
-
-Periksa dua keluaran visual pertama. Gambar integran menunjukkan posisi titik evaluasi pada grid $n=4$. Grafik galat memperlihatkan bahwa jumlah titik saja tidak cukup untuk menjelaskan akurasi; struktur bobot formula juga menentukan hasil.
-
-\section{Percobaan 2: perhalusan grid dan orde observasi}
-Bagian B pada driver menggunakan
-\[
-g(x)=e^x,\qquad 0\le x\le1,\qquad
-I_{\mathrm{exact}}=e-1.
-\]
-Hitung galat untuk
-\[
-n=4,8,16,32,64.
-\]
-Orde observasi dihitung dengan
-\[
-p_{\mathrm{obs}}
-=
-\frac{\log(E_h/E_{h/2})}{\log 2}.
-\]
-Pada rentang asimtotik, nilai $p_{\mathrm{obs}}$ seharusnya mendekati 2 untuk Trapesium, 4 untuk Simpson $1/3$, dan 6 untuk Boole.
-
-Gunakan grafik log-log untuk memeriksa apakah kemiringan kurva galat konsisten dengan orde teori. Jika titik dengan $h$ sangat kecil mulai menyimpang, periksa kemungkinan pengaruh pembulatan.
-
-\section{Percobaan 3: jumlah subinterval ganjil}
-Tetapkan $n=5$ pada fungsi uji Percobaan 1. Simpson $1/3$ komposit tidak dapat diterapkan pada kelima subinterval sekaligus. Function \texttt{simpson\_mixed\_comp.m} menggunakan Simpson $1/3$ pada bagian genap dan Simpson $3/8$ pada tiga subinterval terakhir.
-
-Lakukan:
-\begin{enumerate}
-\item catat interval yang dihitung oleh masing-masing formula;
-\item hitung hampiran integral dan galat relatif;
-\item bandingkan hasilnya dengan Trapesium komposit menggunakan $n=5$.
-\end{enumerate}
-
-\section{Percobaan 4: integrasi sebagai kuantitas akumulatif}
-Untuk masalah nilai awal
-\[
-\frac{dy}{dt}=e^{-t^2},\qquad y(0)=1,
-\]
-berlaku
-\[
-y(1)=1+\int_0^1e^{-t^2}\,dt.
-\]
-Bagian C pada driver menggunakan Simpson $1/3$ komposit dengan $n=4$. Nilai yang diperoleh harus mendekati
-\[
-\int_0^1e^{-t^2}\,dt\approx0.746855,
-\qquad
-y(1)\approx1.746855.
-\]
-Eksperimen ini hanya menggunakan PDB dengan ruas kanan bergantung pada $t$. Untuk PDB umum $y'=f(t,y)$, gunakan metode numerik PDB pada praktikum berikutnya.
 
 \section{Latihan praktikum}
 \begin{enumerate}
@@ -697,28 +778,82 @@ I=\int_0^2(x^2+1)\,dx.
 x:0,0.5,1,1.5,2,\qquad
 f(x):101,-2,54,147,-10.
 \]
-Hitung $\int_0^2f(x)\,dx$ dengan Trapesium komposit dan Simpson $1/3$ komposit. Sajikan pola bobot yang digunakan.
+Hitung $\int_0^2 f(x)\,dx$ dengan Trapesium komposit dan Simpson $1/3$ komposit. Tuliskan pola bobot yang digunakan.
 
-\item[\textbf{B6.5 (L5)}] Jelaskan kapan galat sebenarnya dapat dihitung dan kapan evaluasi harus menggunakan perbandingan antarmetode atau perhalusan grid.
+\item[\textbf{B6.5 (L5)}] Jelaskan kapan galat sebenarnya dapat dihitung dan kapan evaluasi harus dilakukan melalui perbandingan antarmetode atau perhalusan grid.
 
-\item \textbf{Studi visual.}
-Gunakan $g(x)=e^x$ pada $[0,1]$. Ubah daftar $n$ menjadi
+\item \textbf{Perhalusan grid dan orde observasi.}
+Untuk
 \[
-n=4,8,16,32,64,128.
+g(x)=e^x,\qquad 0\le x\le1,
 \]
-Perbarui grafik konvergensi dan laporkan orde observasi untuk tiga formula.
-
-\item \textbf{Data tidak seragam.}
-Gunakan
+gunakan $n=4,8,16,32,64$. Hitung galat Trapesium, Simpson $1/3$, dan Boole. Buat grafik log-log galat terhadap $h$ dan hitung
 \[
-x=[0,0.15,0.40,0.65,1.00],\qquad
-f=[1.00,1.35,1.90,2.10,2.80].
+p_{\rm obs}
+=
+\frac{\log(E_h/E_{h/2})}{\log 2}.
 \]
-Tentukan formula mana pada praktikum ini yang dapat diterapkan langsung. Jika grid tidak memenuhi syarat Simpson, gunakan Trapesium per segmen dan jelaskan alasannya.
+Bandingkan orde observasi dengan orde teori.
+
+\item \textbf{Jumlah subinterval ganjil.}
+Gunakan fungsi pada driver dengan $n=5$. Hitung integral menggunakan \texttt{simpson\_mixed\_comp.m}, lalu bandingkan dengan Trapesium komposit pada grid yang sama. Identifikasi bagian interval yang dihitung dengan Simpson $1/3$ dan Simpson $3/8$.
+
+\item \textbf{Akumulasi dari suatu laju.}
+Diberikan
+\[
+\frac{dy}{dt}=e^{-t^2},\qquad y(0)=1.
+\]
+Gunakan kuadratur numerik untuk menghitung
+\[
+y(1)=1+\int_0^1e^{-t^2}\,dt.
+\]
+Bandingkan Trapesium komposit, Simpson $1/3$, dan Boole pada grid yang memenuhi syarat masing-masing.
+
+\item \textbf{PDB sebagai persamaan integral.}
+Pertimbangkan masalah nilai awal nonlinear
+\[
+y'(t)
+=
+0.8y(t)\left(1-\frac{y(t)}{10}\right)
++0.5\sin(2t),
+\qquad
+y(0)=1,
+\qquad 0\le t\le6.
+\]
+Tuliskan dalam bentuk
+\[
+y(t)
+=
+1+
+\int_0^t
+\left[
+0.8y(s)\left(1-\frac{y(s)}{10}\right)
++0.5\sin(2s)
+\right]ds.
+\]
+Pada grid seragam, mulai dengan tebakan $y^{(0)}(t_i)=1$ dan bentuk iterasi
+\[
+y^{(m+1)}(t_i)
+=
+1+
+\int_0^{t_i}
+\left[
+0.8y^{(m)}(s)\left(1-\frac{y^{(m)}(s)}{10}\right)
++0.5\sin(2s)
+\right]ds.
+\]
+Evaluasi integral numerik pada setiap $t_i$ dengan formula Newton--Cotes yang sesuai. Hentikan ketika
+\[
+\max_i
+\left|
+y_i^{(m+1)}-y_i^{(m)}
+\right|
+<10^{-6}.
+\]
+Sajikan grafik tiga iterasi pertama dan solusi yang telah konvergen. Laporkan pengaruh jumlah subinterval terhadap hasil akhir.
 \end{enumerate}
 
-\AnalysisCheck{Laporan praktikum harus memuat parameter grid, nilai integral, galat atau pembanding, dan visualisasi. Kesimpulan harus menyatakan pengaruh $n$ dan formula terhadap akurasi berdasarkan keluaran komputasi.}
-
+\AnalysisCheck{Laporan praktikum harus menampilkan formula yang digunakan, parameter grid, kode yang dijalankan, nilai integral, galat atau pembanding, serta visualisasi. Kesimpulan harus didasarkan pada keluaran komputasi.}
 
 \chapter{Praktikum 8: Masalah Nilai Awal: Metode Euler, Heun, dan Runge--Kutta}
 \CP{Mahasiswa mampu menerapkan metode Euler untuk masalah nilai awal dan mengevaluasi galat lokal/global (indikator 6.1.10), serta memperoleh pengantar implementasi Runge-Kutta untuk pembandingan.}

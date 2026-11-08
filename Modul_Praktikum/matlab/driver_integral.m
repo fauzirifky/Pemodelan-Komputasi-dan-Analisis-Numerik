@@ -1,7 +1,6 @@
 %% Praktikum 7: Integrasi Numerik dengan Formula Newton-Cotes
 clear; clc; close all; format long g
 
-%% A. Perbandingan formula pada fungsi uji
 f = @(x) 0.2 + 25*x - 200*x.^2 + 675*x.^3 - 900*x.^4 + 400*x.^5;
 F = @(x) 0.2*x + 25/2*x.^2 - 200/3*x.^3 + ...
          675/4*x.^4 - 180*x.^5 + 400/6*x.^6;
@@ -32,78 +31,58 @@ errAbs = abs(Inum-Iexact);
 errRelPct = 100*errAbs/abs(Iexact);
 
 T = table(method,nval,Inum,errAbs,errRelPct, ...
-    'VariableNames',{'Metode','n','Integral','GalatAbsolut','GalatRelatifPersen'});
+    'VariableNames', ...
+    {'Metode','n','Integral','GalatAbsolut','GalatRelatifPersen'});
 disp(T)
-fprintf('Integral eksak = %.10f\n\n',Iexact);
+fprintf('Integral eksak = %.10f\n',Iexact);
 
-% Visual 1: integran dan titik evaluasi untuk n = 4
-xx = linspace(a,b,400);
-x4 = linspace(a,b,5);
+%% Visualisasi titik kuadratur tiap formula
+xx = linspace(a,b,500);
 
-figure(1);
+% Trapesium
+xT = linspace(a,b,2);
+pT = polyfit(xT,f(xT),1);
+figure(1)
 plot(xx,f(xx),'LineWidth',1.5); hold on
-plot(x4,f(x4),'o','MarkerSize',6,'LineWidth',1.1);
-for j = 1:numel(x4)
-    plot([x4(j) x4(j)],[0 f(x4(j))],'--','LineWidth',0.8);
-end
+plot(xx,polyval(pT,xx),'--','LineWidth',1.2)
+plot(xT,f(xT),'o','MarkerSize',6,'LineWidth',1.1)
 grid on
-xlabel('x');
-ylabel('f(x)');
-title('Integran dan titik evaluasi pada n = 4');
-legend('f(x)','titik grid','Location','best');
+xlabel('x'); ylabel('Nilai fungsi')
+title('Aturan Trapesium')
+legend('f(x)','Interpolan linear','Titik kuadratur','Location','best')
 
-% Visual 2: galat relatif antarmetode
-figure(2);
-cats = categorical(method,method,'Ordinal',true);
-barh(cats,max(errRelPct,1e-12));
-set(gca,'XScale','log');
+% Simpson 1/3
+x13 = linspace(a,b,3);
+p13 = polyfit(x13,f(x13),2);
+figure(2)
+plot(xx,f(xx),'LineWidth',1.5); hold on
+plot(xx,polyval(p13,xx),'--','LineWidth',1.2)
+plot(x13,f(x13),'o','MarkerSize',6,'LineWidth',1.1)
 grid on
-xlabel('Galat relatif (%)');
-title('Perbandingan galat formula Newton-Cotes');
+xlabel('x'); ylabel('Nilai fungsi')
+title('Simpson 1/3')
+legend('f(x)','Interpolan kuadratik','Titik kuadratur','Location','best')
 
-%% B. Perhalusan grid dan orde observasi
-g = @(x) exp(x);
-ag = 0;
-bg = 1;
-IgExact = exp(1)-1;
-
-ns = [4 8 16 32 64];
-Etrap = zeros(size(ns));
-Es13 = zeros(size(ns));
-Eboole = zeros(size(ns));
-
-for k = 1:numel(ns)
-    n = ns(k);
-    Etrap(k) = abs(trap_comp(g,ag,bg,n)-IgExact);
-    Es13(k) = abs(simpson_comp(g,ag,bg,n)-IgExact);
-    Eboole(k) = abs(boole_comp(g,ag,bg,n)-IgExact);
-end
-
-h = (bg-ag)./ns;
-
-figure(3);
-loglog(h,Etrap,'o-', ...
-       h,Es13,'s-', ...
-       h,Eboole,'d-','LineWidth',1.1);
+% Simpson 3/8
+x38 = linspace(a,b,4);
+p38 = polyfit(x38,f(x38),3);
+figure(3)
+plot(xx,f(xx),'LineWidth',1.5); hold on
+plot(xx,polyval(p38,xx),'--','LineWidth',1.2)
+plot(x38,f(x38),'o','MarkerSize',6,'LineWidth',1.1)
 grid on
-xlabel('h');
-ylabel('Galat absolut');
-title('Konvergensi formula Newton-Cotes');
-legend('Trapesium','Simpson 1/3','Boole','Location','best');
+xlabel('x'); ylabel('Nilai fungsi')
+title('Simpson 3/8')
+legend('f(x)','Interpolan kubik','Titik kuadratur','Location','best')
 
-pTrap = log(Etrap(1:end-1)./Etrap(2:end))/log(2);
-pS13 = log(Es13(1:end-1)./Es13(2:end))/log(2);
-pBoole = log(Eboole(1:end-1)./Eboole(2:end))/log(2);
-
-Torde = table(ns(2:end)',pTrap',pS13',pBoole', ...
-    'VariableNames',{'n','pObsTrap','pObsS13','pObsBoole'});
-disp(Torde)
-
-%% C. Aplikasi akumulasi dari y'(t) = g(t)
-q = @(t) exp(-t.^2);
-Iq = simpson_comp(q,0,1,4);
-y1 = 1 + Iq;
-
-fprintf('\nAplikasi akumulasi:\n');
-fprintf('Integral Simpson 1/3, n=4 = %.6f\n',Iq);
-fprintf('y(1) = %.6f\n',y1);
+% Boole
+xB = linspace(a,b,5);
+pB = polyfit(xB,f(xB),4);
+figure(4)
+plot(xx,f(xx),'LineWidth',1.5); hold on
+plot(xx,polyval(pB,xx),'--','LineWidth',1.2)
+plot(xB,f(xB),'o','MarkerSize',6,'LineWidth',1.1)
+grid on
+xlabel('x'); ylabel('Nilai fungsi')
+title('Aturan Boole')
+legend('f(x)','Interpolan kuartik','Titik kuadratur','Location','best')
