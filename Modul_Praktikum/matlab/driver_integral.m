@@ -1,21 +1,23 @@
 %% Praktikum 7: Integrasi Numerik dengan Formula Newton-Cotes
 clear; clc; close all; format long g
 
-%% A. Contoh yang sama dengan materi kelas
+%% A. Perbandingan formula pada fungsi uji
 f = @(x) 0.2 + 25*x - 200*x.^2 + 675*x.^3 - 900*x.^4 + 400*x.^5;
 F = @(x) 0.2*x + 25/2*x.^2 - 200/3*x.^3 + ...
          675/4*x.^4 - 180*x.^5 + 400/6*x.^6;
 
-a = 0; b = 0.8;
+a = 0;
+b = 0.8;
 Iexact = F(b)-F(a);
 
-method = ["Trapesium tunggal"; ...
+method = ["Trapesium"; ...
           "Trapesium komposit"; ...
-          "Simpson 1/3 tunggal"; ...
-          "Simpson 3/8 tunggal"; ...
+          "Simpson 1/3"; ...
+          "Simpson 3/8"; ...
           "Simpson 1/3 komposit"; ...
           "Boole"; ...
           "Simpson campuran"];
+
 nval = [1;2;2;3;4;4;5];
 
 Inum = [trap_comp(f,a,b,1); ...
@@ -34,22 +36,38 @@ T = table(method,nval,Inum,errAbs,errRelPct, ...
 disp(T)
 fprintf('Integral eksak = %.10f\n\n',Iexact);
 
+% Visual 1: integran dan titik evaluasi untuk n = 4
 xx = linspace(a,b,400);
 x4 = linspace(a,b,5);
-figure;
-plot(xx,f(xx),'LineWidth',1.6); hold on
+
+figure(1);
+plot(xx,f(xx),'LineWidth',1.5); hold on
 plot(x4,f(x4),'o','MarkerSize',6,'LineWidth',1.1);
+for j = 1:numel(x4)
+    plot([x4(j) x4(j)],[0 f(x4(j))],'--','LineWidth',0.8);
+end
 grid on
-xlabel('x'); ylabel('f(x)');
-title('Integran dan titik Newton-Cotes pada n=4');
+xlabel('x');
+ylabel('f(x)');
+title('Integran dan titik evaluasi pada n = 4');
 legend('f(x)','titik grid','Location','best');
 
-%% B. Studi konvergensi
-g = @(x) exp(x);
-ag = 0; bg = 1;
-IgExact = exp(1)-1;
-ns = [4 8 16 32 64];
+% Visual 2: galat relatif antarmetode
+figure(2);
+cats = categorical(method,method,'Ordinal',true);
+barh(cats,max(errRelPct,1e-12));
+set(gca,'XScale','log');
+grid on
+xlabel('Galat relatif (%)');
+title('Perbandingan galat formula Newton-Cotes');
 
+%% B. Perhalusan grid dan orde observasi
+g = @(x) exp(x);
+ag = 0;
+bg = 1;
+IgExact = exp(1)-1;
+
+ns = [4 8 16 32 64];
 Etrap = zeros(size(ns));
 Es13 = zeros(size(ns));
 Eboole = zeros(size(ns));
@@ -62,10 +80,14 @@ for k = 1:numel(ns)
 end
 
 h = (bg-ag)./ns;
-figure;
-loglog(h,Etrap,'o-',h,Es13,'s-',h,Eboole,'d-','LineWidth',1.1);
+
+figure(3);
+loglog(h,Etrap,'o-', ...
+       h,Es13,'s-', ...
+       h,Eboole,'d-','LineWidth',1.1);
 grid on
-xlabel('h'); ylabel('galat absolut');
+xlabel('h');
+ylabel('Galat absolut');
 title('Konvergensi formula Newton-Cotes');
 legend('Trapesium','Simpson 1/3','Boole','Location','best');
 
@@ -73,14 +95,15 @@ pTrap = log(Etrap(1:end-1)./Etrap(2:end))/log(2);
 pS13 = log(Es13(1:end-1)./Es13(2:end))/log(2);
 pBoole = log(Eboole(1:end-1)./Eboole(2:end))/log(2);
 
-disp(table(ns(2:end)',pTrap',pS13',pBoole', ...
-    'VariableNames',{'n','pObsTrap','pObsS13','pObsBoole'}));
+Torde = table(ns(2:end)',pTrap',pS13',pBoole', ...
+    'VariableNames',{'n','pObsTrap','pObsS13','pObsBoole'});
+disp(Torde)
 
-%% C. Aplikasi pada PDB y' = g(t)
+%% C. Aplikasi akumulasi dari y'(t) = g(t)
 q = @(t) exp(-t.^2);
 Iq = simpson_comp(q,0,1,4);
 y1 = 1 + Iq;
 
-fprintf('\nAplikasi PDB:\n');
+fprintf('\nAplikasi akumulasi:\n');
 fprintf('Integral Simpson 1/3, n=4 = %.6f\n',Iq);
 fprintf('y(1) = %.6f\n',y1);
