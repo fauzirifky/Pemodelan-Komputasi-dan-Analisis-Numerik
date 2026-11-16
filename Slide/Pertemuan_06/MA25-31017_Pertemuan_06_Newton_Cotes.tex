@@ -372,8 +372,9 @@ Polinom kubik $p_3(x)$ yang melewati empat titik diintegralkan pada $[x_0,x_3]$:
 \]
 Disebut $3/8$ karena faktor di depan bobotnya $3h/8$.
 \end{purplebox}
-\begin{goldbox}[Kapan muncul?]
-Jika jumlah subinterval ganjil, Simpson $1/3$ tidak dapat menutup semua panel. Ambil sebanyak mungkin Simpson $1/3$, lalu gunakan satu blok Simpson $3/8$ untuk tiga subinterval terakhir.
+\begin{goldbox}[Dua penggunaan]
+Untuk Simpson $3/8$ komposit murni, $n$ harus merupakan kelipatan 3.
+Pada strategi campuran, jika $n$ ganjil, gunakan Simpson $1/3$ sebanyak mungkin, lalu satu blok Simpson $3/8$ untuk tiga subinterval terakhir.
 \end{goldbox}
 \end{column}
 \begin{column}{.44\textwidth}
@@ -389,9 +390,9 @@ Jika jumlah subinterval ganjil, Simpson $1/3$ tidak dapat menutup semua panel. A
 \draw[Orange,very thick] (0,-.23) .. controls (1.2,.40) and (2.75,.36) .. (4,-.23);
 \node[font=\scriptsize] at (2,.62) {3 subinterval};
 \end{tikzpicture}
-\begin{greenbox}[Aturan cepat]
-$n$ genap: Simpson $1/3$.\quad
-$n$ ganjil: kombinasi $1/3$ dan $3/8$.
+\begin{greenbox}[Syarat]
+$3/8$ murni: $n=3m$.\quad
+Campuran: $n$ ganjil menggunakan $1/3$ dan satu blok $3/8$.
 \end{greenbox}
 \end{column}
 \end{columns}

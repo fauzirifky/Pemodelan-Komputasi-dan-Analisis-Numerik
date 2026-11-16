@@ -550,6 +550,8 @@ Gunakan data yang sama tetapi bandingkan dua model halus, misalnya logistik dan 
 \CP{Mahasiswa mampu menerapkan formula Newton--Cotes tertutup pada grid seragam, memeriksa galat hasil komputasi, dan menggunakan kuadratur sebagai dasar perhitungan kuantitas akumulatif (indikator 6.1.8, 6.1.9, dan 7.1.1).}
 \Target{Function MATLAB untuk Aturan Trapesium, Simpson $1/3$, Simpson $3/8$, dan Aturan Boole; driver pembanding; visualisasi interpolan kuadratur; serta latihan yang menghubungkan kuadratur dengan formulasi integral suatu masalah nilai awal.}
 
+Dalam seluruh function pada praktikum ini, $n$ menyatakan \textbf{jumlah subinterval}. Dengan demikian, jumlah titik grid adalah $n+1$.
+
 \section{Aturan Trapesium}
 Untuk satu subinterval $[a,b]$, gunakan
 \begin{equation}
@@ -611,6 +613,7 @@ h=\frac{b-a}{2}.
 }
 \end{equation}
 Formula ini mengintegralkan interpolan kuadratik melalui tiga titik.
+Syarat $n$ genap pada bentuk komposit mengacu pada \textbf{jumlah subinterval}, bukan jumlah titik.
 
 \begin{figure}[ht]
 \centering
@@ -672,6 +675,25 @@ h=\frac{b-a}{3}.
 \end{equation}
 Interpolan lokalnya berderajat tiga.
 
+Untuk bentuk komposit, $n$ harus merupakan kelipatan tiga. Dengan $h=(b-a)/n$,
+\begin{equation}
+\boxed{
+I_{3/8}^{(n)}
+=
+\frac{3h}{8}
+\left[
+f_0
++3(f_1+f_2+f_4+f_5+\cdots+f_{n-2}+f_{n-1})
++2(f_3+f_6+\cdots+f_{n-3})
++f_n
+\right].
+}
+\end{equation}
+Pola bobotnya adalah
+\[
+1,3,3,2,3,3,2,\ldots,3,3,1.
+\]
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.72\textwidth]{figures/integral_simpson38.png}
@@ -702,6 +724,23 @@ h=\frac{b-a}{4}.
 }
 \end{equation}
 Interpolan lokalnya berderajat empat.
+
+Untuk $n$ kelipatan empat, Aturan Boole komposit diterapkan per blok empat subinterval:
+\begin{equation}
+\boxed{
+I_B^{(n)}
+=
+\frac{2h}{45}
+\sum_{j=0}^{n/4-1}
+\left(
+7f_{4j}
++32f_{4j+1}
++12f_{4j+2}
++32f_{4j+3}
++7f_{4j+4}
+\right).
+}
+\end{equation}
 
 \begin{figure}[ht]
 \centering
@@ -856,8 +895,8 @@ Sajikan grafik tiga iterasi pertama dan solusi yang telah konvergen. Laporkan pe
 \AnalysisCheck{Laporan praktikum harus menampilkan formula yang digunakan, parameter grid, kode yang dijalankan, nilai integral, galat atau pembanding, serta visualisasi. Kesimpulan harus didasarkan pada keluaran komputasi.}
 
 \chapter{Praktikum 8: Masalah Nilai Awal: Metode Euler, Heun, dan Runge--Kutta}
-\CP{Mahasiswa mampu menerapkan metode Euler untuk masalah nilai awal dan mengevaluasi galat lokal/global (indikator 6.1.10), serta memperoleh pengantar implementasi Runge-Kutta untuk pembandingan.}
-\Target{Penyelesai numerik Euler dan RK4 modular, kurva solusi, galat terhadap solusi referensi, dan studi ukuran langkah.}
+\CP{Mahasiswa mampu menerapkan Euler, Heun, dan RK4 pada masalah nilai awal skalar maupun sistem sederhana; membandingkan hasil dengan solusi acuan; serta mengamati pengaruh ukuran langkah (indikator 6.1.10).}
+\Target{Penyelesai numerik Euler, Heun, dan RK4 modular; kurva solusi; galat terhadap solusi referensi; studi ukuran langkah; serta latihan sistem dua variabel.}
 
 \section{Materi singkat dan landasan teori}
 Masalah nilai awal berbentuk
@@ -872,7 +911,21 @@ sehingga Euler eksplisit
 \begin{equation}
 y_{n+1}=y_n+h f(t_n,y_n).
 \end{equation}
-Galat pemotongan lokal per langkah adalah $O(h^2)$, sedangkan galat global setelah banyak langkah adalah $O(h)$. Ini menjelaskan mengapa pembagian ukuran langkah menjadi dua idealnya mengurangi galat global kira-kira faktor dua pada rentang asimtotik.
+Setiap langkah numerik menghasilkan hampiran, sehingga setelah banyak langkah solusi numerik dapat berbeda dari solusi eksak. Pada praktikum ini, jika solusi eksak tersedia, galat diukur langsung pada seluruh titik grid:
+\[
+e_n=\left|y_n-y(t_n)\right|,
+\qquad
+E(h)=\max_n e_n.
+\]
+Jadi $E(h)$ adalah galat terbesar yang terlihat sepanjang interval simulasi untuk ukuran langkah $h$.
+
+Untuk melihat seberapa cepat galat turun ketika grid diperhalus, jalankan metode dengan $h$ dan $h/2$, lalu hitung
+\[
+p_{\rm obs}
+=
+\frac{\log(E(h)/E(h/2))}{\log 2}.
+\]
+Nilai $p_{\rm obs}$ sekitar 1 menunjukkan galat turun kira-kira sebanding dengan $h$, sedangkan nilai sekitar 4 menunjukkan penurunan yang jauh lebih cepat, kira-kira sebanding dengan $h^4$. Besaran inilah yang diamati dari keluaran program; mahasiswa tidak perlu menebak orde hanya dari bentuk kurva.
 
 \subsection*{Metode Heun (prediktor--korektor)}
 Dua evaluasi kemiringan meningkatkan akurasi terhadap Euler. Prediktor dan korektor adalah
@@ -900,7 +953,7 @@ memiliki solusi analitik
 \begin{equation}
 y(t)=\frac{K}{1+(K/y_0-1)e^{-rt}}.
 \end{equation}
-Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solusi analitik menjadi verifikasi case untuk menguji implementasi Euler/RK4.
+Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solusi analitik dipakai sebagai pembanding langsung untuk memeriksa hasil Euler, Heun, dan RK4.
 
 \section{Algoritma}
 \begin{enumerate}
@@ -908,7 +961,7 @@ Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solu
 \item Tetapkan $y_0$.
 \item Untuk tiap langkah, evaluasi formula Euler atau RK4.
 \item Simpan seluruh pasangan $(t_n,y_n)$.
-\item Jika referensi tersedia, hitung galat maksimum dan ulangi untuk beberapa $h$.
+\item Jika solusi acuan tersedia, hitung $e_n=|y_n-y(t_n)|$, ambil galat terbesar $E(h)$, lalu ulangi untuk beberapa $h$.
 \end{enumerate}
 
 \section{Program MATLAB: pisahkan function dan driver}
@@ -928,18 +981,132 @@ Dengan $K=100$, $r=0.4$, dan $y_0=10$, nilai pada $t=10$ sekitar $85.8486$. Solu
 
 
 \section{Luaran driver dan grafik galat}
-Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta grafik berlabel lengkap. Bila metode mengulang dalam waktu, plot galat terhadap waktu dan ulangi eksperimen dengan beberapa $h$.
+Driver model logistik menghasilkan empat keluaran yang perlu dibaca bersama: solusi eksak, solusi Euler/Heun/RK4, galat absolut pada setiap waktu, dan galat maksimum setiap metode. Untuk studi ukuran langkah, ulangi driver pada beberapa $h$ dan susun tabel $h$, $E(h)$, serta $p_{\rm obs}$. Grafik solusi menunjukkan perilaku model, sedangkan grafik galat menunjukkan di bagian mana hampiran mulai menyimpang.
 
 \section{Latihan}
 \begin{enumerate}
-\item Uji $h=1,0.5,0.25,0.125$ pada model logistik dan estimasikan orde global Euler serta RK4.
-\item Terapkan Euler pada $y'=-2y+t$, $y(0)=1$. Bandingkan dengan solusi analitik.
-\item Modifikasi penyelesai numerik agar dapat menangani sistem ODE dua variabel.
-\item Jelaskan perbedaan galat pemotongan lokal dan galat global dengan kalimat Anda sendiri.
 
-\item Ulangi percobaan dengan toleransi atau ukuran langkah yang berbeda, lalu jelaskan apakah kesimpulan berubah.
-\item Tambahkan satu grafik pendukung dan beri judul, label sumbu, legenda, serta penjelasan singkat.
-\item Susun satu paragraf interpretasi hasil: apa yang berhasil, apa keterbatasannya, dan parameter numerik mana yang paling berpengaruh.
+\item \textbf{Pengaruh ukuran langkah pada model logistik.}
+
+Gunakan model logistik pada contoh dan jalankan Euler, Heun, serta RK4 untuk
+\[
+h=1,\ 0.5,\ 0.25,\ 0.125.
+\]
+Untuk setiap $h$, hitung galat maksimum
+\[
+E(h)=\max_n |y_n-y(t_n)|.
+\]
+Buat tabel
+\[
+h,\quad E_{\rm Euler}(h),\quad E_{\rm Heun}(h),\quad E_{\rm RK4}(h).
+\]
+Khusus Euler dan RK4, setiap kali $h$ dibagi dua hitung
+\[
+p=\frac{\log(E(h)/E(h/2))}{\log 2}.
+\]
+Jelaskan dengan bahasa sederhana: ketika $h$ diperkecil dua kali, seberapa cepat galat Euler turun dan seberapa cepat galat RK4 turun? Jangan hanya menuliskan nilai $p$; hubungkan dengan tabel galat.
+
+\item \textbf{Sistem dua variabel dan limit cycle.}
+Persamaan Van der Pol adalah sistem ODE nonlinear orde dua yang sering dipakai untuk memodelkan osilasi yang akhirnya menuju pola periodik stabil (\textit{limit cycle}). Persamaan Van der Pol banyak digunakan untuk memodelkan osilasi nonlinear, misalnya pada rangkaian listrik, getaran mekanik, dan ritme biologis.
+Perhatikan sistem Van der Pol berikut
+\[
+\begin{aligned}
+x'&=v,\\
+v'&=\mu(1-x^2)v-x,
+\end{aligned}
+\qquad
+\mu=1,
+\qquad
+x(0)=2,\quad v(0)=0,
+\qquad
+0\le t\le30.
+\]
+Gunakan Euler, Heun, dan RK4 dengan
+\[
+h=0.4,\ 0.2,\ 0.1.
+\]
+Untuk setiap metode dan setiap $h$, buat grafik $x(t)$ serta bidang fase $(x,v)$. Amati apakah solusi tetap membentuk osilasi terbatas. Catat metode dan ukuran langkah yang menghasilkan amplitudo yang membesar, keluar dari orbit periodik, atau gagal secara numerik. Gunakan RK4 dengan $h=0.01$ sebagai pembanding numerik bila diperlukan.
+
+\textit{Hint untuk vektor:}
+\begin{lstlisting}[language=Matlab]
+y0 = [2;0];
+f = @(t,y) [y(2);
+            mu*(1-y(1)^2)*y(2)-y(1)];
+\end{lstlisting}
+Pada keluaran solver, \texttt{y(:,1)} adalah $x(t)$ dan \texttt{y(:,2)} adalah $v(t)$. Bidang fase dapat dibuat dengan \texttt{plot(y(:,1),y(:,2))}.
+
+\item \textbf{Dari double logistic menjadi ODE.}
+
+Diberikan fungsi
+\[
+D(t)
+=
+\frac{40}{1+e^{-(t-4)}}
++
+\frac{60}{1+e^{-0.5(t-10)}},
+\qquad
+0\le t\le16.
+\]
+Fungsi ini merupakan jumlah dua kurva logistik dengan pusat pertumbuhan dan laju yang berbeda.
+
+\begin{enumerate}
+\item Turunkan $D(t)$ dan verifikasi bahwa
+\[
+D'(t)
+=
+\frac{40e^{-(t-4)}}{(1+e^{-(t-4)})^2}
++
+\frac{30e^{-0.5(t-10)}}{(1+e^{-0.5(t-10)})^2}.
+\]
+\item Definisikan
+\[
+g(t)=D'(t)
+\]
+dan bentuk masalah nilai awal
+\[
+y'=g(t),
+\qquad
+y(0)=D(0).
+\]
+\item Selesaikan ODE tersebut dengan Euler, Heun, dan RK4 menggunakan $h=0.5$.
+\item Bandingkan ketiga solusi numerik dengan nilai langsung $D(t)$. Sajikan grafik kurva dan grafik galat absolut.
+\item Plot $g(t)$. Hubungkan dua puncak pada laju perubahan dengan dua komponen logistik pada $D(t)$.
+\end{enumerate}
+
+Berbeda dari logistik tunggal, ruas kanan hasil penurunan double logistic merupakan jumlah dua kontribusi nonlinear dan secara umum tidak dapat disederhanakan menjadi satu bentuk $r\,y(1-y/K)$. Jika dua komponen dipaksa dieliminasi agar diperoleh bentuk autonomous $y'=F(y)$, bentuknya menjadi lebih rumit. Bahkan pada kasus kedua laju sama, dengan substitusi $z=e^{-rt}$ diperoleh relasi kuadrat
+\[
+D\,y\,z^2+(B\,y-C)z+(y-K)=0,
+\]
+sehingga $z$ sebagai fungsi $y$ melibatkan akar kuadrat. Untuk praktikum ini gunakan bentuk $y'=g(t)$ yang diperoleh langsung dari turunan $D(t)$.
+
+\item \textbf{Membandingkan penyelesaian ODE dan formulasi integral.}
+
+Gunakan ODE double logistic pada soal sebelumnya. Karena
+\[
+y'=g(t),
+\]
+maka masalah yang sama dapat ditulis sebagai
+\[
+y(t)=y(0)+\int_0^t g(s)\,ds.
+\]
+Gunakan kembali materi Integrasi Numerik. Dengan grid dasar $h=0.5$, hitung nilai integral menggunakan Simpson $1/3$ komposit pada
+\[
+t=2,4,6,\ldots,16.
+\]
+Untuk setiap $t$, jumlah subinterval adalah genap sehingga Simpson $1/3$ komposit dapat digunakan.
+
+Buat tabel dengan kolom
+\[
+t,\quad D(t),\quad y_{\rm Euler},\quad y_{\rm Heun},
+\quad y_{\rm RK4},\quad y_{\rm integral}.
+\]
+Hitung galat absolut masing-masing terhadap $D(t)$. Bandingkan dua cara pandang berikut:
+\[
+\text{melangkah dengan solver ODE}
+\qquad\text{dan}\qquad
+\text{mengakumulasi }g(t)\text{ dengan integral numerik}.
+\]
+Jelaskan mengapa keduanya menyelesaikan masalah yang sama tetapi menghasilkan galat numerik yang berbeda.
 
 \end{enumerate}
 
