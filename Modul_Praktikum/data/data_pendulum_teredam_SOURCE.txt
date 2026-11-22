@@ -1,0 +1,26 @@
+DATA PRAKTIKUM 10 - OPEN EXPERIMENTAL DATA
+
+Dataset:
+Damped Pendulum Dataset
+
+Repository:
+https://github.com/EnzeXu/Damped_Pendulum_Dataset
+
+File sumber:
+cleaned_data/len3_cond2_1.csv
+
+Kondisi:
+- pendulum length setting 3 = 0.426 m
+- damping condition 2 = Air + small paper baffle
+- replicate 1
+- sampling interval = 0.01 s
+- columns = time, angle, angular_velocity, is_peak
+
+Paper:
+Xu, E., Tran, T., Zhao, H., Wang, Y., Huai, M., & Shao, H. (2026).
+Identifying Invariant Physical Dynamics Across Multiple Environments.
+Transactions on Machine Learning Research.
+https://openreview.net/forum?id=xvQYvYEGhj
+
+Repository license:
+Apache License 2.0

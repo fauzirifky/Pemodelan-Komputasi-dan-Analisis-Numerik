@@ -79,6 +79,14 @@
 \makeatother
 
 
+% Box sederhana kompatibel dengan enacom.cls; tanpa package tambahan.
+\newenvironment{AnalysisBox}
+  {\par\medskip\noindent
+   \begin{center}\begin{minipage}{0.94\textwidth}
+   \hrule\medskip\small\textbf{Catatan Analisis.}\ }
+  {\medskip\hrule
+   \end{minipage}\end{center}\medskip}
+
 \begin{document}
 
 \chapter*{Identitas Modul}
@@ -169,7 +177,6 @@ Setiap praktikum memakai dua jenis file. \textbf{Function} menyimpan algoritma u
 \item Analisis: pengaruh parameter numerik (toleransi, ukuran langkah, tebakan awal) dan keterbatasan.
 \item Kesimpulan singkat berbasis hasil, bukan hanya mengulang teori.
 \end{enumerate}
-
 
 
 % ================================================================
@@ -374,7 +381,11 @@ Program berikut harus mereproduksi nilai pada Persamaan~(7.9)--(7.11).
 \lstinputlisting[language=Matlab]{matlab/driver_richardson.m}
 
 \section{Exercise Kelas: turunan pada banyak titik}
-\begin{tcolorbox}[colback=yellow!5,colframe=orange!70!black,title={Exercise Kelas}]
+\par\medskip\noindent
+\begin{center}
+\begin{minipage}{0.94\textwidth}
+\hrule\medskip
+\textbf{Exercise Kelas.}\par\smallskip
 Mulai dari \texttt{driver\_richardson.m} yang masih menghitung turunan di satu titik.
 Modifikasi program sehingga turunan dihitung pada banyak titik di interval
 \[
@@ -424,7 +435,10 @@ e=\frac{|D_{\rm num}-D_{\rm eksak}|}{\max(1,|D_{\rm eksak}|)}.
 \end{enumerate}
 
 \textbf{Luaran:} satu tabel, dua grafik, dan kesimpulan maksimum lima kalimat.
-\end{tcolorbox}
+\medskip\hrule
+\end{minipage}
+\end{center}
+\medskip
 
 \Note{Kode solusi multi-titik tidak diberikan di modul. Exercise ini menjadi jembatan dari contoh
 satu titik menuju mini-project data pada bagian berikutnya.}
@@ -1187,72 +1201,411 @@ Jalankan driver dan tampilkan keluaran numerik, nilai acuan bila tersedia, serta
 \item[\textbf{B7.5 (L5)}] Bandingkan Euler, Heun, dan RK4 dari aspek biaya komputasi per langkah, akurasi, dan kecocokan untuk masalah dengan dinamika halus.
 \end{enumerate}
 
-\chapter{Praktikum 10: Praktikum Terpadu, Verifikasi, dan Validasi}
-\CP{Mahasiswa mampu memilih metode numerik yang sesuai, mengintegrasikan beberapa metode dalam satu alur kerja, memeriksa keakuratan dan keterbatasan hasil, serta mendokumentasikan proses komputasi secara ilmiah (penguatan CPMK 6.1 dan 7.1).}
-\Target{Satu mini-pipeline komputasi yang menghubungkan formulasi masalah, penyelesai numerik, verifikasi, analisis sensitivitas numerik, dan interpretasi luaran sebagai persiapan UAS dan proyek.}
 
-\section{Materi singkat: dari metode ke alur kerja}
-Pada masalah nyata, metode numerik jarang berdiri sendiri. Sebuah model dapat memerlukan pencarian akar untuk event time, penyelesaian SPL di dalam iterasi nonlinear, turunan/integral untuk kuantitas turunan, dan penyelesai numerik ODE untuk dinamika. Karena itu mahasiswa perlu beralih dari pertanyaan ``rumus apa?'' menjadi ``alur kerja apa yang dapat dipertanggungjawabkan?''.
+\chapter{Praktikum 10: Mock-Up Project Berbasis Data Eksperimen Terbuka}
 
-Alur kerja yang disarankan:
+\CP{\textbf{CPL-6:} mampu menerapkan metode matematis yang tepat, baik analitis maupun numerik, dengan memanfaatkan teknologi terkini untuk menentukan solusi, menginterpretasikan, dan mengevaluasi solusi; \textbf{CPL-7:} mampu menerapkan dan menganalisis model matematika untuk memecahkan masalah serta mengevaluasi hasil penerapan model sesuai konteks; dan \textbf{CPL-10:} mampu menganalisis permasalahan secara kritis, bekerja secara mandiri maupun dalam tim, serta beradaptasi dengan perkembangan ilmu pengetahuan dan teknologi. Pada praktikum ini ketiganya dilatih melalui data terbuka, estimasi parameter, integrasi beberapa metode numerik, verifikasi, validasi, dan interpretasi hasil.}
+
+\Target{Satu mini-project yang mengikuti urutan kerja tugas besar: memahami fenomena dan data, memvisualisasikan data, membangun model, mengestimasi parameter, menggunakan metode akar/turunan/integral/ODE untuk menghitung kuantitas yang bermakna, melakukan benchmark, lalu menginterpretasikan hasil.}
+
+\section{Gambaran besar praktikum}
+Praktikum terakhir tidak memperkenalkan algoritma numerik baru. Mahasiswa menggunakan kembali function yang telah dibuat pada praktikum sebelumnya untuk menyelesaikan satu masalah berbasis data secara utuh.
+
+Pertanyaan utamanya bukan lagi ``rumus apa yang digunakan?'', tetapi:
+\begin{quote}
+Apa fenomenanya? Data apa yang tersedia? Model apa yang digunakan? Parameter apa yang perlu diestimasi? Setelah parameter diperoleh, kuantitas apa yang ingin dihitung dengan metode numerik? Seberapa akurat hasilnya dan apa maknanya terhadap fenomena?
+\end{quote}
+
+Dengan pola ini, praktikum menjadi latihan langsung sebelum tugas besar. Kasus praktikum berbeda dari seluruh topik tugas besar, tetapi \textbf{urutan berpikir dan jenis analisis numeriknya dibuat sama}.
+
+\section{Ilustrasi fenomena: pendulum teredam}
+Kita mengamati sebuah pendulum yang berayun dengan adanya redaman. Sudut simpangan berubah terhadap waktu, sedangkan amplitudo perlahan mengecil karena energi mekanik sistem berkurang.
+
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(120,48)
+\put(60,44){\circle*{1.2}}
+\put(60,44){\makebox(0,0)[b]{\small titik gantung}}
+\multiput(60,40)(0,-3){10}{\circle*{0.25}}
+\qbezier(60,42)(70,29)(80,16)
+\put(80,16){\circle{5}}
+\put(80,16){\circle*{1.2}}
+\qbezier(60,34)(64,34)(68,31)
+\put(69,31){\makebox(0,0)[l]{$\theta(t)$}}
+\put(80,11){\makebox(0,0)[t]{\small bob}}
+\put(52,16){\makebox(0,0)[r]{\small posisi geometris setimbang}}
+\put(87,27){\makebox(0,0)[l]{\small panjang $L$}}
+\end{picture}
+\end{center}
+
+\subsection{Apa yang dimaksud posisi setimbang?}
+Pada koordinat sudut yang digunakan sensor, model memiliki suatu nilai tengah $C$. \textbf{Posisi geometris setimbang} adalah posisi ketika
+\[
+\theta=C.
+\]
+Jika sensor dikalibrasi sehingga arah vertikal ke bawah adalah nol, maka idealnya $C\approx0$.
+
+Posisi ini \textbf{bukan berarti pendulum kembali ke posisi awal}. Posisi awal adalah $\theta(0)$, sedangkan posisi geometris setimbang adalah garis tengah ayunan. Ketika pendulum pertama kali memenuhi $\theta=C$, pendulum biasanya masih bergerak dan kecepatan sudutnya tidak nol.
+
+Keadaan setimbang penuh dari sistem dinamik sebenarnya memerlukan
+\[
+\theta=C,\qquad \omega=0.
+\]
+Pada aktivitas pencarian akar nanti kita hanya mencari \textbf{waktu pertama pendulum melintasi posisi geometris setimbang}, bukan waktu ketika pendulum sudah berhenti.
+
+\section{Data eksperimen terbuka}
+Data berasal dari \textit{Damped Pendulum Dataset} yang menyertai penelitian Xu dkk. (2026), \textit{Identifying Invariant Physical Dynamics Across Multiple Environments}. Repository data tersedia pada:
+\begin{center}
+\url{https://github.com/EnzeXu/Damped_Pendulum_Dataset}
+\end{center}
+
+File yang digunakan:
+\begin{center}
+\path{cleaned_data/len3_cond2_1.csv}
+\end{center}
+
+Kondisi eksperimen:
+\begin{itemize}
+\item panjang pendulum aktual $L_{\mathrm{true}}=0.426$ m;
+\item redaman: \textit{air + small paper baffle};
+\item pengulangan pertama;
+\item interval sampling $\Delta t=0.01$ s;
+\item variabel: \texttt{time}, \texttt{angle}, \texttt{angular\_velocity}, dan \texttt{is\_peak}.
+\end{itemize}
+
+Beberapa baris awal data asli adalah:
+\begin{center}
+\small
+\begin{tabular}{r r r c}
+\hline
+\textbf{time (s)} & \textbf{angle (rad)} & \textbf{angular velocity (rad/s)} & \textbf{is\_peak}\\
+\hline
+0.00 & -0.437 & 0.524 & 0\\
+0.01 & -0.430 & 0.733 & 0\\
+0.02 & -0.421 & 0.890 & 0\\
+0.03 & -0.412 & 0.995 & 0\\
+0.04 & -0.402 & 1.100 & 0\\
+0.05 & -0.390 & 1.257 & 0\\
+0.06 & -0.377 & 1.414 & 0\\
+0.07 & -0.361 & 1.571 & 0\\
+0.08 & -0.346 & 1.728 & 0\\
+0.09 & -0.327 & 1.833 & 0\\
+\hline
+\end{tabular}
+\end{center}
+
+Raw data disimpan pada \path{Modul_Praktikum/data/data_pendulum_teredam_open.csv}. Data mentah tidak diubah; pemilihan interval dan downsampling dilakukan melalui driver.
+
+\section{Plot data sebelum membangun model}
+Pemodelan dimulai dari pola data, bukan dari rumus. Gambar berikut merupakan plot ringkas sudut terhadap waktu pada $0\le t\le20$ s. Titik yang digambar merupakan subset teratur dari data asli agar gambar tetap terbaca di modul.
+
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(125,45)
+\put(10,4){\vector(1,0){108}}
+\put(10,4){\vector(0,1){35}}
+\put(62,0){\makebox(0,0){\small waktu (s)}}
+\put(2,22){\makebox(0,0){\small $\theta$}}
+\put(10,20){\line(1,0){105}}
+\put(7,4){\makebox(0,0)[r]{\scriptsize $-0.5$}}
+\put(7,20){\makebox(0,0)[r]{\scriptsize $0$}}
+\put(7,36){\makebox(0,0)[r]{\scriptsize $0.5$}}
+\put(10,1){\makebox(0,0){\scriptsize 0}}
+\put(62.5,1){\makebox(0,0){\scriptsize 10}}
+\put(115,1){\makebox(0,0){\scriptsize 20}}
+\put(10.00,6.02){\circle*{0.65}}
+\qbezier(10.00,6.02)(12.60,10.94)(15.20,15.87)
+\put(15.20,15.87){\circle*{0.65}}
+\qbezier(15.20,15.87)(17.82,25.28)(20.45,34.69)
+\put(20.45,34.69){\circle*{0.65}}
+\qbezier(20.45,34.69)(23.07,29.71)(25.70,24.74)
+\put(25.70,24.74){\circle*{0.65}}
+\qbezier(25.70,24.74)(28.32,15.84)(30.95,6.94)
+\put(30.95,6.94){\circle*{0.65}}
+\qbezier(30.95,6.94)(33.57,11.62)(36.20,16.29)
+\put(36.20,16.29){\circle*{0.65}}
+\qbezier(36.20,16.29)(38.82,24.83)(41.45,33.38)
+\put(41.45,33.38){\circle*{0.65}}
+\qbezier(41.45,33.38)(44.07,28.94)(46.70,24.51)
+\put(46.70,24.51){\circle*{0.65}}
+\qbezier(46.70,24.51)(49.32,16.48)(51.95,8.45)
+\put(51.95,8.45){\circle*{0.65}}
+\qbezier(51.95,8.45)(54.57,12.46)(57.20,16.48)
+\put(57.20,16.48){\circle*{0.65}}
+\qbezier(57.20,16.48)(59.82,24.22)(62.45,31.97)
+\put(62.45,31.97){\circle*{0.65}}
+\qbezier(62.45,31.97)(65.07,28.24)(67.70,24.51)
+\put(67.70,24.51){\circle*{0.65}}
+\qbezier(67.70,24.51)(70.32,17.14)(72.95,9.76)
+\put(72.95,9.76){\circle*{0.65}}
+\qbezier(72.95,9.76)(75.57,13.07)(78.20,16.38)
+\put(78.20,16.38){\circle*{0.65}}
+\qbezier(78.20,16.38)(80.82,23.57)(83.45,30.75)
+\put(83.45,30.75){\circle*{0.65}}
+\qbezier(83.45,30.75)(86.07,27.74)(88.70,24.74)
+\put(88.70,24.74){\circle*{0.65}}
+\qbezier(88.70,24.74)(91.32,17.79)(93.95,10.85)
+\put(93.95,10.85){\circle*{0.65}}
+\qbezier(93.95,10.85)(96.57,13.52)(99.20,16.19)
+\put(99.20,16.19){\circle*{0.65}}
+\qbezier(99.20,16.19)(101.82,22.93)(104.45,29.66)
+\put(104.45,29.66){\circle*{0.65}}
+\qbezier(104.45,29.66)(107.07,27.34)(109.70,25.02)
+\put(109.70,25.02){\circle*{0.65}}
+\qbezier(109.70,25.02)(112.32,18.50)(114.95,11.97)
+\put(114.95,11.97){\circle*{0.65}}
+\end{picture}
+\end{center}
+
+Mahasiswa tetap wajib membuat ulang plot dengan MATLAB dari CSV. Dari grafik tersebut perhatikan: gerak berosilasi, amplitudo cenderung menurun, dan garis tengah osilasi berada dekat nol.
+
+\section{Model yang digunakan}
+Sebagai model awal digunakan osilator harmonik teredam yang telah dilinearkan:
+\begin{equation}
+\theta(t;p)=C+A e^{-\beta t}\cos(\omega_d t+\phi),
+\label{eq:p10-model}
+\end{equation}
+dengan
+\[
+p=\begin{bmatrix}C&A&\beta&\omega_d&\phi\end{bmatrix}^{T}.
+\]
+
+Interpretasi parameter:
+\begin{itemize}
+\item $C$: offset atau garis tengah sudut;
+\item $A$: amplitudo model;
+\item $\beta$: laju peluruhan amplitudo;
+\item $\omega_d$: frekuensi sudut teredam;
+\item $\phi$: fase awal.
+\end{itemize}
+
+Dengan $x(t)=\theta(t)-C$, model tersebut memenuhi
+\begin{equation}
+x''+2\beta x'+\omega_0^2x=0,
+\qquad
+\omega_0=\sqrt{\omega_d^2+\beta^2}.
+\label{eq:p10-ode}
+\end{equation}
+
+Untuk pendulum sudut kecil,
+\begin{equation}
+L_{\mathrm{eff}}=\frac{g}{\omega_0^2}.
+\label{eq:p10-length}
+\end{equation}
+
+Model ini adalah \textbf{aproksimasi}. Data awal memiliki amplitudo yang tidak sangat kecil, sehingga ketidakcocokan antara fitted model dan data justru menjadi bagian penting dari pembahasan validasi.
+
+\section{Goal estimasi parameter}
+Mengestimasi parameter berarti mencari
+\[
+\hat p=\begin{bmatrix}\hat C&\hat A&\hat\beta&\hat\omega_d&\hat\phi\end{bmatrix}^{T}
+\]
+agar kurva model mendekati data eksperimen.
+
+Tujuannya bukan sekadar memperoleh lima angka. Setelah $\hat p$ tersedia, model menjadi operasional untuk:
 \begin{enumerate}
-\item \textbf{Formulasi:} definisikan variabel, parameter, persamaan, domain, kondisi awal/batas, dan kuantitas yang ingin dihitung.
-\item \textbf{Pemilihan metode:} cocokkan struktur masalah dengan penyelesai numerik dan pahami asumsi metode.
-\item \textbf{Implementasi:} gunakan fungsi modular, parameter numerik eksplisit, dan penyimpanan history.
-\item \textbf{Verifikasi:} gunakan solusi analitik, masalah uji terancang, residual, pemeriksaan konservasi, atau jejaring perhalusan.
-\item \textbf{Validasi:} bila data tersedia, bandingkan model dengan data/fenomena menggunakan metrik yang relevan.
-\item \textbf{Sensitivitas numerik:} ubah $h$, toleransi, tebakan awal, dan penyelesai numerik untuk memastikan kesimpulan tidak merupakan artefak numerik.
-\item \textbf{Pelaporan:} simpan tabel, grafik, kode, konfigurasi, dan interpretasi.
+\item menjelaskan frekuensi dan redaman gerak;
+\item menghitung panjang efektif $L_{\mathrm{eff}}$ dan membandingkannya dengan $0.426$ m;
+\item mencari waktu pendulum pertama kali melintasi posisi geometris setimbang;
+\item menghitung kecepatan sudut pada event tersebut;
+\item menghitung energi ternormalisasi yang terdisipasi;
+\item menyelesaikan ODE dengan Euler, Heun, dan RK4;
+\item membedakan galat solver dari ketidakcocokan model terhadap eksperimen.
 \end{enumerate}
 
-\section{Contoh terpadu: model logistik}
-Gunakan model logistik pada Praktikum 8. Pertanyaan komputasi dapat dirangkai sebagai berikut.
+\section{Estimasi parameter dengan Gauss--Newton dan SPL}
+Misalkan terdapat $n$ observasi
+\[
+t=\begin{bmatrix}t_1&t_2&\cdots&t_n\end{bmatrix}^{T},\qquad
+y=\begin{bmatrix}\theta_1&\theta_2&\cdots&\theta_n\end{bmatrix}^{T}.
+\]
+Residual pada observasi ke-$i$ didefinisikan sebagai
+\begin{equation}
+r_i(p)=\theta_i-\theta(t_i;p),
+\end{equation}
+sehingga $r(p)\in\mathbb{R}^{n}$.
+
+\subsection{Apa itu matriks $J$?}
+Pada Gauss--Newton, $J$ adalah \textbf{matriks Jacobian model terhadap parameter}, bukan metode Jacobi pada materi SPL.
+
+Elemen baris ke-$i$, kolom ke-$j$ adalah
+\begin{equation}
+J_{ij}=\frac{\partial\theta(t_i;p)}{\partial p_j}.
+\end{equation}
+
+Karena model mempunyai lima parameter, maka
+\[
+J\in\mathbb{R}^{n\times5}.
+\]
+Setiap \textbf{baris} mewakili satu observasi $t_i$, sedangkan lima \textbf{kolom} mewakili sensitivitas terhadap $C,A,\beta,\omega_d,\phi$.
+
+Untuk $\psi_i=\omega_dt_i+\phi$, baris ke-$i$ adalah
+\[
+J_i=\begin{bmatrix}
+1 & e^{-\beta t_i}\cos\psi_i & -At_i e^{-\beta t_i}\cos\psi_i & -At_i e^{-\beta t_i}\sin\psi_i & -A e^{-\beta t_i}\sin\psi_i
+\end{bmatrix}.
+\]
+
+Jika data $0\le t\le20$ s memiliki $\Delta t=0.01$ s, tersedia $2001$ observasi. Jika driver mengambil satu dari setiap lima observasi, maka digunakan
+\[
+n=401,\qquad J\in\mathbb{R}^{401\times5}.
+\]
+
+Pada setiap iterasi Gauss--Newton diselesaikan SPL
+\begin{equation}
+(J^TJ)\Delta p=J^Tr.
+\label{eq:p10-gn}
+\end{equation}
+Ukuran objeknya adalah
+\[
+J^TJ\in\mathbb{R}^{5\times5},\qquad J^Tr\in\mathbb{R}^{5},\qquad \Delta p\in\mathbb{R}^{5}.
+\]
+Jadi walaupun terdapat ratusan observasi, SPL untuk koreksi parameter tetap berukuran $5\times5$.
+
+\subsection{Yang harus dikerjakan}
 \begin{enumerate}
-\item Kapan $y(t)$ pertama kali mencapai 80? Ini menjadi masalah akar $q(t)=y(t)-80=0$ dan dapat diselesaikan dengan Biseksi. Nilai referensinya sekitar $t=8.9588$.
-\item Bagaimana kurva dinamikanya? Gunakan RK4 dan bandingkan dengan solusi analitik.
-\item Berapa laju perubahan di $t=5$? Gunakan turunan numerik sebagai pemeriksaan silang terhadap ruas kanan ODE.
-\item Berapa $\int_0^{10} y(t)\,dt$? Gunakan Simpson sebagai ukuran akumulasi; nilai referensi sekitar $462.50$.
-\item Apakah hasil stabil jika $h$ RK4 dibagi dua dan toleransi akar diperketat?
+\item Gunakan \texttt{gauss\_newton\_damped.m}.
+\item Tampilkan ukuran $J$, $J^TJ$, $J^Tr$, dan $\Delta p$ pada iterasi pertama.
+\item Hitung SSE, RMSE, dan $R^2$.
+\item Plot data, fitted model, residual, serta SSE terhadap iterasi.
+\item Gunakan \texttt{fminsearch} sebagai benchmark, bukan pengganti Gauss--Newton.
+\item Hitung $L_{\mathrm{eff}}$ dan bandingkan dengan panjang aktual 0.426 m.
 \end{enumerate}
 
-\section{Algoritma alur kerja}
-\begin{algorithm}
-\caption{Mini-pipeline numerik}
-\begin{algorithmic}[1]
-\State Definisikan model dan parameter.
-\State Tentukan masalah uji/solusi acuan untuk verifikasi bila tersedia.
-\State Selesaikan event/root quantity.
-\State Simulasikan dinamika dengan minimal satu penyelesai numerik utama.
-\State Hitung derived quantities (turunan/integral) dengan metode yang sesuai.
-\State Lakukan perhalusan/sensitivity numerik.
-\State Kumpulkan residual, galat, grafik, dan tabel.
-\State Interpretasikan hasil dan nyatakan keterbatasan.
-\end{algorithmic}
-\end{algorithm}
+\section{Aktivitas numerik setelah parameter diperoleh}
 
-\section{Program MATLAB: pisahkan function dan driver}
-\textbf{Driver:} parameter/data dan grafik. \textbf{Function:} algoritma numerik yang menerima input dan mengembalikan output. Semua file berada pada \path{Modul_Praktikum/matlab}.
+\subsection{Pencarian akar: waktu pertama melintasi posisi setimbang}
+Setelah $\hat C$ diperoleh, definisikan
+\begin{equation}
+q(t)=\theta(t;\hat p)-\hat C.
+\end{equation}
+Akar $q(t)=0$ menyatakan waktu ketika sudut model sama dengan garis tengah osilasi.
 
-\MatlabFile{bisection\_fun.m (function)}
-\lstinputlisting[language=Matlab]{matlab/bisection_fun.m}
+\textbf{Tujuan komputasi:} memperoleh waktu crossing pertama $t_{\mathrm{eq}}$.
 
-\MatlabFile{rk4\_ivp.m (function)}
-\lstinputlisting[language=Matlab]{matlab/rk4_ivp.m}
+\textbf{Metode:} Biseksi dan Secant; \texttt{fzero} sebagai benchmark.
 
-\MatlabFile{simpson\_comp.m (function)}
-\lstinputlisting[language=Matlab]{matlab/simpson_comp.m}
+\textbf{Yang dilaporkan:} $t_{\mathrm{eq}}$, $|q(t_{\mathrm{eq}})|$, dan jumlah iterasi.
 
-\MatlabFile{driver\_terpadu.m (driver)}
+Crossing ini bukan berarti pendulum telah berhenti. Pada titik tersebut $\theta=\hat C$, tetapi kecepatan sudut umumnya masih tidak nol.
+
+\subsection{Turunan numerik: kecepatan sudut pada event}
+Kecepatan sudut adalah $\omega(t)=d\theta/dt$. Turunan analitik fitted model adalah
+\begin{equation}
+\theta'(t)=A e^{-\beta t}\left[-\beta\cos(\omega_dt+\phi)-\omega_d\sin(\omega_dt+\phi)\right].
+\end{equation}
+
+\textbf{Tujuan komputasi:} menghitung seberapa cepat pendulum bergerak ketika pertama kali melintasi posisi setimbang.
+
+\textbf{Metode:} beda maju, beda mundur, dan beda pusat melalui \texttt{numdiff.m} untuk beberapa $h$.
+
+\textbf{Benchmark:} turunan analitik model dan \texttt{angular\_velocity} sensor yang diinterpolasi pada $t_{\mathrm{eq}}$.
+
+\subsection{Integral numerik: energi yang terdisipasi}
+Dengan $x(t)=\theta(t)-C$ dan $v(t)=x'(t)$, definisikan energi mekanik ternormalisasi
+\begin{equation}
+\mathcal E(t)=\frac12v(t)^2+\frac12\omega_0^2x(t)^2.
+\end{equation}
+Dari model ODE,
+\[
+\frac{d\mathcal E}{dt}=-2\beta v(t)^2.
+\]
+Karena itu energi ternormalisasi yang terdisipasi selama $0\le t\le T$ adalah
+\begin{equation}
+D(T)=2\beta\int_0^T v(t)^2\,dt.
+\end{equation}
+
+\textbf{Tujuan komputasi:} menghitung kuantitas akumulatif yang merepresentasikan kehilangan energi pada model.
+
+\textbf{Metode:} Trapesium komposit dan Simpson $1/3$ komposit untuk beberapa jumlah subinterval.
+
+\textbf{Benchmark:} $D_{\mathrm{ref}}=\mathcal E(0)-\mathcal E(T)$.
+
+\subsection{Penyelesaian ODE: mereproduksi dinamika fitted model}
+Tuliskan model sebagai sistem orde satu:
+\begin{equation}
+\begin{aligned}
+x'&=v,\\
+v'&=-2\beta v-\omega_0^2x.
+\end{aligned}
+\end{equation}
+
+\textbf{Tujuan komputasi:} menguji kemampuan solver numerik mereproduksi dinamika model dengan parameter yang telah diestimasi.
+
+\textbf{Metode:} Euler, Heun, dan RK4 untuk beberapa $h$.
+
+\textbf{Benchmark:} solusi tertutup fitted model serta \texttt{ode45} sebagai pembanding tambahan.
+
+Untuk setiap $h$, hitung
+\[
+E_{\max}(h)=\max_n|x_n-x(t_n)|.
+\]
+
+\section{Validasi dan interpretasi akhir}
+Jawab secara terintegrasi:
+\begin{enumerate}
+\item Apakah fitted model mengikuti pola data?
+\item Apakah residual masih menunjukkan pola sistematis?
+\item Apakah $L_{\mathrm{eff}}$ dekat dengan 0.426 m?
+\item Metode akar mana yang lebih efisien pada event ini?
+\item Bagaimana beda maju, mundur, dan pusat berubah ketika $h$ diperkecil?
+\item Bagaimana Trapesium dan Simpson berubah ketika grid diperhalus?
+\item Bagaimana galat Euler, Heun, dan RK4 berubah ketika $h$ diperkecil?
+\item Apakah solver ODE yang sangat akurat otomatis membuat model lebih cocok dengan data eksperimen?
+\item Bagian mana yang merupakan \textbf{galat numerik}, \textbf{ketidakcocokan model}, dan \textbf{noise/pengukuran eksperimen}?
+\end{enumerate}
+
+\section{Visualisasi minimum}
+Praktikum menghasilkan sekurang-kurangnya:
+\begin{enumerate}
+\item data sudut dan kecepatan sudut terhadap waktu;
+\item fitted model dan data;
+\item residual fitting;
+\item SSE Gauss--Newton terhadap iterasi;
+\item fungsi $q(t)$ dan lokasi crossing;
+\item residual metode akar terhadap iterasi;
+\item galat turunan terhadap $h$;
+\item galat integral terhadap jumlah grid;
+\item Euler--Heun--RK4 terhadap fitted model;
+\item galat maksimum ODE terhadap $h$.
+\end{enumerate}
+
+\section{Kode MATLAB: driver praktikum}
+Kode yang ditampilkan di modul hanya \textbf{driver}. Function numerik tidak dicetak ulang karena telah dibangun pada praktikum sebelumnya. Semua function yang diperlukan tersedia pada folder \path{Modul_Praktikum/matlab} sehingga mahasiswa cukup mengunduh repository.
+
+\MatlabFile{driver\_terpadu.m}
 \lstinputlisting[language=Matlab]{matlab/driver_terpadu.m}
 
+Function yang dipanggil driver:
+\begin{itemize}
+\item \texttt{gauss\_newton\_damped.m};
+\item \texttt{bisection\_fun.m};
+\item \texttt{secant\_fun.m};
+\item \texttt{numdiff.m};
+\item \texttt{trap\_comp.m};
+\item \texttt{simpson\_comp.m};
+\item \texttt{euler\_ivp.m};
+\item \texttt{heun\_ivp.m};
+\item \texttt{rk4\_ivp.m}.
+\end{itemize}
 
-\section{Latihan terpadu}
+\section{Luaran praktikum}
+Mahasiswa mengumpulkan:
 \begin{enumerate}
-\item Buat tabel yang memetakan tipe masalah ke metode yang tersedia pada Praktikum 1--9. Tambahkan kelebihan, keterbatasan, dan parameter numerik utama.
-\item Pilih satu model sederhana (peluruhan, logistik, pendinginan Newton, RC circuit, atau model lain). Bangun alur kerja yang memuat minimal tiga metode numerik berbeda.
-\item Lakukan verifikasi dengan solusi analitik atau manufactured solution. Jika tidak ada, gunakan jejaring/tolerance perhalusan dan jelaskan keterbatasannya.
-\item Buat satu halaman \textit{catatan keterulangan}: versi MATLAB, nama file, parameter, seed (jika ada bilangan acak), dan langkah menjalankan program.
+\item driver MATLAB yang dapat dijalankan ulang;
+\item tabel dan seluruh visualisasi minimum;
+\item ringkasan 2--3 halaman dengan urutan: masalah, data, model, tujuan estimasi parameter, metode numerik, hasil, benchmark/validasi, interpretasi, dan kesimpulan;
+\item tabel traceability sederhana: hasil utama $\rightarrow$ bagian driver $\rightarrow$ output/gambar.
 \end{enumerate}
+
+\section*{Rujukan}
+\begin{enumerate}
+\item Xu, E., Tran, T., Zhao, H., Wang, Y., Huai, M., \& Shao, H. (2026). \textit{Identifying Invariant Physical Dynamics Across Multiple Environments}. Transactions on Machine Learning Research. \url{https://openreview.net/forum?id=xvQYvYEGhj}
+\item Simbach, J. C., \& Priest, J. (2005). \textit{Another look at a damped physical pendulum}. American Journal of Physics, 73(11), 1079--1084. DOI: 10.1119/1.1858488.
+\item Bissell, J. J. (2025). \textit{Proof of the small angle approximation $\sin\theta\approx\theta$ using the geometry and motion of a simple pendulum}. International Journal of Mathematical Education in Science and Technology, 56(3), 548--554. DOI: 10.1080/0020739X.2023.2258885.
+\end{enumerate}
+
+% ================================================================
 
 \chapter*{Mock-Up UTS dari Lembar Kerja}
 \addcontentsline{toc}{chapter}{Mock-Up UTS dari Lembar Kerja}
