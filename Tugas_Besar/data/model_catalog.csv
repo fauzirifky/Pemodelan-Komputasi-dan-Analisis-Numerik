@@ -1,0 +1,24 @@
+model,equation_or_structure,n_parameters,level,compatible_problem_ids,note
+Brody,W(t)=A(1-Be^{-kt}),3,Sedang,P01,Pertumbuhan asimtotik; umum untuk bobot hewan.
+von Bertalanffy,L(t)=L_\infty(1-e^{-K(t-t_0)}),3,Sedang,P01;P07,Pertumbuhan asimtotik; cocok untuk ukuran tubuh/ikan.
+von Bertalanffy-type,V(t)=K(1-Be^{-rt})^3,3,Sedang,P02,Versi tiga-parameter untuk membandingkan bentuk pertumbuhan tumor.
+Logistic growth,y(t)=K/[1+e^{-r(t-t_0)}],3,Ringan,P02;P07;P08;P10,Sigmoid simetris; reusable pada beberapa masalah pertumbuhan.
+Gompertz growth,y(t)=K\exp[-\exp(-r(t-t_0))],3,Ringan,P01;P02;P07;P08;P10,Sigmoid asimetris; reusable pada beberapa masalah pertumbuhan.
+Weibull growth,y(t)=K[1-\exp(-(t/\lambda)^m)],3,Sedang,P08;P10,Alternatif fleksibel selain Logistic/Gompertz.
+Bateman,C(t)=A(e^{-k_e t}-e^{-k_a t}),3,Sedang,P03,Absorpsi–eliminasi oral.
+Bateman + lag time,C(t)=A[e^{-k_e(t-t_l)}-e^{-k_a(t-t_l)}],4,Sedang,P03,Bateman dengan waktu tunda.
+Mono-exponential,y(t)=A e^{-kt},2,Ringan,P03;P04,Fase eliminasi/decay sederhana; dapat dipakai pada beberapa PK.
+Bi-exponential,C(t)=A e^{-\alpha t}+B e^{-\beta t},4,Sedang,P04,Model dua komponen IV.
+Two-stage bi-exponential,C(t)=A e^{-\alpha t}+B e^{-\beta t},3,Sedang,P04,Persamaan bi-exponential; parameter diinisialisasi/diestimasi dengan prosedur dua tahap.
+Linear degradation,Q(n)=a+bn,2,Ringan,P05,Baseline degradation paling sederhana.
+Quadratic degradation,Q(n)=a+bn+cn^2,3,Ringan,P05,Linear dalam parameter tetapi nonlinear terhadap cycle.
+Offset exponential decay,Q(n)=C+A e^{-kn},3,Sedang,P05,Decay menuju kapasitas asimtotik.
+Gaussian epidemic curve,I(t)=A\exp[-(t-\mu)^2/(2\sigma^2)],3,Ringan,P06,Alternatif fenomenologis sederhana untuk kurva infeksi aktif.
+Gamma-shaped epidemic curve,I(t)=A t^p e^{-kt},3,Ringan,P06,Kurva epidemic asimetris tanpa sistem kompartemen.
+SIR,"S'=-\beta SI/N,\ I'=\beta SI/N-\gamma I,\ R'=\gamma I",2,Sedang,P06,Model mekanistik kompartemen; initial state/population dianggap diketahui.
+Linear inhibition,y(x)=A(1-kx),2,Ringan,P09,Respons salinitas sederhana dengan baseline A.
+Exponential inhibition,y(x)=A e^{-kx},2,Ringan,P09,Penurunan monoton akibat salinitas.
+Hyperbolic inhibition,y(x)=A/(1+kx),2,Ringan,P09,Alternatif saturating inhibition.
+Prey-only logistic,M'=rM(1-M/K),2,Ringan,P11,Alternatif sederhana; hanya seri moose.
+Moose logistic + wolf forcing,M'=rM(1-M/K)-aW(t)M,3,Sedang,P11,Satu ODE; wolves dipakai sebagai forcing teramati.
+Lotka–Volterra,"M'=aM-bMW,\ W'=cMW-dW",4,Sedang,P11,Model coupled predator–prey klasik.
